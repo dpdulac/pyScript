@@ -1,0 +1,21 @@
+package: Python Example Mode
+author: D Dulac
+organization: Absolutly None
+contact: duda@mikrosimage.eu
+version: 1.0
+requires: ''
+rv: 3.12.9
+url: http://www.tweaksoftware.com
+optional: true
+
+modes:
+  - file: pyhello.py
+    menu: 'Tools/PYHELLO'
+    shortcut: ''
+    event: ''
+    load: immediate
+
+description: |
+    <p>
+    This is a simple python package example
+    </p>
