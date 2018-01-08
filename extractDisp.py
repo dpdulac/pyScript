@@ -23,6 +23,7 @@ import OpenEXR
 import Imath
 import os,time
 
+
 def findMinMaxSingleChannel(filename='', output = 'both'):
     inputFile = oiio.ImageInput.open(filename)
     if not inputFile:
