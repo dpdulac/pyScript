@@ -1,0 +1,90 @@
+ocio_profile_version: 1
+
+search_path: luts
+strictparsing: true
+luma: [0.2126, 0.7152, 0.0722]
+
+roles:
+  color_picking: linear
+  data: linear
+  default: linear
+  matte_paint: linear
+  reference: linear
+  scene_linear: linear
+  compositing_log: linear
+  color_timing: linear
+  texture_paint: linear
+
+displays:
+  default:
+    - !<View> {name: sRGB, colorspace: srgb8}
+    - !<View> {name: Linear, colorspace: linear}
+    - !<View> {name: rec709, colorspace: rec709}
+    - !<View> {name: ASTERIX2_Film, colorspace: asterix2_film}
+
+active_displays: [default]
+active_views: [ASTERIX2_Film, sRGB, rec709]
+
+colorspaces:
+  - !<ColorSpace>
+    name: linear
+    family: ln
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Linear space used for compositing and rendering
+    isdata: false
+    allocation: lg2
+    allocationvars: [-15, 6]
+
+  - !<ColorSpace>
+    name: srgb8
+    family: srgb
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      srgb8 : rgb display space for the srgb standard.
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.125, 1.125]
+    to_reference: !<FileTransform> {src: srgb_to_lin_12bits.spi1d, interpolation: linear}
+    from_reference: !<FileTransform> {src: lin_to_srgb_12bits.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: rec709
+    family: srgb
+    equalitygroup: ""
+    bitdepth: 8ui
+    description: |
+      REC 709: image as seen on set.
+    isdata: false
+    allocation: uniform
+    to_reference: !<FileTransform> {src: rec709_to_lin_12bits.spi1d, interpolation: linear}
+    from_reference: !<FileTransform> {src: lin_to_rec709_12bits.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: spi_anim
+    family: vd
+    equalitygroup: ""
+    bitdepth: 16ui
+    description: |
+      spi_anim : The simple video conversion from a gamma 2.2 srgb space
+    isdata: false
+    allocation: uniform
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: vd16.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: asterix2_film
+    family: vd
+    equalitygroup: ""
+    bitdepth: 16ui
+    description: |
+      asterix2_film : Film lut for Sherlock Gnomes 
+    isdata: false
+    allocation: uniform
+    from_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: asterix2_film_lin_rec709.csp, interpolation: linear}
+
