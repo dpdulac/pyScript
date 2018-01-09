@@ -57,7 +57,7 @@ def convertImage(filename = __FILEIN__,fileOutName = __FILEOUT__,format='tif'):
 
     colorspace = OCIO.ColorSpace(name='srgb8')
     group=OCIO.GroupTransform()
-    main_lut = OCIO.FileTransform('/s/apps/packages/prods/anim/asterix2/asterix2Core/1.2.12/color/luts/lin_to_srgb_12bits.spi1d', interpolation =OCIO.Constants.INTERP_LINEAR, direction= OCIO.Constants.TRANSFORM_DIR_FORWARD)
+    main_lut = OCIO.FileTransform('/s/prodanim/asterix2/_sandbox/duda/tmp/ocioLut/linTosrgbA2.csp', interpolation =OCIO.Constants.INTERP_LINEAR, direction= OCIO.Constants.TRANSFORM_DIR_FORWARD)
     group.push_back(main_lut)
     colorspace.setTransform(group,OCIO.Constants.COLORSPACE_DIR_TO_REFERENCE)
     newConfig.addColorSpace(colorspace)
