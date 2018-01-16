@@ -244,6 +244,8 @@ def convertImage(filename = '',fileOutName = '',format='tif'):
     #"""
     # get the processor to transform from linear to Asterix2_Film space
     processor = config.getProcessor('linear','Asterix2_Film')
+    #processor = config.getProcessor('linear','srgb8')
+
     #"""
     # apply the transform
     buf = processor.applyRGBA(pixels)
