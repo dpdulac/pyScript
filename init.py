@@ -44,6 +44,7 @@ os.environ['LUA_PATH'] += ";" +"/homes/duda/.katana/LuaScript/?.lua"
 sys.path.append("/s/prodanim/asterix2/_sandbox/duda/Katana/Startup")
 sys.path.append("/homes/duda/.katana/UIPlugins")
 sys.path.append("/homes/duda/.katana/Script")
+#sys.path.append("/datas/pyScript")
 
 
 

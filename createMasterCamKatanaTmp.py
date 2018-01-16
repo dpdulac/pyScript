@@ -20,7 +20,7 @@ from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 from sgApi.sgApi import SgApi
 from sgtkLib import tkutil, tkm
-import os, pprint, errno, argparse, sys, math
+import os, pprint, errno, argparse, sys, math, operator
 from Katana import  NodegraphAPI,UI4
 
 _USER_ = os.environ['USER']
@@ -182,6 +182,7 @@ def findCameraPath(seq='s1300',dictShots={},useDict = True):
 #____________________________________KATANA_____________________________________________________________________________
 
 def createCam(seq = 's0060',camDict = {}):
+    #print getNewOrder(camDict)
     pos= (0,0)
     mergeInput=0
     maxOutTime = 0
@@ -315,7 +316,7 @@ def createCam(seq = 's0060',camDict = {}):
     root.getParameter('outTime').setValue(maxOutTime,0)
 
 '''order the shot in cut order'''
-def getOrder(res = {}):
+def getOldOrder(res = {}):
     order = []
     lengthRes = len(res)
     for i in range(1,lengthRes+1):
@@ -323,6 +324,28 @@ def getOrder(res = {}):
             if res[key]['cutOrder'] == i:
                 order.append(key)
     return order
+
+def getOrder(res = {}):
+    shotNb = []
+    for key in res.keys():
+        shotNb.append(key)
+    for j in range(len(shotNb)):
+    #initially swapped is false
+        swapped = False
+        i = 0
+        while i<len(res)-1:
+        #comparing the adjacent elements
+            if res[shotNb[i]]['cutOrder']>res[shotNb[i+1]]['cutOrder']:
+                #swapping
+                shotNb[i],shotNb[i+1] = shotNb[i+1],shotNb[i]
+                #Changing the value of swapped
+                swapped = True
+            i = i+1
+    #if swapped is false then the list is sorted
+    #we can stop the loop
+        if swapped == False:
+            break
+    return shotNb
 
 
 
@@ -485,6 +508,7 @@ class CamMixUI(QMainWindow):
                     res[shotNb]['cutOrder']=order
                     frameList = []
         camRes = findCameraPath(dictShots=res,useDict=False)
+        #pprint.pprint(camRes)
         createCam(seq = self.seqName,camDict = camRes)
         print 'done'
 
