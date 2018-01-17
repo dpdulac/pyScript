@@ -316,14 +316,6 @@ def createCam(seq = 's0060',camDict = {}):
     root.getParameter('outTime').setValue(maxOutTime,0)
 
 '''order the shot in cut order'''
-def getOldOrder(res = {}):
-    order = []
-    lengthRes = len(res)
-    for i in range(1,lengthRes+1):
-        for key in res.keys():
-            if res[key]['cutOrder'] == i:
-                order.append(key)
-    return order
 
 def getOrder(res = {}):
     shotNb = []
