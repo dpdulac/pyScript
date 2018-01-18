@@ -315,6 +315,18 @@ def createCam(seq = 's0060',camDict = {}):
     #set the out time of the project to maxOutTime
     root.getParameter('outTime').setValue(maxOutTime,0)
 
+    #put the node under the mouse
+    currentSelection = NodegraphAPI.GetAllSelectedNodes()
+    for node in currentSelection:
+        NodegraphAPI.SetNodeSelected(node,False)
+    NodegraphAPI.SetNodeSelected(group,True)
+    # Get list of selected nodes
+    nodeList = NodegraphAPI.GetAllSelectedNodes()
+    # Find Nodegraph tab and float nodes
+    nodegraphTab = UI4.App.Tabs.FindTopTab('Node Graph')
+    if nodegraphTab:
+        nodegraphTab.floatNodes(nodeList)
+
 '''order the shot in cut order'''
 
 def getOrder(res = {}):
