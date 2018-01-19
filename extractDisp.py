@@ -21,7 +21,7 @@ import OpenImageIO as oiio
 from PIL import Image
 import OpenEXR
 import Imath
-import os,time
+import os,time,sys
 
 
 def findMinMaxSingleChannel(filename='', output = 'both'):
@@ -120,7 +120,18 @@ def minMaxEXR(filename='', output = 'both'):
     # lighest = max([hi for (lo,hi) in extrema])
     # scale = 255 / (lighest - darkest)
 
-def main():
+def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/testFullPath.txt'):
+    res = {}
+    inputFile = open(inFile)
+    for line in inputFile.readlines():
+        dispValue = 0.0
+        line = line.replace('\n','')
+        splitLine = line.split(',')
+        res[splitLine[0]] = splitLine[1].split(':')
+    print res
+
+
+def oldFindDispHeight():
     res = {}
     inputFile = open('/s/prodanim/asterix2/_sandbox/duda/testFullPath.txt','r')
     xmlFileName = '/s/prodanim/asterix2/_sandbox/duda/filedisp_marketing3.xml'
@@ -154,6 +165,9 @@ def main():
     tree.write(xmlFileName)
     print 'done'
 
+def main():
+    findDispHeight(sys.argv[1])
+
 def timeTest():
     fileName = '/s/prodanim/asterix2/assets/Character/druid_chief/surface_tk/surface_renderPkg/publish/katana/Character-druid_chief-base-surface_renderPkg-v009/Character-druid_chief-body-dsp.1003.exr'
     a = time.time()
@@ -169,11 +183,11 @@ def testEXR():
     print minMaxEXR(fileName,'max')
     print 'first: ',time.time() - a
 
-# if __name__ == main():
-#     main()
+if __name__ == main():
+    main()
 
 # if __name__ == timeTest():
 #     timeTest()
 
-if __name__ == testEXR():
-    testEXR()
+# if __name__ == testEXR():
+#     testEXR()
