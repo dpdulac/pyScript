@@ -21,7 +21,7 @@ import OpenImageIO as oiio
 from PIL import Image
 import OpenEXR
 import Imath
-import os,time
+import os,time,sys
 
 
 def findMinMaxSingleChannel(filename='', output = 'both'):
@@ -120,7 +120,52 @@ def minMaxEXR(filename='', output = 'both'):
     # lighest = max([hi for (lo,hi) in extrema])
     # scale = 255 / (lighest - darkest)
 
-def main():
+def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/testFileLua.txt'):
+    filename = inFile.replace('.txt','.xml')
+    res = {}
+    mapList ={}
+    returnDict = {}
+    inputFile = open(inFile)
+    # create a dictionary from the file
+    for line in inputFile.readlines():
+        line = line.replace('\n','')
+        splitLine = line.split(',')
+        res[splitLine[0]] = splitLine[1].split(':')
+
+    #calculate the max extrema
+    for key in res.keys():
+        dispValue = 0.0
+        for file in res[key]:
+            if os.path.isfile(file):
+                # if the file hasn't be calculated before do it and put it in mapList
+                if file not in mapList.keys():
+                    mapHeight = minMaxEXR(file,'max')
+                    print mapHeight
+                    if mapHeight > dispValue:
+                        dispValue = mapHeight
+                    mapList[file]= dispValue
+                else :
+                    mapHeight = mapList[file]
+                    if mapHeight > dispValue:
+                        dispValue = mapHeight
+        returnDict[key] = dispValue
+        print key, dispValue
+
+
+    root = ET.Element("attributeFile", version="0.1.0")
+    for item in returnDict.keys():
+        doc = ET.SubElement(root, "attributeList", location=item)
+        ET.SubElement(doc, "attribute", name="dispValue", type="float",value=str(returnDict[item]))
+    tree = ET.ElementTree(root)
+    # if fileName.rfind('.xml') < 0:
+    #       fileName += '.xml'
+    tree.write(filename)
+    print 'done and YouAreUnderArrest'
+
+
+
+
+def oldFindDispHeight():
     res = {}
     inputFile = open('/s/prodanim/asterix2/_sandbox/duda/testFullPath.txt','r')
     xmlFileName = '/s/prodanim/asterix2/_sandbox/duda/filedisp_marketing3.xml'
@@ -154,6 +199,9 @@ def main():
     tree.write(xmlFileName)
     print 'done'
 
+def main():
+    findDispHeight()
+
 def timeTest():
     fileName = '/s/prodanim/asterix2/assets/Character/druid_chief/surface_tk/surface_renderPkg/publish/katana/Character-druid_chief-base-surface_renderPkg-v009/Character-druid_chief-body-dsp.1003.exr'
     a = time.time()
@@ -169,11 +217,11 @@ def testEXR():
     print minMaxEXR(fileName,'max')
     print 'first: ',time.time() - a
 
-# if __name__ == main():
-#     main()
+if __name__ == main():
+    main()
 
 # if __name__ == timeTest():
 #     timeTest()
 
-if __name__ == testEXR():
-    testEXR()
+# if __name__ == testEXR():
+#     testEXR()
