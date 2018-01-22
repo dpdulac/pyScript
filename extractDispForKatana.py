@@ -16,12 +16,10 @@
 __author__ = "duda"
 __copyright__ = "Copyright 2018, Mikros Animation"
 
-import xml.etree.cElementTree as ET
-import OpenImageIO as oiio
 from PIL import Image
 import OpenEXR
 import Imath
-import os,time,sys
+import os
 
 def minMaxEXR(filename='', output = 'both'):
     file = OpenEXR.InputFile(filename)
@@ -73,7 +71,7 @@ def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/testFileLua.txt'
     return returnDict
 
 def main():
-    findDispHeight()
+    findDispHeight('/s/prodanim/asterix2/_sandbox/duda/testFileLua.txt')
 
 if __name__ == main():
     main()
