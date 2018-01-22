@@ -19,7 +19,7 @@ __copyright__ = "Copyright 2018, Mikros Animation"
 from PIL import Image
 import OpenEXR
 import Imath
-import os,pprint
+import os,pprint,psutil
 
 def minMaxEXR(filename='', output = 'both'):
     file = OpenEXR.InputFile(filename)
@@ -38,39 +38,62 @@ def minMaxEXR(filename='', output = 'both'):
         return extrema
 
 
-def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/testFileLua.txt'):
-    res = {} # dictionary for the fileIn
-    mapList ={} # dummy to check if the value for the map hasn't be already calculated
-    returnDict = {} # output dictionary
-    inputFile = open(inFile)
-    # create a dictionary from the file
-    for line in inputFile.readlines():
-        line = line.replace('\n','')
-        splitLine = line.split(',')
-        res[splitLine[0]] = splitLine[1].split(':')
+def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.txt'):
+    used = True
+    nb = 0
+    while used:
+        for proc in psutil.process_iter():
+            if proc.name() == 'katanaBin':
+                for item in proc.open_files():
+                    print item.path
+                    #print inFile
+                    if inFile == str(item.path):
+                        print item.path
+                        nb = nb + 1
+            # for item in proc.open_files():
+            #     if inFile == item.path:
+            #         used = True
+            #         break
+            #     else:
+            #         used = False
+            # if used:
+            #     break
+        used = False
+    print inFile
+    print nb
 
-    #calculate the max extrema
-    for key in res.keys():
-        dispValue = 0.0
-        for file in res[key]:
-            if os.path.isfile(file): # check if the file exist
-                # if the file hasn't be calculated before do it and put it in mapList
-                if file not in mapList.keys():
-                    mapHeight = minMaxEXR(file,'max')
-                    print mapHeight
-                    if mapHeight > dispValue:
-                        dispValue = mapHeight
-                    mapList[file]= dispValue
-                else :
-                    mapHeight = mapList[file]
-                    if mapHeight > dispValue:
-                        dispValue = mapHeight
-        # only value greater than 0.0 are nescessary to set the disp bounding box
-        if dispValue > 0.0:
-            returnDict[key] = dispValue
-        # print key, dispValue
-    inputFile.close()
-    return returnDict
+    # res = {} # dictionary for the fileIn
+    # mapList ={} # dummy to check if the value for the map hasn't be already calculated
+    # returnDict = {} # output dictionary
+    # inputFile = open(inFile)
+    # # create a dictionary from the file
+    # for line in inputFile.readlines():
+    #     line = line.replace('\n','')
+    #     splitLine = line.split(',')
+    #     res[splitLine[0]] = splitLine[1].split(':')
+    #
+    # #calculate the max extrema
+    # for key in res.keys():
+    #     dispValue = 0.0
+    #     for file in res[key]:
+    #         if os.path.isfile(file): # check if the file exist
+    #             # if the file hasn't be calculated before do it and put it in mapList
+    #             if file not in mapList.keys():
+    #                 mapHeight = minMaxEXR(file,'max')
+    #                 print mapHeight
+    #                 if mapHeight > dispValue:
+    #                     dispValue = mapHeight
+    #                 mapList[file]= dispValue
+    #             else :
+    #                 mapHeight = mapList[file]
+    #                 if mapHeight > dispValue:
+    #                     dispValue = mapHeight
+    #     # only value greater than 0.0 are nescessary to set the disp bounding box
+    #     if dispValue > 0.0:
+    #         returnDict[key] = dispValue
+    #     # print key, dispValue
+    # inputFile.close()
+    # return returnDict
 
 def main():
      out = findDispHeight('/s/prodanim/asterix2/_sandbox/duda/dispDir/testFileLua.txt')
