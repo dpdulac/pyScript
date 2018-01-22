@@ -19,7 +19,7 @@ __copyright__ = "Copyright 2018, Mikros Animation"
 from PIL import Image
 import OpenEXR
 import Imath
-import os
+import os,pprint
 
 def minMaxEXR(filename='', output = 'both'):
     file = OpenEXR.InputFile(filename)
@@ -65,13 +65,16 @@ def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/testFileLua.txt'
                     mapHeight = mapList[file]
                     if mapHeight > dispValue:
                         dispValue = mapHeight
-        returnDict[key] = dispValue
-        print key, dispValue
-
+        # only value greater than 0.0 are nescessary to set the disp bounding box
+        if dispValue > 0.0:
+            returnDict[key] = dispValue
+        # print key, dispValue
+    inputFile.close()
     return returnDict
 
 def main():
-    findDispHeight('/s/prodanim/asterix2/_sandbox/duda/testFileLua.txt')
+     out = findDispHeight('/s/prodanim/asterix2/_sandbox/duda/dispDir/testFileLua.txt')
+     pprint.pprint(out)
 
 if __name__ == main():
     main()
