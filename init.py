@@ -41,10 +41,10 @@ os.environ['PYTHONPATH'] +=  os.pathsep + "/homes/duda/.katana/Script"
 os.environ['LUA_PATH'] += ";" +"/homes/duda/.katana/LuaScript/?.lua"
 
 #append my script directory
-sys.path.append("/s/prodanim/asterix2/_sandbox/duda/Katana/Startup")
+~sys.path.append("/s/prodanim/asterix2/_sandbox/duda/Katana/Startup")
 sys.path.append("/homes/duda/.katana/UIPlugins")
 sys.path.append("/homes/duda/.katana/Script")
-#sys.path.append("/datas/pyScript")
+sys.path.append("/datas/pyScript")
 
 
 

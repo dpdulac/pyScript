@@ -101,6 +101,34 @@ def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.
     # inputFile.close()
     # return returnDict
 
+def createKatanaNodes(fileOut = '/tmp/fileDispFromLua.txt'):
+    node = NodegraphAPI.GetAllSelectedNodes()[0] # select the node
+    nodePos = NodegraphAPI.GetNodePosition(node) # get the position of node
+    nodeOutPort = node.getOutputPortByIndex(0) # get the output port
+    nextPort = nodeOutPort.getConnectedPorts()[0] # get the first connected port from the previous node
+
+    # create the opscript node
+    root = NodegraphAPI.GetRootNode()
+    opscriptFindDisp = NodegraphAPI.CreateNode('OpScript',root)
+    opscriptFindDisp.setName('findDisp')
+    opscriptFindDisp.getParameter('CEL').setValue('/root/world//*{hasattr("materialOverride.parameters.dsp_map")}',0)
+    opscriptFindDispUserParam = opscriptFindDisp.getParameters().createChildGroup('user')
+    opscriptFindDispUserParamBlocker = opscriptFindDispUserParam.createChildString('fileOut',fileOut)
+    opscriptFindDisp.getParameter('script.lua').setValue("local getdispMap = require 'dispFunc'\ngetdispMap.getDispMap()",0)
+    opscriptFindDispInPort = opscriptFindDisp.getInputPort('i0')
+    opscriptFindDispOutPort = opscriptFindDisp.getOutputPort('out')
+    nodeOutPort.connect(opscriptFindDispInPort)
+    opscriptFindDispOutPort.connect(nextPort)
+    NodegraphAPI.SetNodePosition(opscriptFindDisp, (nodePos[0]+50,nodePos[1]-50))
+
+    NodegraphAPI.SetNodeViewed(opscriptFindDisp, True, exclusive=True)
+    NodegraphAPI.SetNodeEdited(opscriptFindDisp, True, exclusive=True)
+
+    time.sleep(5)
+    findDispHeight(fileOut)
+
+
+
 def main():
      out = findDispHeight('/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.txt')
      pprint.pprint(out)
