@@ -19,7 +19,7 @@ __copyright__ = "Copyright 2018, Mikros Animation"
 from PIL import Image
 import OpenEXR
 import Imath
-import os,pprint,psutil
+import os,pprint,psutil,time
 
 def minMaxEXR(filename='', output = 'both'):
     file = OpenEXR.InputFile(filename)
@@ -40,16 +40,22 @@ def minMaxEXR(filename='', output = 'both'):
 
 def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.txt'):
     used = True
-    nb = 0
-    while used:
+    nbA = 0
+    nbB = 0
+    while True:
         for proc in psutil.process_iter():
             if proc.name() == 'katanaBin':
                 for item in proc.open_files():
-                    print item.path
-                    #print inFile
                     if inFile == str(item.path):
-                        print item.path
-                        nb = nb + 1
+                        nbA = nbA + 1
+
+        time.sleep(5)
+
+        for proc in psutil.process_iter():
+            if proc.name() == 'katanaBin':
+                for item in proc.open_files():
+                    if inFile == str(item.path):
+                        nbB = nbB + 1
             # for item in proc.open_files():
             #     if inFile == item.path:
             #         used = True
@@ -58,9 +64,9 @@ def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.
             #         used = False
             # if used:
             #     break
-        used = False
-    print inFile
-    print nb
+        if nbA == nbB:
+            break
+    print nbA,nbB
 
     # res = {} # dictionary for the fileIn
     # mapList ={} # dummy to check if the value for the map hasn't be already calculated
@@ -96,7 +102,7 @@ def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.
     # return returnDict
 
 def main():
-     out = findDispHeight('/s/prodanim/asterix2/_sandbox/duda/dispDir/testFileLua.txt')
+     out = findDispHeight('/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.txt')
      pprint.pprint(out)
 
 if __name__ == main():
