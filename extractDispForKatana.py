@@ -101,6 +101,17 @@ def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.
     # inputFile.close()
     # return returnDict
 
+def WalkBoundAttrLocations(producer,listPath=[]):
+       if producer is not None :
+           path = producer.getFullName()
+           listPath.append(producer.getFullName())
+
+           for child in producer.iterChildren():
+               WalkBoundAttrLocations(child,listPath)
+       else:
+           print "producer or producerType not good"
+       return listPath
+
 def createKatanaNodes(fileOut = '/tmp/fileDispFromLua.txt'):
     node = NodegraphAPI.GetAllSelectedNodes()[0] # select the node
     nodePos = NodegraphAPI.GetNodePosition(node) # get the position of node
@@ -123,6 +134,13 @@ def createKatanaNodes(fileOut = '/tmp/fileDispFromLua.txt'):
 
     NodegraphAPI.SetNodeViewed(opscriptFindDisp, True, exclusive=True)
     NodegraphAPI.SetNodeEdited(opscriptFindDisp, True, exclusive=True)
+
+    sg = ScenegraphManager.getActiveScenegraph()
+    node = NodegraphAPI.GetNode( 'root' )
+    time = NodegraphAPI.GetCurrentTime()
+    producer = Nodes3DAPI.GetGeometryProducer( node, time)
+    prod = producer.getProducerByPath('/root')
+    WalkBoundAttrLocations(prod)
 
     time.sleep(5)
     findDispHeight(fileOut)

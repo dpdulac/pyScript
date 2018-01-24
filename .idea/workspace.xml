@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="7bf9cd7c-e8c6-4e5a-8882-4f7f517a8bec" name="Default" comment="Merge branch 'master' of github.com:dpdulac/pyScript&#10;&#10;Conflicts:&#10;&#9;.idea/workspace.xml&#10;">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/newtest.iml" afterPath="$PROJECT_DIR$/.idea/newtest.iml" />
+    <list default="true" id="7bf9cd7c-e8c6-4e5a-8882-4f7f517a8bec" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/extractDispForKatana.py" afterPath="$PROJECT_DIR$/extractDispForKatana.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/init.py" afterPath="$PROJECT_DIR$/init.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,11 +18,11 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="init.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="init.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/init.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="43" column="1" lean-forward="false" selection-start-line="43" selection-start-column="1" selection-end-line="43" selection-end-column="1" />
+            <state relative-caret-position="522">
+              <caret line="51" column="71" lean-forward="true" selection-start-line="51" selection-start-column="71" selection-end-line="51" selection-end-column="71" />
               <folding />
             </state>
           </provider>
@@ -53,11 +50,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="extractDispForKatana.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="extractDispForKatana.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/extractDispForKatana.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="582">
-              <caret line="103" column="21" lean-forward="false" selection-start-line="103" selection-start-column="4" selection-end-line="103" selection-end-column="21" />
+            <state relative-caret-position="708">
+              <caret line="142" column="32" lean-forward="true" selection-start-line="103" selection-start-column="0" selection-end-line="142" selection-end-column="32" />
               <folding>
                 <element signature="e#354#375#0" expanded="true" />
               </folding>
@@ -96,8 +93,8 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/extractDisp.py" />
-        <option value="$PROJECT_DIR$/extractDispForKatana.py" />
         <option value="$PROJECT_DIR$/init.py" />
+        <option value="$PROJECT_DIR$/extractDispForKatana.py" />
       </list>
     </option>
   </component>
@@ -391,7 +388,14 @@
       <option name="project" value="LOCAL" />
       <updated>1516725089457</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Merge branch 'master' of github.com:dpdulac/pyScript&#10;&#10;Conflicts:&#10;&#9;.idea/workspace.xml&#10;">
+      <created>1516725459773</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1516725459773</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -740,21 +744,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/extractDispForKatana.py">
+    <entry file="file://$PROJECT_DIR$/init.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="582">
-          <caret line="103" column="21" lean-forward="false" selection-start-line="103" selection-start-column="4" selection-end-line="103" selection-end-column="21" />
-          <folding>
-            <element signature="e#354#375#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="522">
+          <caret line="51" column="71" lean-forward="true" selection-start-line="51" selection-start-column="71" selection-end-line="51" selection-end-column="71" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/init.py">
+    <entry file="file://$PROJECT_DIR$/extractDispForKatana.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="43" column="1" lean-forward="false" selection-start-line="43" selection-start-column="1" selection-end-line="43" selection-end-column="1" />
-          <folding />
+        <state relative-caret-position="708">
+          <caret line="142" column="32" lean-forward="true" selection-start-line="103" selection-start-column="0" selection-end-line="142" selection-end-column="32" />
+          <folding>
+            <element signature="e#354#375#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
