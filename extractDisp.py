@@ -120,6 +120,21 @@ def minMaxEXR(filename='', output = 'both'):
     # lighest = max([hi for (lo,hi) in extrema])
     # scale = 255 / (lighest - darkest)
 
+def minMaxOIIO(filename = '', output = 'both'):
+    file = oiio.ImageInput.open(filename)
+    pixels = file.read_image(0,0,oiio.FLOAT)
+    spec = file.spec()
+    size = (spec.width,spec.height)
+    rgbf = Image.frombytes("F", size, pixels)
+
+    extrema = rgbf.getextrema()
+    if output == 'min':
+        return extrema[0]
+    elif output == 'max':
+        return extrema[1]
+    else:
+        return extrema
+
 def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/testFileLua.txt'):
     filename = inFile.replace('.txt','.xml')
     res = {}
@@ -139,7 +154,7 @@ def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/testFileLua.txt'
             if os.path.isfile(file):
                 # if the file hasn't be calculated before do it and put it in mapList
                 if file not in mapList.keys():
-                    mapHeight = minMaxEXR(file,'max')
+                    mapHeight = minMaxOIIO(file,'max')
                     print mapHeight
                     if mapHeight > dispValue:
                         dispValue = mapHeight

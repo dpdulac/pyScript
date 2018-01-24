@@ -17,19 +17,17 @@ __author__ = "duda"
 __copyright__ = "Copyright 2018, Mikros Animation"
 
 from PIL import Image
-import OpenEXR
-import Imath
+import OpenImageIO as oiio
 import os,pprint,psutil,time
 
-def minMaxEXR(filename='', output = 'both'):
-    file = OpenEXR.InputFile(filename)
-    pt = Imath.PixelType(Imath.PixelType.FLOAT)
-    dw = file.header()['dataWindow']
-    size = (dw.max.x - dw.min.x + 1, dw.max.y - dw.min.y + 1)
+def minMaxOIIO(filename = '', output = 'both'):
+    file = oiio.ImageInput.open(filename)
+    pixels = file.read_image(0,0,oiio.FLOAT)
+    spec = file.spec()
+    size = (spec.width,spec.height)
+    rgbf = Image.frombytes("F", size, pixels)
 
-    rgbf = Image.frombytes("F", size, file.channel("R", pt)) # only use R because the image is B&W
-
-    extrema = rgbf.getextrema()  #find the min and max luminance
+    extrema = rgbf.getextrema()
     if output == 'min':
         return extrema[0]
     elif output == 'max':
