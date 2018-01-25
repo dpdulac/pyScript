@@ -232,9 +232,15 @@ def testEXR():
     print minMaxEXR(fileName,'max')
     print 'first: ',time.time() - a
 
-if __name__ == main():
-    main()
+def testOIIO():
+    fileName = '/s/prodanim/asterix2/assets/Prop/menhir_class/surface_uv/surface_uv/publish/maya/Prop-menhir_class-base-surface_uv-v005/dsp_menhir_class-main.1001.tx'
+    print minMaxOIIO(fileName,'both')
 
+# if __name__ == main():
+#     main()
+
+if __name__ == testOIIO():
+    testOIIO()
 # if __name__ == timeTest():
 #     timeTest()
 

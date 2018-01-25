@@ -19,6 +19,7 @@ __copyright__ = "Copyright 2018, Mikros Animation"
 from PIL import Image
 import OpenImageIO as oiio
 import os,pprint,psutil,time
+from Katana import  NodegraphAPI,UI4, ScenegraphManager,Nodes3DAPI
 
 def minMaxOIIO(filename = '', output = 'both'):
     file = oiio.ImageInput.open(filename)
@@ -37,67 +38,67 @@ def minMaxOIIO(filename = '', output = 'both'):
 
 
 def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.txt'):
-    used = True
-    nbA = 0
-    nbB = 0
-    while True:
-        for proc in psutil.process_iter():
-            if proc.name() == 'katanaBin':
-                for item in proc.open_files():
-                    if inFile == str(item.path):
-                        nbA = nbA + 1
-
-        time.sleep(5)
-
-        for proc in psutil.process_iter():
-            if proc.name() == 'katanaBin':
-                for item in proc.open_files():
-                    if inFile == str(item.path):
-                        nbB = nbB + 1
-            # for item in proc.open_files():
-            #     if inFile == item.path:
-            #         used = True
-            #         break
-            #     else:
-            #         used = False
-            # if used:
-            #     break
-        if nbA == nbB:
-            break
-    print nbA,nbB
-
-    # res = {} # dictionary for the fileIn
-    # mapList ={} # dummy to check if the value for the map hasn't be already calculated
-    # returnDict = {} # output dictionary
-    # inputFile = open(inFile)
-    # # create a dictionary from the file
-    # for line in inputFile.readlines():
-    #     line = line.replace('\n','')
-    #     splitLine = line.split(',')
-    #     res[splitLine[0]] = splitLine[1].split(':')
+    # nbA = 0
+    # nbB = 0
+    # while True:
+    #     for proc in psutil.process_iter():
+    #         if proc.name() == 'katanaBin':
+    #             for item in proc.open_files():
+    #                 if inFile == str(item.path):
+    #                     nbA = nbA + 1
     #
-    # #calculate the max extrema
-    # for key in res.keys():
-    #     dispValue = 0.0
-    #     for file in res[key]:
-    #         if os.path.isfile(file): # check if the file exist
-    #             # if the file hasn't be calculated before do it and put it in mapList
-    #             if file not in mapList.keys():
-    #                 mapHeight = minMaxEXR(file,'max')
-    #                 print mapHeight
-    #                 if mapHeight > dispValue:
-    #                     dispValue = mapHeight
-    #                 mapList[file]= dispValue
-    #             else :
-    #                 mapHeight = mapList[file]
-    #                 if mapHeight > dispValue:
-    #                     dispValue = mapHeight
-    #     # only value greater than 0.0 are nescessary to set the disp bounding box
-    #     if dispValue > 0.0:
-    #         returnDict[key] = dispValue
-    #     # print key, dispValue
-    # inputFile.close()
-    # return returnDict
+    #     time.sleep(1)
+    #
+    #     for proc in psutil.process_iter():
+    #         if proc.name() == 'katanaBin':
+    #             for item in proc.open_files():
+    #                 if inFile == str(item.path):
+    #                     nbB = nbB + 1
+    #     if nbA == nbB:
+    #         break
+    # print nbA,nbB
+
+    test = True
+    while test:
+        if len(open(inFile).read()) != 0:
+            test = False
+
+
+    res = {} # dictionary for the fileIn
+    mapList ={} # dummy to check if the value for the map hasn't be already calculated
+    returnDict = {} # output dictionary
+    inputFile = open(inFile)
+    # create a dictionary from the file
+    for line in inputFile.readlines():
+        line = line.replace('\n','')
+        splitLine = line.split(',')
+        res[splitLine[0]] = splitLine[1].split(':')
+
+    #calculate the max extrema
+    for key in res.keys():
+        dispValue = 0.0
+        for file in res[key]:
+            if os.path.isfile(file): # check if the file exist
+                # if the file hasn't be calculated before do it and put it in mapList
+                if file not in mapList.keys():
+                    mapHeight = minMaxOIIO(file,'max')
+                    print mapHeight
+                    if mapHeight > dispValue:
+                        dispValue = mapHeight
+                    mapList[file]= dispValue
+                else :
+                    mapHeight = mapList[file]
+                    if mapHeight > dispValue:
+                        dispValue = mapHeight
+            else:
+                print "no map: "+file
+        # only value greater than 0.0 are nescessary to set the disp bounding box
+        if dispValue > 0.0:
+            returnDict[key] = dispValue
+        # print key, dispValue
+    inputFile.close()
+    pprint.pprint(returnDict)
+    return returnDict
 
 def WalkBoundAttrLocations(producer,listPath=[]):
        if producer is not None :
@@ -111,6 +112,7 @@ def WalkBoundAttrLocations(producer,listPath=[]):
        return listPath
 
 def createKatanaNodes(fileOut = '/tmp/fileDispFromLua.txt'):
+    inputFile = open(fileOut,'a')
     node = NodegraphAPI.GetAllSelectedNodes()[0] # select the node
     nodePos = NodegraphAPI.GetNodePosition(node) # get the position of node
     nodeOutPort = node.getOutputPortByIndex(0) # get the output port
@@ -122,17 +124,19 @@ def createKatanaNodes(fileOut = '/tmp/fileDispFromLua.txt'):
     opscriptFindDisp.setName('findDisp')
     opscriptFindDisp.getParameter('CEL').setValue('/root/world//*{hasattr("materialOverride.parameters.dsp_map")}',0)
     opscriptFindDispUserParam = opscriptFindDisp.getParameters().createChildGroup('user')
-    opscriptFindDispUserParamBlocker = opscriptFindDispUserParam.createChildString('fileOut',fileOut)
+    opscriptFindDispUserParamFileOut = opscriptFindDispUserParam.createChildString('fileOut',fileOut)
     opscriptFindDisp.getParameter('script.lua').setValue("local getdispMap = require 'dispFunc'\ngetdispMap.getDispMap()",0)
     opscriptFindDispInPort = opscriptFindDisp.getInputPort('i0')
     opscriptFindDispOutPort = opscriptFindDisp.getOutputPort('out')
     nodeOutPort.connect(opscriptFindDispInPort)
     opscriptFindDispOutPort.connect(nextPort)
     NodegraphAPI.SetNodePosition(opscriptFindDisp, (nodePos[0]+50,nodePos[1]-50))
-
+    opscriptFindDispPos = NodegraphAPI.GetNodePosition(opscriptFindDisp)
+    # set the view and the edit on the opscript node
     NodegraphAPI.SetNodeViewed(opscriptFindDisp, True, exclusive=True)
     NodegraphAPI.SetNodeEdited(opscriptFindDisp, True, exclusive=True)
 
+    # dummy functions to run the opscript and create the file
     sg = ScenegraphManager.getActiveScenegraph()
     node = NodegraphAPI.GetNode( 'root' )
     time = NodegraphAPI.GetCurrentTime()
@@ -140,14 +144,64 @@ def createKatanaNodes(fileOut = '/tmp/fileDispFromLua.txt'):
     prod = producer.getProducerByPath('/root')
     WalkBoundAttrLocations(prod)
 
-    time.sleep(5)
-    findDispHeight(fileOut)
+    # extract the dip for each map
+    assetWithDisp = findDispHeight(fileOut)
+
+    # create a stack of AttributeSet to set the disp if there is element in the dict
+    if len(assetWithDisp.keys()):
+        stack = NodegraphAPI.CreateNode("GroupStack", NodegraphAPI.GetRootNode())
+        stack.setName('Attribute_Disp')
+        stack.setChildNodeType("AttributeSet")
+        listWord = ['/character/','/location/','/prop/']
+        for key in assetWithDisp.keys():
+            path = ''
+            attributSet = stack.buildChildNode()
+            attributSet.getParameter('mode').setValue('CEL',0)
+            attrPath = attributSet.getParameter('celSelection')
+            # replace the word from listWord by the wildcard '/*' so to work in lighting scene
+            if any(word in key for word in listWord):
+                for word in listWord:
+                    path = key.replace(word,'//*/')
+                    attrPath.setValue(path,0)
+            else:
+                attrPath.setValue(key,0)
+            attributSet.setName(key[key.rfind('/')+1:]) # set name to the _hi
+            attrValue = attributSet.getParameter('numberValue.i0')
+            attrValue.setValue(assetWithDisp[key],0)
+            attrName = attributSet.getParameter('attributeName')
+            attrName.setValue('arnoldStatements.disp_padding',0)
+        NodegraphAPI.SetNodePosition(stack,opscriptFindDispPos)
+        stackInPort = stack.getInputPort('in')
+        stackOutPort = stack.getOutputPort('out')
+        nodeOutPort.connect(stackInPort)
+        stackOutPort.connect(nextPort)
+        NodegraphAPI.SetNodeViewed(stack, True, exclusive=True)
+        NodegraphAPI.SetNodeEdited(stack, True, exclusive=True)
+    else:  # reconnect the nodes
+        nodeOutPort.connect(nextPort)
+        NodegraphAPI.SetNodeViewed(node, True, exclusive=True)
+        NodegraphAPI.SetNodeEdited(node, True, exclusive=True)
+
+
+    # delete the opscript and the file
+    opscriptFindDisp.delete()
+    os.remove(fileOut)
+
+
+    # opscriptApplyDisp = NodegraphAPI.CreateNode('OpScript',root)
+    # opscriptApplyDisp.setName('ApplyDisp')
+    # opscriptApplyDisp.getParameter('script.lua').setValue(open(fileDisp).read(),0)
+    # opscriptApplyDisp.SetNodePosition(opscriptFindDispPos)
 
 
 
 def main():
-     out = findDispHeight('/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.txt')
-     pprint.pprint(out)
+    print "all done!!!!"
+     # out = findDispHeight('/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.txt')
+     # pprint.pprint(out)
+    # import extractDispForKatana as disp
+    # reload(disp)
+    # disp.createKatanaNodes()
 
 if __name__ == main():
     main()
