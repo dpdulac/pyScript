@@ -38,25 +38,25 @@ def minMaxOIIO(filename = '', output = 'both'):
 
 
 def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.txt'):
-    # nbA = 0
-    # nbB = 0
-    # while True:
-    #     for proc in psutil.process_iter():
-    #         if proc.name() == 'katanaBin':
-    #             for item in proc.open_files():
-    #                 if inFile == str(item.path):
-    #                     nbA = nbA + 1
-    #
-    #     time.sleep(1)
-    #
-    #     for proc in psutil.process_iter():
-    #         if proc.name() == 'katanaBin':
-    #             for item in proc.open_files():
-    #                 if inFile == str(item.path):
-    #                     nbB = nbB + 1
-    #     if nbA == nbB:
-    #         break
-    # print nbA,nbB
+    nbA = 0
+    nbB = 0
+    while True:
+        for proc in psutil.process_iter():
+            if proc.name() == 'katanaBin':
+                for item in proc.open_files():
+                    if inFile == str(item.path):
+                        nbA = nbA + 1
+
+        time.sleep(1)
+
+        for proc in psutil.process_iter():
+            if proc.name() == 'katanaBin':
+                for item in proc.open_files():
+                    if inFile == str(item.path):
+                        nbB = nbB + 1
+        if nbA == nbB:
+            break
+    print nbA,nbB
 
     test = True
     while test:
@@ -82,7 +82,6 @@ def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.
                 # if the file hasn't be calculated before do it and put it in mapList
                 if file not in mapList.keys():
                     mapHeight = minMaxOIIO(file,'max')
-                    print mapHeight
                     if mapHeight > dispValue:
                         dispValue = mapHeight
                     mapList[file]= dispValue
@@ -152,19 +151,20 @@ def createKatanaNodes(fileOut = '/tmp/fileDispFromLua.txt'):
         stack = NodegraphAPI.CreateNode("GroupStack", NodegraphAPI.GetRootNode())
         stack.setName('Attribute_Disp')
         stack.setChildNodeType("AttributeSet")
-        listWord = ['/character/','/location/','/prop/']
+        listWord = ['/location/','/prop/','/location/','/character/']
         for key in assetWithDisp.keys():
             path = ''
             attributSet = stack.buildChildNode()
             attributSet.getParameter('mode').setValue('CEL',0)
             attrPath = attributSet.getParameter('celSelection')
             # replace the word from listWord by the wildcard '/*' so to work in lighting scene
-            if any(word in key for word in listWord):
-                for word in listWord:
+            for word in listWord:
+                if key.find(word) > 1:
                     path = key.replace(word,'//*/')
                     attrPath.setValue(path,0)
-            else:
-                attrPath.setValue(key,0)
+                    break
+                else:
+                    attrPath.setValue(key,0)
             attributSet.setName(key[key.rfind('/')+1:]) # set name to the _hi
             attrValue = attributSet.getParameter('numberValue.i0')
             attrValue.setValue(assetWithDisp[key],0)
@@ -182,16 +182,9 @@ def createKatanaNodes(fileOut = '/tmp/fileDispFromLua.txt'):
         NodegraphAPI.SetNodeViewed(node, True, exclusive=True)
         NodegraphAPI.SetNodeEdited(node, True, exclusive=True)
 
-
     # delete the opscript and the file
     opscriptFindDisp.delete()
     os.remove(fileOut)
-
-
-    # opscriptApplyDisp = NodegraphAPI.CreateNode('OpScript',root)
-    # opscriptApplyDisp.setName('ApplyDisp')
-    # opscriptApplyDisp.getParameter('script.lua').setValue(open(fileDisp).read(),0)
-    # opscriptApplyDisp.SetNodePosition(opscriptFindDispPos)
 
 
 

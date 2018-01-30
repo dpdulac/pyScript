@@ -32,8 +32,8 @@
       <file leaf-file-name="extractDisp.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/extractDisp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="355">
-              <caret line="239" column="12" lean-forward="false" selection-start-line="238" selection-start-column="2" selection-end-line="239" selection-end-column="12" />
+            <state relative-caret-position="445">
+              <caret line="235" column="16" lean-forward="false" selection-start-line="235" selection-start-column="16" selection-end-line="235" selection-end-column="16" />
               <folding>
                 <element signature="e#345#380#0" expanded="true" />
               </folding>
@@ -44,7 +44,7 @@
       <file leaf-file-name="ocioConvertImage.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ocioConvertImage.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="56">
+            <state relative-caret-position="175">
               <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="26" />
               <folding>
                 <element signature="e#350#376#0" expanded="true" />
@@ -56,8 +56,8 @@
       <file leaf-file-name="extractDispForKatana.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/extractDispForKatana.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="167" column="77" lean-forward="false" selection-start-line="167" selection-start-column="77" selection-end-line="167" selection-end-column="77" />
+            <state relative-caret-position="414">
+              <caret line="58" column="17" lean-forward="false" selection-start-line="40" selection-start-column="4" selection-end-line="58" selection-end-column="17" />
               <folding>
                 <element signature="e#354#375#0" expanded="true" />
               </folding>
@@ -422,7 +422,14 @@
       <option name="project" value="LOCAL" />
       <updated>1516784607731</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Merge branch 'master' of github.com:dpdulac/pyScript&#10;&#10;Conflicts:&#10;&#9;.idea/workspace.xml&#10;">
+      <created>1516899987670</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1516899987670</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -769,16 +776,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/ocioConvertImage.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="56">
-          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="26" />
-          <folding>
-            <element signature="e#350#376#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/createMasterCamKatanaTmp.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="414">
@@ -795,10 +792,20 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/ocioConvertImage.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="175">
+          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="26" />
+          <folding>
+            <element signature="e#350#376#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/extractDisp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="355">
-          <caret line="239" column="12" lean-forward="false" selection-start-line="238" selection-start-column="2" selection-end-line="239" selection-end-column="12" />
+        <state relative-caret-position="445">
+          <caret line="235" column="16" lean-forward="false" selection-start-line="235" selection-start-column="16" selection-end-line="235" selection-end-column="16" />
           <folding>
             <element signature="e#345#380#0" expanded="true" />
           </folding>
@@ -807,8 +814,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/extractDispForKatana.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="378">
-          <caret line="167" column="77" lean-forward="false" selection-start-line="167" selection-start-column="77" selection-end-line="167" selection-end-column="77" />
+        <state relative-caret-position="414">
+          <caret line="58" column="17" lean-forward="false" selection-start-line="40" selection-start-column="4" selection-end-line="58" selection-end-column="17" />
           <folding>
             <element signature="e#354#375#0" expanded="true" />
           </folding>
