@@ -16,10 +16,52 @@
 __author__ = "duda"
 __copyright__ = "Copyright 2018, Mikros Animation"
 
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
 from PIL import Image
 import OpenImageIO as oiio
 import os,pprint,psutil,time
 from Katana import  NodegraphAPI,UI4, ScenegraphManager,Nodes3DAPI
+
+
+class extractDispUI(QWidget):
+    def __init__(self):
+        super(extractDispUI, self).__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.mainLayout =QVBoxLayout()
+        self.extractButton = QPushButton('Extract Displace')
+        self.mainLayout.addWidget(self.extractButton)
+
+        self.setLayout(self.mainLayout)
+
+        self.extractButton.clicked.connect(self.doIt)
+
+    def doIt(self):
+        node = NodegraphAPI.GetAllSelectedNodes()
+        lenNode = len(node)
+        if lenNode < 1 or lenNode > 1:
+            self.messageBox = QMessageBox()
+            self.messageBox.setIcon(QMessageBox.Warning)
+            self.messageBox.setText("Please choose a single node")
+            self.messageBox.setStandardButtons(QMessageBox.Ok)
+            self.messageBox.exec_()
+        else :
+            createKatanaNodes()
+            self.close()
+
+ex =None
+def buildExtractDispUI():
+
+    global ex
+    if ex is not None:
+        ex.close()
+    ex= extractDispUI()
+    ex. setWindowFlags(Qt.WindowStaysOnTopHint)
+    ex.show()
+
+
 
 def minMaxOIIO(filename = '', output = 'both'):
     file = oiio.ImageInput.open(filename)
@@ -38,25 +80,25 @@ def minMaxOIIO(filename = '', output = 'both'):
 
 
 def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.txt'):
-    nbA = 0
-    nbB = 0
-    while True:
-        for proc in psutil.process_iter():
-            if proc.name() == 'katanaBin':
-                for item in proc.open_files():
-                    if inFile == str(item.path):
-                        nbA = nbA + 1
-
-        time.sleep(1)
-
-        for proc in psutil.process_iter():
-            if proc.name() == 'katanaBin':
-                for item in proc.open_files():
-                    if inFile == str(item.path):
-                        nbB = nbB + 1
-        if nbA == nbB:
-            break
-    print nbA,nbB
+    # nbA = 0
+    # nbB = 0
+    # while True:
+    #     for proc in psutil.process_iter():
+    #         if proc.name() == 'katanaBin':
+    #             for item in proc.open_files():
+    #                 if inFile == str(item.path):
+    #                     nbA = nbA + 1
+    #
+    #     time.sleep(1)
+    #
+    #     for proc in psutil.process_iter():
+    #         if proc.name() == 'katanaBin':
+    #             for item in proc.open_files():
+    #                 if inFile == str(item.path):
+    #                     nbB = nbB + 1
+    #     if nbA == nbB:
+    #         break
+    # print nbA,nbB
 
     test = True
     while test:
@@ -111,6 +153,13 @@ def WalkBoundAttrLocations(producer,listPath=[]):
        return listPath
 
 def createKatanaNodes(fileOut = '/tmp/fileDispFromLua.txt'):
+    # check if there is a node ('Attribute_Disp') existing if yes delete it
+    # existingNode = NodegraphAPI.GetNode('Attribute_Disp')
+    # if existingNode :
+    #     inputNodePort = existingNode.getInputPortByIndex(0)
+    #     outputNodePort = existingNode.getOutputPortByIndex(0)
+    #     inputNodePort.connect(outputNodePort)
+    #     existingNode.delete()
     inputFile = open(fileOut,'a')
     node = NodegraphAPI.GetAllSelectedNodes()[0] # select the node
     nodePos = NodegraphAPI.GetNodePosition(node) # get the position of node
@@ -185,6 +234,7 @@ def createKatanaNodes(fileOut = '/tmp/fileDispFromLua.txt'):
     # delete the opscript and the file
     opscriptFindDisp.delete()
     os.remove(fileOut)
+    print 'finished'
 
 
 
@@ -196,5 +246,5 @@ def main():
     # reload(disp)
     # disp.createKatanaNodes()
 
-if __name__ == main():
-    main()
+# if __name__ == main():
+#     main()

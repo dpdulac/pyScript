@@ -233,8 +233,8 @@ def testEXR():
     print 'first: ',time.time() - a
 
 def testOIIO():
-    fileName = '/s/prodanim/asterix2/assets/Prop/rock_table_b/surface_uv/surface_uv/publish/maya/Prop-rock_table_b-base-surface_uv-v003/dsp_rock_table_b-base.1001.tx'
-    print minMaxOIIO(fileName,'both')
+    fileName = '/s/prodanim/asterix2/assets/Character/asterix/surface_texturing/surface_texturing/work/images/cloth-v003/asterix-cloth-base-dsp.1014.exr'
+    print minMaxOIIO(fileName,'max')
 
 # if __name__ == main():
 #     main()
