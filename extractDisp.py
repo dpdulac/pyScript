@@ -126,6 +126,7 @@ def minMaxOIIO(filename = '', output = 'both'):
     spec = file.spec()
     size = (spec.width,spec.height)
     rgbf = Image.frombytes("F", size, pixels)
+    print rgbf.getpixel((2,2))
 
     extrema = rgbf.getextrema()
     if output == 'min':
@@ -233,7 +234,7 @@ def testEXR():
     print 'first: ',time.time() - a
 
 def testOIIO():
-    fileName = '/s/prodanim/asterix2/assets/Character/asterix/surface_texturing/surface_texturing/work/images/cloth-v003/asterix-cloth-base-dsp.1014.exr'
+    fileName = '/s/prodanim/asterix2/assets/Character/cubix_pant/surface_tk/surface_renderPkg/publish/katana/Character-cubix_pant-base-surface_renderPkg-v010/Character-cubix_pant-eyes-mask_B.1051.tif'
     print minMaxOIIO(fileName,'max')
 
 # if __name__ == main():

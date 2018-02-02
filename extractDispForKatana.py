@@ -206,6 +206,7 @@ def createKatanaNodes(fileOut = '/tmp/fileDispFromLua.txt'):
             attributSet = stack.buildChildNode()
             attributSet.getParameter('mode').setValue('CEL',0)
             attrPath = attributSet.getParameter('celSelection')
+            attributSet.getParameter('attributeType').setValue('float',0)
             # replace the word from listWord by the wildcard '/*' so to work in lighting scene
             for word in listWord:
                 if key.find(word) > 1:
