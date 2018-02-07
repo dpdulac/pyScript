@@ -21,7 +21,7 @@ import OpenImageIO as oiio
 from PIL import Image
 import OpenEXR
 import Imath
-import os,time,sys
+import os,time,sys,math
 
 
 def findMinMaxSingleChannel(filename='', output = 'both'):
@@ -126,7 +126,21 @@ def minMaxOIIO(filename = '', output = 'both'):
     spec = file.spec()
     size = (spec.width,spec.height)
     rgbf = Image.frombytes("F", size, pixels)
-    print rgbf.getpixel((2,2))
+    valuePix = []
+    # for x in range(0,spec.width/3):
+    #     for y in range(0,spec.height/3):
+    #         valuePix.append(rgbf.getpixel((x,y)))
+    # print rgbf.getpixel((0,0))
+    # print rgbf.getpixel((0,spec.height-1))
+    # print rgbf.getpixel((spec.width-1,0))
+    inputFile = open('/tmp/1673033690.tx','r')
+    start = -10.0
+    for line in inputFile.readlines():
+        maxLum = rgbf.getpixel((eval(line)[0]*spec.width,eval(line)[1]*spec.height))
+        # maxLum = rgbf.getpixel(eval(line))
+        if maxLum > start:
+            start = maxLum
+    print start
 
     extrema = rgbf.getextrema()
     if output == 'min':
@@ -234,7 +248,7 @@ def testEXR():
     print 'first: ',time.time() - a
 
 def testOIIO():
-    fileName = '/s/prodanim/asterix2/assets/Character/cubix_pant/surface_tk/surface_renderPkg/publish/katana/Character-cubix_pant-base-surface_renderPkg-v010/Character-cubix_pant-eyes-mask_B.1051.tif'
+    fileName = '/s/prodanim/asterix2/assets/Character/assur/surface_texturing/surface_texturing/work/images/clothes-v001/assur-clothes-base-dsp.1015.exr'
     print minMaxOIIO(fileName,'max')
 
 # if __name__ == main():
