@@ -100,6 +100,7 @@ def convertExr(filename = '/s/prodanim/asterix2/_sandbox/duda/tmp/s9997_cMarketi
     print 'a'
     oiio.ImageBufAlgo.colorconvert(inFile,inFile,'linear','Asterix2_Film')
     print 'b'
+    print oiio.ImageBufAlgo.computePixelStats(inFile)
     # reelOut = oiio.ImageBuf()
     # oiio.ImageBufAlgo.channels(reelOut,inFile,(0,1,2))
 
