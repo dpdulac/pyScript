@@ -92,4 +92,27 @@ def findMinMaxSingleChannel(filename, output = 'both'):
     else:
         return minval[0],maxval[0]
 
+def convertExr(filename = '/s/prodanim/asterix2/_sandbox/duda/tmp/s9997_cMarketing06-base-confo_anim-ALL_6K-primary-mono.0101.exr'):
+    outFilename = filename.replace('.exr','.tif')
+    inFile = oiio.ImageBuf(filename)
+    #inFile.set_full(inFile.roi_full)
+
+    print 'a'
+    oiio.ImageBufAlgo.colorconvert(inFile,inFile,'linear','Asterix2_Film')
+    print 'b'
+    # reelOut = oiio.ImageBuf()
+    # oiio.ImageBufAlgo.channels(reelOut,inFile,(0,1,2))
+
+    inFile.set_write_format(oiio.UINT16)
+
+    print 'bc'
+    inFile.write(outFilename)
+    print 'c'
+
+def main():
+    convertExr()
+
+if __name__ == '__main__':
+    main()
+
 

@@ -95,7 +95,7 @@ class shotUI(QWidget):
                 res.update(dicExtract)
         for key in res.keys():
             print 'creating: '+res[key]['fileOut']
-            convertImage(res[key]['fileIn'],res[key]['fileOut'],res[key]['fileType'])
+            convertImageOIIO(res[key]['fileIn'],res[key]['fileOut'],res[key]['fileType'])
 
         #strRes =  '"' + str(res) + '"'
         #os.system(comandLine + strRes + ' ; echo "done"')
@@ -264,6 +264,20 @@ def convertImage(filename = '',fileOutName = '',format='tif'):
     output.write_image(imgTrans)
     output.close()
     print 'done'
+
+def convertImageOIIO(filename = '',fileOutName = '',format='tif'):
+    inFile = oiio.ImageBuf(filename)
+    if not inFile.has_error :
+        oiio.ImageBufAlgo.colorconvert(inFile,inFile,'linear','Asterix2_Film')
+        if format != 'tif':
+            inFile.set_write_format(oiio.UINT16)
+        else:
+            inFile.set_write_format(oiio.UINT8)
+        inFile.write(fileOutName)
+        print 'done'
+    if inFile.has_error :
+        print "Error writing ",fileOutName, ": ", inFile.geterror()
+
 
 
 ex =None

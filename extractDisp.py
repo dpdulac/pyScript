@@ -126,6 +126,9 @@ def minMaxOIIO(filename = '', output = 'both'):
     spec = file.spec()
     size = (spec.width,spec.height)
     rgbf = Image.frombytes("F", size, pixels)
+
+    buf = oiio.ImageBuf(filename)
+
     valuePix = []
     # for x in range(0,spec.width/3):
     #     for y in range(0,spec.height/3):
@@ -136,7 +139,8 @@ def minMaxOIIO(filename = '', output = 'both'):
     inputFile = open('/tmp/1673033690.tx','r')
     start = -10.0
     for line in inputFile.readlines():
-        maxLum = rgbf.getpixel((eval(line)[0]*spec.width,eval(line)[1]*spec.height))
+        maxLum=buf.getchannel(int(eval(line)[0]*spec.width),int(eval(line)[1]*spec.height),0,1)
+        #maxLum = rgbf.getpixel((eval(line)[0]*spec.width,eval(line)[1]*spec.height))
         # maxLum = rgbf.getpixel(eval(line))
         if maxLum > start:
             start = maxLum
