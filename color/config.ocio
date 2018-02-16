@@ -5,14 +5,25 @@ strictparsing: true
 luma: [0.2126, 0.7152, 0.0722]
 
 roles:
-  color_picking: linear
-  data: linear
-  default: linear
-  matte_paint: linear
+  # Colors in a color-selection UI can be displayed in this space, while selecting colors in a different working space
+  color_picking: cpf
+  # colorspace used for applying color corrections
+  color_timing: lm10
+  # a log colorspace used for certain processing operations (plate resizing, pulling keys, degrain, etc). Used by the OCIOLogConvert Nuke node
+  compositing_log: lmf
+  # used when writing data outputs such as normals, depth data, and other “non color” data
+  data: ncf
+  # when strictparsing: false, this colorspace is used as a fallback. If not defined, the scene_linear role is used
+  default: ncf
+  # Colorspace which matte-paintings are created in (for more information, see the guide on baking ICC profiles for Photoshop, and spi-anim)
+  # On the show the matte paint with the lut embeded into their images
+  matte_paint: vd16
+  # Colorspace used for reference imagery
   reference: linear
+  # reference color space for cg / renderer
   scene_linear: linear
-  compositing_log: linear
-  color_timing: linear
+  # Similar to matte_paint but for painting textures for 3D objects
+  # On the show the texture are linear
   texture_paint: linear
 
 displays:
@@ -21,14 +32,15 @@ displays:
     - !<View> {name: Linear, colorspace: linear}
     - !<View> {name: rec709, colorspace: rec709}
     - !<View> {name: ASTERIX2_Film, colorspace: asterix2_film}
+    - !<View> {name: ASTERIX2_Film_previous, colorspace: asterix2_film_previous}
 
 active_displays: [default]
-active_views: [ASTERIX2_Film, sRGB, rec709]
+active_views: [ASTERIX2_Film, sRGB, rec709, asterix2_film_previous]
 
 colorspaces:
   - !<ColorSpace>
     name: linear
-    family: ln
+    family: Linear
     equalitygroup: ""
     bitdepth: 32f
     description: |
@@ -37,9 +49,10 @@ colorspaces:
     allocation: lg2
     allocationvars: [-15, 6]
 
+  # In House Color Space transformation
   - !<ColorSpace>
     name: srgb8
-    family: srgb
+    family: sRGB
     equalitygroup: ""
     bitdepth: 32f
     description: |
@@ -52,7 +65,7 @@ colorspaces:
 
   - !<ColorSpace>
     name: rec709
-    family: srgb
+    family: Rec709
     equalitygroup: ""
     bitdepth: 8ui
     description: |
@@ -62,13 +75,14 @@ colorspaces:
     to_reference: !<FileTransform> {src: rec709_to_lin_12bits.spi1d, interpolation: linear}
     from_reference: !<FileTransform> {src: lin_to_rec709_12bits.spi1d, interpolation: linear}
 
+  # Pick-up from spi-anim
   - !<ColorSpace>
-    name: spi_anim
-    family: vd
-    equalitygroup: ""
+    name: vd16
+    family: Reference_Art
+    equalitygroup: 
     bitdepth: 16ui
     description: |
-      spi_anim : The simple video conversion from a gamma 2.2 srgb space
+      vd16 : The simple video conversion from a gamma 2.2 srgb space
     isdata: false
     allocation: uniform
     to_reference: !<GroupTransform>
@@ -76,15 +90,99 @@ colorspaces:
         - !<FileTransform> {src: vd16.spi1d, interpolation: nearest}
 
   - !<ColorSpace>
+    name: lmf
+    family: Log
+    equalitygroup: 
+    bitdepth: 32f
+    description: |
+      lmf : Log Monitor this space has a log like response and srgb primaries, it is used as a compositing log
+    isdata: false
+    allocation: uniform
+    allocationvars: [-0.2, 2.484]
+    to_reference: !<FileTransform> {src: lmf.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: lm10
+    family: Log
+    equalitygroup: 
+    bitdepth: 10ui
+    description: |
+      lm10 : Log Monitor this space has a log like response and srgb primaries, it is used for color grading 
+    isdata: false
+    allocation: uniform
+    to_reference: !<FileTransform> {src: lm10.spi1d, interpolation: linear}
+
+  - !<ColorSpace>
+    name: cpf
+    family: Color_Picking
+    equalitygroup: 
+    bitdepth: 32f
+    description: |
+      cpf :video like conversion used for color picking 
+    isdata: false
+    allocation: uniform
+    to_reference: !<FileTransform> {src: cpf.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: ncf
+    family: Data
+    equalitygroup: 
+    bitdepth: 32f
+    description: |
+      ncf :nc,Non-color used to store non-color data such as depth or surface normals
+    isdata: true
+    allocation: uniform
+
+
+  # Nuke -default Gamma
+  - !<ColorSpace>
+    name: Gamma1.8
+    family: Gamma
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Emulates a idealized Gamma 1.8 display device.
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ExponentTransform> {value: [1.8, 1.8, 1.8, 1]}
+
+  - !<ColorSpace>
+    name: Gamma2.2
+    family: Gamma
+    equalitygroup: ""
+    bitdepth: 32f
+    description: |
+      Emulates a idealized Gamma 2.2 display device.
+    isdata: false
+    allocation: uniform
+    allocationvars: [0, 1]
+    to_reference: !<ExponentTransform> {value: [2.2, 2.2, 2.2, 1]}
+
+  # ---
+  # LUT Film
+  - !<ColorSpace>
     name: asterix2_film
-    family: vd
+    family: Lut
+    equalitygroup: 
+    bitdepth: 16ui
+    description: |
+      vd16 : The simple video conversion from a gamma 2.2 srgb space
+    isdata: false
+    allocation: uniform
+    to_reference: !<GroupTransform>
+      children:
+        - !<FileTransform> {src: vd16.spi1d, interpolation: nearest}
+
+  - !<ColorSpace>
+    name: asterix2_film_previous
+    family: Lut
     equalitygroup: ""
     bitdepth: 16ui
     description: |
-      asterix2_film : Film lut for Sherlock Gnomes 
+      asterix2_film : Film lut from Sherlock Gnomes 
     isdata: false
     allocation: uniform
     from_reference: !<GroupTransform>
       children:
-        - !<FileTransform> {src: asterix2_film_lin_rec709.csp, interpolation: linear}
-
+        - !<FileTransform> {src: sk_film_lin_gamma24.csp, interpolation: linear}
