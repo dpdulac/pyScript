@@ -97,17 +97,23 @@ def convertExr(filename = '/s/prodanim/asterix2/_sandbox/duda/tmp/s9997_cMarketi
     inFile = oiio.ImageBuf(filename)
     inFileMono = oiio.ImageBuf()
 
-    print 'a'
+    #convert to asterix lut
     oiio.ImageBufAlgo.colorconvert(inFile,inFile,'linear','Asterix2_Film')
-    print 'b'
+    #create a single channel buffer
     oiio.ImageBufAlgo.channels(inFileMono,inFile,("R",))
     stats = oiio.PixelStats()
+    #get the stats fronm buffer
     oiio.ImageBufAlgo.computePixelStats(inFileMono,stats)
-    print stats.max
+    print stats.max[0]
     # reelOut = oiio.ImageBuf()
     # oiio.ImageBufAlgo.channels(reelOut,inFile,(0,1,2))
 
+    #oiio.ImageBufAlgo.zero(inFileMono)
+
     inFile.set_write_format(oiio.UINT16)
+
+    #draw a shape on image
+    oiio.ImageBufAlgo.render_box(inFile,500,1600,300,1000,(1,1,1,1),True)
 
     print 'bc'
     inFile.write(outFilename)
