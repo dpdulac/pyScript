@@ -101,6 +101,7 @@ def findMinMaxBuff(filename='', output = 'both'):
     else:
         return minValue,maxValue
 
+
 def minMaxEXR(filename='', output = 'both'):
     file = OpenEXR.InputFile(filename)
     pt = Imath.PixelType(Imath.PixelType.FLOAT)
