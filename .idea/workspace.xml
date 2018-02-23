@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="546b0689-37c3-4979-87ea-25561236a086" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/OpenImageIOtest.py" afterPath="$PROJECT_DIR$/OpenImageIOtest.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -30,14 +29,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="extractDisp.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="extractDisp.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/extractDisp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2448">
+            <state relative-caret-position="853">
               <caret line="141" column="8" lean-forward="false" selection-start-line="141" selection-start-column="8" selection-end-line="141" selection-end-column="8" />
               <folding>
                 <element signature="e#345#380#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="extracImageGUI.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/extracImageGUI.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -74,11 +83,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OpenImageIOtest.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="OpenImageIOtest.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="421">
-              <caret line="102" column="52" lean-forward="false" selection-start-line="102" selection-start-column="52" selection-end-line="102" selection-end-column="52" />
+            <state relative-caret-position="2070">
+              <caret line="115" column="9" lean-forward="false" selection-start-line="115" selection-start-column="9" selection-end-line="115" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -147,38 +156,6 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pyScript" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pyScript" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="color" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pyScript" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="pyScript" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="color" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="luts" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
         </subPane>
       </pane>
     </panes>
@@ -186,7 +163,7 @@
   <component name="PropertiesComponent">
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager" selected="Python.OpenImageIOtest">
+  <component name="RunManager" selected="Python.extracImageGUI">
     <configuration default="false" name="extractDisp" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -234,6 +211,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="newtest" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/OpenImageIOtest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="extracImageGUI" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="newtest" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/extracImageGUI.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -372,16 +366,18 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <list size="3">
+    <list size="4">
       <item index="0" class="java.lang.String" itemvalue="Python.extractDisp" />
       <item index="1" class="java.lang.String" itemvalue="Python.burnLutExrGUI" />
       <item index="2" class="java.lang.String" itemvalue="Python.OpenImageIOtest" />
+      <item index="3" class="java.lang.String" itemvalue="Python.extracImageGUI" />
     </list>
     <recent_temporary>
-      <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Python.OpenImageIOtest" />
-        <item index="1" class="java.lang.String" itemvalue="Python.burnLutExrGUI" />
-        <item index="2" class="java.lang.String" itemvalue="Python.extractDisp" />
+      <list size="4">
+        <item index="0" class="java.lang.String" itemvalue="Python.extracImageGUI" />
+        <item index="1" class="java.lang.String" itemvalue="Python.OpenImageIOtest" />
+        <item index="2" class="java.lang.String" itemvalue="Python.burnLutExrGUI" />
+        <item index="3" class="java.lang.String" itemvalue="Python.extractDisp" />
       </list>
     </recent_temporary>
   </component>
@@ -417,7 +413,21 @@
       <option name="project" value="LOCAL" />
       <updated>1518194993909</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="test on oiio for max lum">
+      <created>1519066064919</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1519066064919</updated>
+    </task>
+    <task id="LOCAL-00005" summary="test on oiio for max lum">
+      <created>1519398074831</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1519398074831</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -436,7 +446,7 @@
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3293348" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3293348" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -450,13 +460,86 @@
     <MESSAGE value="dddd" />
     <MESSAGE value="new burnlut using oiio only" />
     <MESSAGE value="new burnlut using oiio onlyv" />
-    <option name="LAST_COMMIT_MESSAGE" value="new burnlut using oiio onlyv" />
+    <MESSAGE value="test on oiio for max lum" />
+    <option name="LAST_COMMIT_MESSAGE" value="test on oiio for max lum" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/extractDispForKatana.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3060">
+          <caret line="175" column="120" lean-forward="false" selection-start-line="175" selection-start-column="58" selection-end-line="175" selection-end-column="120" />
+          <folding>
+            <element signature="e#354#379#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/extractDisp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#345#380#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/extracImageGUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/katanaCommand.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/displayGeoUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2124">
+          <caret line="121" column="4" lean-forward="false" selection-start-line="121" selection-start-column="4" selection-end-line="121" selection-end-column="47" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/burnLutExrGUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3222">
+          <caret line="184" column="34" lean-forward="false" selection-start-line="184" selection-start-column="34" selection-end-line="184" selection-end-column="34" />
+          <folding>
+            <element signature="e#347#372#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2070">
+          <caret line="115" column="9" lean-forward="false" selection-start-line="115" selection-start-column="9" selection-end-line="115" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/../packages/prods/anim/asterix2/asterix2PipeTools/dev/tools/convertExr/burnLutExr.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5040">
+          <caret line="285" column="4" lean-forward="false" selection-start-line="285" selection-start-column="4" selection-end-line="285" selection-end-column="4" />
+          <folding>
+            <element signature="e#347#372#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/extractDispForKatana.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3060">
@@ -710,16 +793,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/extractDisp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2448">
-          <caret line="141" column="8" lean-forward="false" selection-start-line="141" selection-start-column="8" selection-end-line="141" selection-end-column="8" />
-          <folding>
-            <element signature="e#345#380#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../packages/prods/anim/asterix2/asterix2PipeTools/dev/tools/convertExr/burnLutExr.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5040">
@@ -744,6 +817,14 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/extracImageGUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/burnLutExrGUI.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3222">
@@ -756,9 +837,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="421">
-          <caret line="102" column="52" lean-forward="false" selection-start-line="102" selection-start-column="52" selection-end-line="102" selection-end-column="52" />
+        <state relative-caret-position="2070">
+          <caret line="115" column="9" lean-forward="false" selection-start-line="115" selection-start-column="9" selection-end-line="115" selection-end-column="32" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/extractDisp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="853">
+          <caret line="141" column="8" lean-forward="false" selection-start-line="141" selection-start-column="8" selection-end-line="141" selection-end-column="8" />
+          <folding>
+            <element signature="e#345#380#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
