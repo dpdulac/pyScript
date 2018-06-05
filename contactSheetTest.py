@@ -39,10 +39,17 @@ def findShotsInSequence(seq='s1300',dict=False):
         return sorted(seqShots)
 
 def createNukeFile(seq = 's0060'):
+    nbShots = len(findShotsInSequence(seq,False))
+    intNb = nbShots/5
+    floatNb = nbShots/5.0
+    if floatNb-intNb > 0:
+        intNb += 1
     sequenceGroupNode = sequenceGroup.create()
-    sequenceGroupNode['sequence'].setValue('s0060')
+    sequenceGroupNode['sequence'].setValue(seq)
     sequenceGroupNode['task'].setValue('ligth_precomp')
     sequenceGroupNode['outputMode'].setValue('contactSheet')
     sequenceGroupNode['Rebuild'].execute()
     # a.knob('Rebuild').execute()
-    sequenceGroupNode['RowCol'].setValue([6, 5])
+    sequenceGroupNode['RowCol'].setValue([intNb, 5])
+    sequenceGroupNode['Resolution'].setValue([5*2048,intNb*858])
+
