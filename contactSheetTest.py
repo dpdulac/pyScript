@@ -38,7 +38,7 @@ def findShotsInSequence(seq='s1300',dict=False):
     else:
         return sorted(seqShots)
 
-def createNukeFile(seq = 's0060'):
+def createNukeFile(seq = 's0060',shName=True,outFile = '/tmp/tmp.tif',task = 'compo_comp'):
     nbShots = len(findShotsInSequence(seq,False))
     intNb = nbShots/5
     floatNb = nbShots/5.0
@@ -46,10 +46,29 @@ def createNukeFile(seq = 's0060'):
         intNb += 1
     sequenceGroupNode = sequenceGroup.create()
     sequenceGroupNode['sequence'].setValue(seq)
-    sequenceGroupNode['task'].setValue('ligth_precomp')
+    sequenceGroupNode['task'].setValue(task)
     sequenceGroupNode['outputMode'].setValue('contactSheet')
     sequenceGroupNode['Rebuild'].execute()
     # a.knob('Rebuild').execute()
     sequenceGroupNode['RowCol'].setValue([intNb, 5])
     sequenceGroupNode['Resolution'].setValue([5*2048,intNb*858])
+    if shName:
+        sequenceGroupNode['showName'].setValue(True)
+    else:
+        sequenceGroupNode['showName'].setValue(False)
+
+    colorConvertNode = nuke.nodes.OCIOColorSpace(in_colorspace="linear", out_colorspace="Lut")
+    colorConvertNode.setInput(0,sequenceGroupNode)
+
+    writeNode = nuke.nodes.Write(name = seq + "WriteLutBurn", colorspace = "linear", file_type = "tiff",file =outFile)
+    writeNode['datatype'].setValue('16 bit')
+    writeNode['views'].setValue('left left')
+    writeNode.setInput(0,colorConvertNode)
+    nuke.execute(writeNode, 1, 1)
+
+def main():
+    createNukeFile(seq='s0060', shName=True, outFile='/tmp/tmp.tif', task='compo_comp')
+
+if __name__ == '__main__':
+    main()
 
