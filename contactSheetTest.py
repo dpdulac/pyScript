@@ -64,6 +64,7 @@ def createNukeFile(seq = 's0060',shName=True,outFile = '/tmp/tmp.tif',task = 'co
     writeNode['datatype'].setValue('16 bit')
     writeNode['views'].setValue('left left')
     writeNode.setInput(0,colorConvertNode)
+    print 'donuts'
     nuke.execute(writeNode, 1, 1)
 
 def main():
