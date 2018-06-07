@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="546b0689-37c3-4979-87ea-25561236a086" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/contactSheetUI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contactSheetTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/contactSheetTest.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -29,10 +29,22 @@
       <file leaf-file-name="contactSheetTest.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/contactSheetTest.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="16" column="26" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
+            <state relative-caret-position="478">
+              <caret line="78" column="10" lean-forward="true" selection-start-line="74" selection-end-line="78" selection-end-column="10" />
               <folding>
                 <element signature="e#219#230#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="contactSheetUI.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/contactSheetUI.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="523">
+              <caret line="48" column="26" selection-start-line="48" selection-start-column="26" selection-end-line="48" selection-end-column="26" />
+              <folding>
+                <element signature="e#188#199#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -62,11 +74,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="createMasterCamKatanaTmp.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="createMasterCamKatanaTmp.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/createMasterCamKatanaTmp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="973">
-              <caret line="134" column="12" selection-start-line="134" selection-start-column="4" selection-end-line="134" selection-end-column="12" />
+            <state relative-caret-position="358">
+              <caret line="96" column="14" lean-forward="true" selection-start-line="73" selection-end-line="96" selection-end-column="14" />
               <folding>
                 <element signature="e#358#383#0" expanded="true" />
               </folding>
@@ -108,6 +120,7 @@
         <option value="$PROJECT_DIR$/init.py" />
         <option value="$PROJECT_DIR$/burnLutExrGUI.py" />
         <option value="$PROJECT_DIR$/contactSheetTest.py" />
+        <option value="$PROJECT_DIR$/contactSheetUI.py" />
       </list>
     </option>
   </component>
@@ -482,19 +495,26 @@
       <option name="project" value="LOCAL" />
       <updated>1528285603648</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="test on oiio for max lum">
+      <created>1528354073201</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1528354073201</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="77" y="83" width="1681" height="1068" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24895771" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24895771" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3284974" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.3284974" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -530,16 +550,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/createMasterCamKatana.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2385">
-          <caret line="164" column="31" selection-start-line="147" selection-end-line="164" selection-end-column="31" />
-          <folding>
-            <element signature="e#337#362#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/contactSheetTest.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="975">
@@ -917,22 +927,32 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/createMasterCamKatanaTmp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="358">
+          <caret line="96" column="14" lean-forward="true" selection-start-line="73" selection-end-line="96" selection-end-column="14" />
+          <folding>
+            <element signature="e#358#383#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/contactSheetTest.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="26" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
+        <state relative-caret-position="478">
+          <caret line="78" column="10" lean-forward="true" selection-start-line="74" selection-end-line="78" selection-end-column="10" />
           <folding>
             <element signature="e#219#230#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/createMasterCamKatanaTmp.py">
+    <entry file="file://$PROJECT_DIR$/contactSheetUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="973">
-          <caret line="134" column="12" selection-start-line="134" selection-start-column="4" selection-end-line="134" selection-end-column="12" />
+        <state relative-caret-position="523">
+          <caret line="48" column="26" selection-start-line="48" selection-start-column="26" selection-end-line="48" selection-end-column="26" />
           <folding>
-            <element signature="e#358#383#0" expanded="true" />
+            <element signature="e#188#199#0" expanded="true" />
           </folding>
         </state>
       </provider>
