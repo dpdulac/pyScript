@@ -13,8 +13,11 @@
 import nuke
 from nukeCore.nodes import sequenceGroup
 from sgtkLib import tkutil, tkm
+from PyQt4.QtGui import *
+from PyQt4.QtCore import *
 
 _USER_ = os.environ['USER']
+_OUTIMAGEPATH_ = '/s/prodanim/asterix2/_sandbox/'+_USER_
 tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
 sg = sgw._sg
 
@@ -57,18 +60,20 @@ def createNukeFile(seq = 's0060',shName=True,outFile = '/tmp/tmp.tif',task = 'co
     else:
         sequenceGroupNode['showName'].setValue(False)
 
-    colorConvertNode = nuke.nodes.OCIOColorSpace(in_colorspace="linear", out_colorspace="Lut")
+    colorConvertNode = nuke.nodes.OCIOColorSpace(in_colorspace="Linear", out_colorspace="Lut")
+    #colorConvertNode = nuke.nodes.OCIOColorSpace( out_colorspace="Lut")
     colorConvertNode.setInput(0,sequenceGroupNode)
 
-    writeNode = nuke.nodes.Write(name = seq + "WriteLutBurn", colorspace = "linear", file_type = "tiff",file =outFile)
+    writeNode = nuke.nodes.Write(name = seq + "WriteLutBurn", colorspace = "linear", file_type = "tiff",file =outFile+'/'+seq+'.tif')
     writeNode['datatype'].setValue('16 bit')
-    writeNode['views'].setValue('left left')
+    #writeNode['views'].setValue('left left')
     writeNode.setInput(0,colorConvertNode)
-    print 'donuts'
+    nuke.scriptSave('/tmp/tmp.nk')
+    print 'done'
     nuke.execute(writeNode, 1, 1)
 
 def main():
-    createNukeFile(seq='s0060', shName=True, outFile='/tmp/tmp.tif', task='compo_comp')
+    createNukeFile(seq='s0390', shName=True, outFile= _OUTIMAGEPATH_, task='compo_comp')
 
 if __name__ == '__main__':
     main()

@@ -20,17 +20,17 @@
       <file leaf-file-name="OpenImageIOtest.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="660">
+            <state relative-caret-position="1725">
               <caret line="115" column="9" selection-start-line="115" selection-start-column="9" selection-end-line="115" selection-end-column="32" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="contactSheetTest.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="contactSheetTest.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/contactSheetTest.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="810">
-              <caret line="67" column="33" lean-forward="true" selection-start-line="67" selection-start-column="33" selection-end-line="67" selection-end-column="33" />
+            <state relative-caret-position="240">
+              <caret line="16" column="26" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
               <folding>
                 <element signature="e#219#230#0" expanded="true" />
               </folding>
@@ -41,8 +41,8 @@
       <file leaf-file-name="burnLutExr.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/../packages/prods/anim/asterix2/asterix2PipeTools/dev/tools/convertExr/burnLutExr.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="853">
-              <caret line="284" column="10" lean-forward="true" selection-start-line="283" selection-end-line="284" selection-end-column="10" />
+            <state relative-caret-position="90">
+              <caret line="18" selection-start-line="18" selection-end-line="19" selection-end-column="26" />
               <folding>
                 <element signature="e#347#372#0" expanded="true" />
               </folding>
@@ -53,8 +53,8 @@
       <file leaf-file-name="nukeContactSheet.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/nukeContactSheet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="870">
-              <caret line="616" column="8" lean-forward="true" selection-start-line="616" selection-start-column="8" selection-end-line="616" selection-end-column="46" />
+            <state relative-caret-position="9225">
+              <caret line="616" column="8" selection-start-line="616" selection-start-column="8" selection-end-line="616" selection-end-column="46" />
               <folding>
                 <element signature="e#350#381#0" expanded="true" />
               </folding>
@@ -62,10 +62,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="createMasterCamKatanaTmp.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="createMasterCamKatanaTmp.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/createMasterCamKatanaTmp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1935">
+            <state relative-caret-position="973">
               <caret line="134" column="12" selection-start-line="134" selection-start-column="4" selection-end-line="134" selection-end-column="12" />
               <folding>
                 <element signature="e#358#383#0" expanded="true" />
@@ -152,7 +152,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.burnLutExrGUI">
+  <component name="RunManager" selected="Python.contactSheetTest">
     <configuration name="OpenImageIOtest" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="newtest" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -207,6 +207,24 @@
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
+    <configuration name="contactSheetTest" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="newtest" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/contactSheetTest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
     <configuration name="extracImageGUI" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="newtest" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -220,24 +238,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/extracImageGUI.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
-    <configuration name="extractDisp" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="newtest" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/extractDisp.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -378,19 +378,19 @@
       <method />
     </configuration>
     <list>
-      <item itemvalue="Python.extractDisp" />
       <item itemvalue="Python.burnLutExrGUI" />
       <item itemvalue="Python.OpenImageIOtest" />
       <item itemvalue="Python.extracImageGUI" />
       <item itemvalue="Python.burnLutExr" />
+      <item itemvalue="Python.contactSheetTest" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.contactSheetTest" />
         <item itemvalue="Python.burnLutExrGUI" />
         <item itemvalue="Python.burnLutExr" />
         <item itemvalue="Python.extracImageGUI" />
         <item itemvalue="Python.OpenImageIOtest" />
-        <item itemvalue="Python.extractDisp" />
       </list>
     </recent_temporary>
   </component>
@@ -475,19 +475,26 @@
       <option name="project" value="LOCAL" />
       <updated>1528272698420</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="test on oiio for max lum">
+      <created>1528285603648</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1528285603648</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="77" y="83" width="1681" height="1068" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24895771" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24895771" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.3284974" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3284974" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -523,6 +530,26 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/createMasterCamKatana.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2385">
+          <caret line="164" column="31" selection-start-line="147" selection-end-line="164" selection-end-column="31" />
+          <folding>
+            <element signature="e#337#362#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contactSheetTest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="975">
+          <caret line="67" column="33" lean-forward="true" selection-start-line="67" selection-start-column="33" selection-end-line="67" selection-end-column="33" />
+          <folding>
+            <element signature="e#219#230#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/init.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="435">
@@ -659,9 +686,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/extractDisp.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/displayGeoUI.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2124">
@@ -776,9 +800,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/extractDisp.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/displayGeoUI.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2124">
@@ -852,16 +873,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/createMasterCamKatanaTmp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1935">
-          <caret line="134" column="12" selection-start-line="134" selection-start-column="4" selection-end-line="134" selection-end-column="12" />
-          <folding>
-            <element signature="e#358#383#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/createMasterCamKatana.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2385">
@@ -881,37 +892,47 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="660">
+        <state relative-caret-position="1725">
           <caret line="115" column="9" selection-start-line="115" selection-start-column="9" selection-end-line="115" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../packages/prods/anim/asterix2/asterix2PipeTools/dev/tools/convertExr/burnLutExr.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="853">
-          <caret line="284" column="10" lean-forward="true" selection-start-line="283" selection-end-line="284" selection-end-column="10" />
-          <folding>
-            <element signature="e#347#372#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/nukeContactSheet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="870">
-          <caret line="616" column="8" lean-forward="true" selection-start-line="616" selection-start-column="8" selection-end-line="616" selection-end-column="46" />
+        <state relative-caret-position="9225">
+          <caret line="616" column="8" selection-start-line="616" selection-start-column="8" selection-end-line="616" selection-end-column="46" />
           <folding>
             <element signature="e#350#381#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/../packages/prods/anim/asterix2/asterix2PipeTools/dev/tools/convertExr/burnLutExr.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="90">
+          <caret line="18" selection-start-line="18" selection-end-line="19" selection-end-column="26" />
+          <folding>
+            <element signature="e#347#372#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/contactSheetTest.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="810">
-          <caret line="67" column="33" lean-forward="true" selection-start-line="67" selection-start-column="33" selection-end-line="67" selection-end-column="33" />
+        <state relative-caret-position="240">
+          <caret line="16" column="26" selection-start-line="16" selection-start-column="26" selection-end-line="16" selection-end-column="26" />
           <folding>
             <element signature="e#219#230#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/createMasterCamKatanaTmp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="973">
+          <caret line="134" column="12" selection-start-line="134" selection-start-column="4" selection-end-line="134" selection-end-column="12" />
+          <folding>
+            <element signature="e#358#383#0" expanded="true" />
           </folding>
         </state>
       </provider>
