@@ -66,7 +66,6 @@ def findShotsInSequence(seq='s1300',dict=False):
 def createNukeFile(res = {}):
     import nuke
     from nukeCore.nodes import sequenceGroup
-    import time
 
     allWriteNode = []
     for key in res.keys():
