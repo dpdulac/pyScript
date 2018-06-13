@@ -95,7 +95,6 @@ def createNukeFile(res = {}):
         sequenceGroupNode['task'].setValue(task)
         sequenceGroupNode['outputMode'].setValue('contactSheet')
         sequenceGroupNode['Rebuild'].execute()
-        # a.knob('Rebuild').execute()
         sequenceGroupNode['RowCol'].setValue([intNb, 5])
         sequenceGroupNode['Resolution'].setValue([5*2048,intNb*858])
         sequenceGroupNode['showName'].setValue(name)
@@ -110,23 +109,29 @@ def createNukeFile(res = {}):
         #colorConvertNode = nuke.nodes.OCIOColorSpace( out_colorspace="Lut")
         colorConvertNode.setInput(0,sequenceGroupNode)
 
-        writeNode = nuke.nodes.Write(name = seq + "WriteLutBurn", colorspace = "linear", file_type = "tiff",file =outFile)
-        writeNode['datatype'].setValue('16 bit')
+        if format == 'jpg':
+            writeNode = nuke.nodes.Write(name=seq + "WriteLutBurn", colorspace="linear", file_type="jpeg",_jpeg_sub_sampling="4:2:2", file=outFile)
+            writeNode['_jpeg_quality'].setValue(0.75)
+        else:
+            writeNode = nuke.nodes.Write(name = seq + "WriteLutBurn", colorspace = "linear", file_type = "tiff",file =outFile)
+            writeNode['datatype'].setValue('16 bit')
         writeNode['use_limit'].setValue(1)
         #writeNode['views'].setValue('left left')
         writeNode.setInput(0,colorConvertNode)
         allWriteNode.append(writeNode)
         nuke.scriptSave(outDir + seq + '_contactSheet.nk')
         # time.sleep(5)
-        nuke.execute(writeNode, 1, 1,1)
-        print res
-    #nuke.scriptSave(outDir+seq+'_contactSheet.nk')
+        #nuke.execute(writeNode, 1, 1,1)
+    masterNukeFile = '/tmp/tmpContactSheet.nk'
+    nuke.scriptSave(masterNukeFile)
     fRange = nuke.FrameRanges('1-1')
+    os.system('nuke -x '+masterNukeFile+' 1,1')
+    os.remove(masterNukeFile)
+    for key in res.keys():
+        rmTmpFile = 'rm '+res[key]['outDir']+'tmp* '
+        os.system(rmTmpFile)
     print 'done'
     #nuke.executeMultiple(tuple(allWriteNode),fRange,continueOnError=True)
-    #nuke.executeBackgroundNuke(nuke.EXE_PATH,allWriteNode,fRange,['main'],{})
-    # for node in allWriteNode:
-    #     nuke.execute(node, 1, 1)
 
 class shotUI(QWidget):
     def __init__(self):
@@ -196,7 +201,7 @@ class shotUI(QWidget):
         self.size = QSize(900,81)
         #self.setFixedSize(self.size)
         self.setFixedWidth(900)
-        self.setWindowTitle('extract image')
+        self.setWindowTitle('contactSheet creator')
 
     """add findFileUI widget to the layout"""
     def addShot(self):
@@ -226,9 +231,8 @@ class shotUI(QWidget):
             res[key]['cutOrder'] = self.cutOrderCheckBox.isChecked()
             res[key]['showLabel'] = self.showLabelCheckBox.isChecked()
             res[key]['showTask'] = self.taskCheckBox.isChecked()
-            #print 'creating: '+res[key]['fileOut']+ '\ntask: '+ res[key]['task']+ '\nformat: ' + res[key]['fileType'] + '\nsequence: '+ res[key]['seq']+'\nArtist: ', res[key]['artist']
-            #convertImage(res[key]['task'],res[key]['fileOut'],res[key]['fileType'])
-        createNukeFile(res)
+        a = createNukeFile(res)
+        print 'bla'
 
 
 
@@ -368,29 +372,34 @@ def BuildShotUI():
     ex= shotUI()
     ex.show()
 
-testSeq = 's0180'
-testDict = {'contactSheet1': {
-    'status': True,
-    'showTask': True,
-    'task': 'compo_comp',
-    'name': True,
-    'seq': 's0080',
-    'artist': True,
-    'fileOut': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/'+testSeq+'/compo_comp/'+testSeq+'_contactSheet.tif',
-    'fileType': 'tif',
-    'cutOrder': True,
-    'showLabel': True,
-    'version': True,
-    'outDir': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/'+testSeq+'/compo_comp/'}
-    }
+def testDict(listSeq=['s0180', 's0010', 's0200', 's0080']):
+    nbContactSheet = 1
+    res = {}
+    for seq in listSeq:
+        res['contatSheet' + str(nbContactSheet)] = {
+            'status': True,
+            'showTask': True,
+            'task': 'compo_comp',
+            'name': True,
+            'seq': seq,
+            'artist': True,
+            'fileOut': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/compo_comp/' + seq + '_contactSheet.tif',
+            'fileType': 'tif',
+            'cutOrder': True,
+            'showLabel': True,
+            'version': True,
+            'outDir': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/compo_comp/'
+        }
+        nbContactSheet = nbContactSheet + 1
+
+    return res
 
 def main():
-    print testDict
-    createNukeFile(testDict)
-    # app = QApplication(sys.argv)
-    # app.setStyle(QStyleFactory.create("plastique"))
-    # BuildShotUI()
-    # app.exec_()
+    #createNukeFile(testDict())
+    app = QApplication(sys.argv)
+    app.setStyle(QStyleFactory.create("plastique"))
+    BuildShotUI()
+    app.exec_()
 
 if __name__ == '__main__':
     main()
