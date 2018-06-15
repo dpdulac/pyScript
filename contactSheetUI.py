@@ -9,22 +9,25 @@
   :author: duda
 
 """
-#import nuke
-#from nukeCore.nodes import sequenceGroup
-import os, sys
-from sgtkLib import tkutil, tkm
+import os, sys, time
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
+import subprocess
 
 _USER_ = os.environ['USER']
 _OUTIMAGEPATH_ = '/s/prodanim/asterix2/_sandbox/'+_USER_
 _TASKLIST_=['compo_comp','light_precomp','light_prelight','art_reference','mattepaint_deliver']
-tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
-sg = sgw._sg
+#tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
+#sg = sgw._sg
+
 
 """find the sequence in the project
    @all if true output also the sequence > 9000"""
 def findAllSequence(all = False):
+    from sgtkLib import tkutil, tkm
+    tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
+    sg = sgw._sg
+
     filters = [
         ['project', 'is', {'type':'Project', 'id':project.id}],
     ]
@@ -45,6 +48,9 @@ def findAllSequence(all = False):
     return seqShots
 
 def findShotsInSequence(seq='s1300',dict=False):
+    from sgtkLib import tkutil, tkm
+    tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
+    sg = sgw._sg
     filters = [
         ['project', 'is', {'type':'Project', 'id':project.id}],
         ['code','is',seq]
@@ -83,8 +89,8 @@ def createNukeFile(res = {}):
         cutOrder = res[key]['cutOrder']
         artist = res[key]['artist']
         outDir = res[key]['outDir']
-
-        nbShots = len(findShotsInSequence(seq,False))
+        nbShots = res[key]['nbShots']
+        #nbShots = len(findShotsInSequence(seq,False))
         intNb = nbShots/5
         floatNb = nbShots/5.0
         if floatNb-intNb > 0:
@@ -105,7 +111,6 @@ def createNukeFile(res = {}):
         sequenceGroupNode['showCutOrder'].setValue(cutOrder)
 
         colorConvertNode = nuke.nodes.OCIOColorSpace(in_colorspace="Linear", out_colorspace="Lut")
-        #colorConvertNode = nuke.nodes.OCIOColorSpace( out_colorspace="Lut")
         colorConvertNode.setInput(0,sequenceGroupNode)
 
         if format == 'jpg':
@@ -115,28 +120,37 @@ def createNukeFile(res = {}):
             writeNode = nuke.nodes.Write(name = seq + "WriteLutBurn", colorspace = "linear", file_type = "tiff",file =outFile)
             writeNode['datatype'].setValue('16 bit')
         writeNode['use_limit'].setValue(1)
-        #writeNode['views'].setValue('left left')
         writeNode.setInput(0,colorConvertNode)
         allWriteNode.append(writeNode)
         nuke.scriptSave(outDir + seq + '_contactSheet.nk')
         # time.sleep(5)
         #nuke.execute(writeNode, 1, 1,1)
     masterNukeFile = '/tmp/tmpContactSheet.nk'
+    nuke.filename()
     nuke.scriptSave(masterNukeFile)
     fRange = nuke.FrameRanges('1-1')
-    os.system('nuke -x '+masterNukeFile+' 1,1')
+    # proc = subprocess.Popen(['rez','env','asterix2NukeBeta','--','nuke', '-x', '/tmp/tmpContactSheet.nk','1,1'], stdout=subprocess.PIPE)
+    # output = proc.communicate()[0]
+    # print output
+    #subprocess.call(['nuke', '-x', '/tmp/tmpContactSheet.nk','1,1'])
+    #os.system('nuke -x '+masterNukeFile+' 1,1')
+    #nuke.executeMultiple(tuple(allWriteNode), fRange, continueOnError=True)
+    for renderNode in allWriteNode:
+        nuke.execute(renderNode, 1, 1, 1)
     os.remove(masterNukeFile)
     for key in res.keys():
         rmTmpFile = 'rm '+res[key]['outDir']+'tmp* '
         os.system(rmTmpFile)
-    print 'done'
-    #nuke.executeMultiple(tuple(allWriteNode),fRange,continueOnError=True)
+    print 'donuts'
+
+
 
 class shotUI(QWidget):
     def __init__(self):
         super(shotUI, self).__init__()
         self.allShots = []
         self.fileNb = 1
+        self.allSeqName = []
         self.initUI()
 
     def initUI(self):
@@ -230,8 +244,9 @@ class shotUI(QWidget):
             res[key]['cutOrder'] = self.cutOrderCheckBox.isChecked()
             res[key]['showLabel'] = self.showLabelCheckBox.isChecked()
             res[key]['showTask'] = self.taskCheckBox.isChecked()
-        a = createNukeFile(res)
-        print 'bla'
+            res[key]['nbShots'] = len(findShotsInSequence(res[key]['seq']))
+        createNukeFile(res)
+        print 'booooo'
 
 
 
@@ -242,6 +257,7 @@ class findFileUI(QWidget):
         self.dodelete = dodelete
         self.master = parent
         self.initUI()
+        self.listOfShots=[]
 
     def initUI(self):
         self.fileNb = self.master.fileNb
@@ -256,8 +272,12 @@ class findFileUI(QWidget):
         self.fileInGridLayout = QGridLayout()
         self.seqInCombobox = QComboBox()
         self.seqInCombobox.setToolTip('sequence for contactSheet')
-        self.listOfShots = findAllSequence()
-        self.seqInCombobox.addItems(self.listOfShots)
+        if len(self.master.allShots)==0:
+            self.listOfShots = findAllSequence()
+            self.seqInCombobox.addItems(self.listOfShots)
+            self.master.allSeqName=[str(self.seqInCombobox.itemText(i)) for i in range(self.seqInCombobox.count())]
+        else:
+            self.seqInCombobox.addItems(self.master.allSeqName)
         self.seqInLabel = QLabel('sequence')
         self.seqInLabel.setAlignment(Qt.AlignCenter)
         self.taskInLabel = QLabel('task')
