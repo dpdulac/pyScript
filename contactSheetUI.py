@@ -245,8 +245,11 @@ class shotUI(QWidget):
             res[key]['showLabel'] = self.showLabelCheckBox.isChecked()
             res[key]['showTask'] = self.taskCheckBox.isChecked()
             res[key]['nbShots'] = len(findShotsInSequence(res[key]['seq']))
-        createNukeFile(res)
-        print 'booooo'
+        #createNukeFile(res)
+        #command = 'rez env asterix2Nuke -- nuke -t createContactSheet.py "'+ str(res)+'"'
+        command = 'nuke -t createContactSheet.py "' + str(res) + '"'
+        os.system(command)
+        print "you're a legend"
 
 
 
