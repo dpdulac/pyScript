@@ -4,8 +4,6 @@
     <list default="true" id="546b0689-37c3-4979-87ea-25561236a086" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/contactSheetUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/contactSheetUI.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/createContactSheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/createContactSheet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/nukeContactSheet_v004.py" beforeDir="false" afterPath="$PROJECT_DIR$/nukeContactSheet_v004.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -31,7 +29,7 @@
       <file leaf-file-name="createContactSheet.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/createContactSheet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="973">
+            <state relative-caret-position="613">
               <caret line="77" lean-forward="true" selection-start-line="77" selection-end-line="77" />
               <folding>
                 <element signature="e#193#204#0" expanded="true" />
@@ -43,8 +41,8 @@
       <file leaf-file-name="contactSheetUI.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/contactSheetUI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="358">
-              <caret line="428" column="4" selection-start-line="428" selection-start-column="4" selection-end-line="428" selection-end-column="4" />
+            <state relative-caret-position="-451">
+              <caret line="326" column="57" lean-forward="true" selection-start-line="326" selection-start-column="57" selection-end-line="326" selection-end-column="57" />
               <folding>
                 <element signature="e#188#212#0" expanded="true" />
               </folding>
@@ -64,7 +62,7 @@
       <file leaf-file-name="nukeContactSheet.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/nukeContactSheet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="16365">
+            <state relative-caret-position="15870">
               <caret line="1091" column="56" selection-start-line="1090" selection-start-column="4" selection-end-line="1091" selection-end-column="56" />
               <folding>
                 <element signature="e#350#381#0" expanded="true" />
@@ -76,8 +74,8 @@
       <file leaf-file-name="nukeContactSheet_v004.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/nukeContactSheet_v004.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="879" column="53" selection-start-line="879" selection-start-column="53" selection-end-line="879" selection-end-column="53" />
+            <state relative-caret-position="223">
+              <caret line="885" column="38" selection-start-line="885" selection-start-column="38" selection-end-line="885" selection-end-column="66" />
               <folding>
                 <element signature="e#350#381#0" expanded="true" />
               </folding>
@@ -236,7 +234,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/contactSheetUI.py" />
-      <option name="PARAMETERS" value="-x" />
+      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -547,19 +545,25 @@
       <option name="project" value="LOCAL" />
       <updated>1529056204741</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="test on oiio for max lum">
+      <created>1529390568507</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1529390568507</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="113" y="31" width="1681" height="1068" extended-state="0" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24895771" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24895771" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32953367" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3284974" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.3284974" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -841,16 +845,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/createContactSheet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="973">
-          <caret line="77" lean-forward="true" selection-start-line="77" selection-end-line="77" />
-          <folding>
-            <element signature="e#193#204#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tmpPyQt.py">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -924,16 +918,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nukeContactSheet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="16365">
-          <caret line="1091" column="56" selection-start-line="1090" selection-start-column="4" selection-end-line="1091" selection-end-column="56" />
-          <folding>
-            <element signature="e#350#381#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/testRvPy.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="150">
@@ -962,18 +946,38 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/nukeContactSheet_v004.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="879" column="53" selection-start-line="879" selection-start-column="53" selection-end-line="879" selection-end-column="53" />
+        <state relative-caret-position="223">
+          <caret line="885" column="38" selection-start-line="885" selection-start-column="38" selection-end-line="885" selection-end-column="66" />
           <folding>
             <element signature="e#350#381#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/nukeContactSheet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="15870">
+          <caret line="1091" column="56" selection-start-line="1090" selection-start-column="4" selection-end-line="1091" selection-end-column="56" />
+          <folding>
+            <element signature="e#350#381#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/createContactSheet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="613">
+          <caret line="77" lean-forward="true" selection-start-line="77" selection-end-line="77" />
+          <folding>
+            <element signature="e#193#204#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/contactSheetUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="358">
-          <caret line="428" column="4" selection-start-line="428" selection-start-column="4" selection-end-line="428" selection-end-column="4" />
+        <state relative-caret-position="-451">
+          <caret line="326" column="57" lean-forward="true" selection-start-line="326" selection-start-column="57" selection-end-line="326" selection-end-column="57" />
           <folding>
             <element signature="e#188#212#0" expanded="true" />
           </folding>

@@ -17,6 +17,7 @@ import subprocess
 _USER_ = os.environ['USER']
 _OUTIMAGEPATH_ = '/s/prodanim/asterix2/_sandbox/'+_USER_
 _TASKLIST_=['compo_comp','light_precomp','light_prelight','art_reference','mattepaint_deliver']
+_OUTPUTFORMAT_=['tif','jpg']
 #tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
 #sg = sgw._sg
 
@@ -323,8 +324,7 @@ class findFileUI(QWidget):
         self.fileOutTypeLabel = QLabel('file type')
         self.fileOutTypeLabel.setAlignment(Qt.AlignCenter)
         self.fileOutTypComboBox = QComboBox()
-        self.fileOutTypComboBox.addItem("tif")
-        self.fileOutTypComboBox.addItem("jpg")
+        self.fileOutTypComboBox.addItems(_OUTPUTFORMAT_)
         self.fileOutGridLayout.addWidget(self.fileOutButton,1,0)
         self.fileOutGridLayout.addWidget(self.fileOutPathLabel,0,1)
         self.fileOutGridLayout.addWidget(self.contactOutPathLineEdit,1,1)
@@ -406,36 +406,41 @@ def BuildShotUI():
     ex= shotUI()
     ex.show()
 
-def testDict(listSeq=['s0180', 's0010', 's0200', 's0080']):
+def commandLine(listSeq=['s0180', 's0010', 's0200', 's0080'],task = 'compo_comp', format = 'jpg'):
     nbContactSheet = 1
+    imageList = []
     res = {}
     for seq in listSeq:
         res['contatSheet' + str(nbContactSheet)] = {
             'status': True,
             'showTask': True,
-            'task': 'compo_comp',
+            'task': task,
             'name': True,
             'seq': seq,
             'artist': True,
-            'fileOut': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/compo_comp/' + seq + '_contactSheet.tif',
-            'fileType': 'jpg',
+            'fileOut': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/'+task+'/' + seq + '_contactSheet.'+format,
+            'fileType': format,
             'cutOrder': True,
             'showLabel': True,
             'version': True,
-            'outDir': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/compo_comp/',
-            'nbShots' : len(findShotsInSequence(seq)
+            'outDir': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/'+task+'/',
+            'nbShots': len(findShotsInSequence(seq))
         }
+        imageList.append(res['contatSheet' + str(nbContactSheet)]['fileOut'])
         nbContactSheet = nbContactSheet + 1
-    
+
     command = 'nuke -t /s/prodanim/asterix2/_source_global/Software/Nuke/scripts/createContactSheet.py "' + str(res) + '"'
     os.system(command)
+    return imageList
 
 def get_args():
     #Assign description to the help doc
-    parser = argparse.ArgumentParser(description = "create a contactSheet for sequence or contactSheet for masters")
+    parser = argparse.ArgumentParser(description = "create a contactSheet for sequence")
     #shot argument
-    parser.add_argument('sequences', type=str,nargs='*', help='seq number')
-    parser.add_argument('--x','-x', action='store_true', help='create the contactSheet without opening the GUI')
+    parser.add_argument('sequences', type=str,nargs='*', help='seq number(s) you can put multiple sequence separated by a space (i.e: 10 20 200 40)')
+    parser.add_argument('--x','-x', action='store_true', help='create the contactSheet without opening the GUI if this arguments is not present or no sequences are pass, the GUI will open')
+    parser.add_argument('--t','-t',type=str, help='task name: '+ str(_TASKLIST_) + '\nIf no task is chosen, the default is: comp_precomp')
+    parser.add_argument('--f','-f',type=str,help='format for the output image the supported format are: '+str(_OUTPUTFORMAT_) + ' with the default being jpg ')
     args = parser.parse_args()
     seqNumber = args.sequences
     formatedSeq=[]
@@ -445,17 +450,37 @@ def get_args():
                 seq = "s"+ seq.zfill(4)
                 formatedSeq.append(seq)
     noGui = args.x
-    return formatedSeq, noGui
+    task =args.t
+    if task is not None:
+        if task not in _TASKLIST_:
+            task = 'compo_comp'
+    else:
+        task = 'compo_comp'
+    format = args.f
+    if format is not None:
+        if format not in _OUTPUTFORMAT_:
+            format = 'jpg'
+    else:
+        format = 'jpg'
+
+    return formatedSeq, noGui, task, format
 
 def main():
-    seq, useGui = get_args()
+    seq, useGui,task, format = get_args()
     if not useGui or len(seq) < 1:
         app = QApplication(sys.argv)
         app.setStyle(QStyleFactory.create("plastique"))
         BuildShotUI()
         app.exec_()
     else:
-        createNukeFile(testDict(seq))
+        imageList = commandLine(seq,task,format)
+        print 'opening RV'
+        rvCommand = 'rv'
+        for image in imageList:
+            rvCommand = rvCommand + ' ' + image
+        os.system(rvCommand)
+
+    print "you're a legend"
 
 if __name__ == '__main__':
     main()
