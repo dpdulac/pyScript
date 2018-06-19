@@ -75,5 +75,5 @@ fRange = nuke.FrameRanges('1-1')
 nuke.executeMultiple(tuple(allWriteNode), fRange, ['left'])
 os.remove(masterNukeFile)
 
-print str(res)
+
 

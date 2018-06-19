@@ -9,7 +9,7 @@
   :author: duda
 
 """
-import os, sys, time
+import os, sys, argparse
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import subprocess
@@ -178,23 +178,26 @@ class shotUI(QWidget):
         self.cutOrderCheckBox.setChecked(True)
         self.nameCheckBox = QCheckBox("name")
         self.nameCheckBox.setChecked(True)
+        self.taskCheckBox = QCheckBox("task")
+        self.taskCheckBox.setChecked(True)
         self.firstHBoxlayout = QHBoxLayout()
         self.firstHBoxlayout.addWidget(self.showLabelCheckBox)
         self.firstHBoxlayout.addWidget(self.cutOrderCheckBox)
         self.firstHBoxlayout.addWidget(self.nameCheckBox)
-        self.taskCheckBox = QCheckBox("task")
-        self.taskCheckBox.setChecked(True)
+        self.firstHBoxlayout.addWidget(self.taskCheckBox)
         self.versionCheckBox = QCheckBox("version")
         self.versionCheckBox.setChecked(True)
         self.statusCheckBox = QCheckBox("show status")
         self.statusCheckBox.setChecked(True)
         self.artistCheckBox = QCheckBox("artist")
         self.artistCheckBox.setChecked(True)
+        self.displatInRV = QCheckBox("RV")
+        self.displatInRV.setChecked(True)
         self.secondHBoxlayout = QHBoxLayout()
         self.secondHBoxlayout.addWidget(self.versionCheckBox)
         self.secondHBoxlayout.addWidget(self.artistCheckBox)
         self.secondHBoxlayout.addWidget(self.statusCheckBox)
-        self.secondHBoxlayout.addWidget(self.taskCheckBox)
+        self.secondHBoxlayout.addWidget(self.displatInRV)
 
         self.gridLayoutExecute.addLayout(self.firstHBoxlayout,0,0)
         self.gridLayoutExecute.addLayout(self.secondHBoxlayout, 0, 1)
@@ -212,7 +215,6 @@ class shotUI(QWidget):
 
 
         self.size = QSize(900,81)
-        #self.setFixedSize(self.size)
         self.setFixedWidth(900)
         self.setWindowTitle('contactSheet creator')
 
@@ -232,6 +234,7 @@ class shotUI(QWidget):
     """extract all the data from each findFileUI widget and send them to the function convertImage"""
     def executeShot(self):
         res ={}
+        imageList = []
         for item in self.allShots:
             if item.returnCheck():
                 dicExtract = item.extract()
@@ -245,10 +248,19 @@ class shotUI(QWidget):
             res[key]['showLabel'] = self.showLabelCheckBox.isChecked()
             res[key]['showTask'] = self.taskCheckBox.isChecked()
             res[key]['nbShots'] = len(findShotsInSequence(res[key]['seq']))
+            imageList.append(res[key]['fileOut'])
         #createNukeFile(res)
         #command = 'rez env asterix2Nuke -- nuke -t createContactSheet.py "'+ str(res)+'"'
-        command = 'nuke -t createContactSheet.py "' + str(res) + '"'
+        command = 'nuke -t /s/prodanim/asterix2/_source_global/Software/Nuke/scripts/createContactSheet.py "' + str(res) + '"'
         os.system(command)
+
+        if self.displatInRV.isChecked():
+            print 'opening RV'
+            rvCommand = 'rv'
+            for image in imageList:
+                rvCommand = rvCommand + ' ' + image
+            os.system(rvCommand)
+
         print "you're a legend"
 
 
@@ -406,22 +418,44 @@ def testDict(listSeq=['s0180', 's0010', 's0200', 's0080']):
             'seq': seq,
             'artist': True,
             'fileOut': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/compo_comp/' + seq + '_contactSheet.tif',
-            'fileType': 'tif',
+            'fileType': 'jpg',
             'cutOrder': True,
             'showLabel': True,
             'version': True,
-            'outDir': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/compo_comp/'
+            'outDir': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/compo_comp/',
+            'nbShots' : len(findShotsInSequence(seq)
         }
         nbContactSheet = nbContactSheet + 1
+    
+    command = 'nuke -t /s/prodanim/asterix2/_source_global/Software/Nuke/scripts/createContactSheet.py "' + str(res) + '"'
+    os.system(command)
 
-    return res
+def get_args():
+    #Assign description to the help doc
+    parser = argparse.ArgumentParser(description = "create a contactSheet for sequence or contactSheet for masters")
+    #shot argument
+    parser.add_argument('sequences', type=str,nargs='*', help='seq number')
+    parser.add_argument('--x','-x', action='store_true', help='create the contactSheet without opening the GUI')
+    args = parser.parse_args()
+    seqNumber = args.sequences
+    formatedSeq=[]
+    if seqNumber is not None and len(seqNumber)>0:
+        for seq in seqNumber:
+            if seq.find('s') < 0:
+                seq = "s"+ seq.zfill(4)
+                formatedSeq.append(seq)
+    noGui = args.x
+    return formatedSeq, noGui
 
 def main():
-    #createNukeFile(testDict())
-    app = QApplication(sys.argv)
-    app.setStyle(QStyleFactory.create("plastique"))
-    BuildShotUI()
-    app.exec_()
+    seq, useGui = get_args()
+    if not useGui or len(seq) < 1:
+        app = QApplication(sys.argv)
+        app.setStyle(QStyleFactory.create("plastique"))
+        BuildShotUI()
+        app.exec_()
+    else:
+        createNukeFile(testDict(seq))
 
 if __name__ == '__main__':
     main()

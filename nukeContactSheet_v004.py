@@ -875,7 +875,7 @@ def get_args():
     #Assign description to the help doc
     parser = argparse.ArgumentParser(description = "create a contactSheet for sequence or contactSheet for masters")
     #shot argument
-    parser.add_argument('--sq','-sq', type=str, help='seq number')
+    parser.add_argument('--sq','-sq', type=str,nargs='*', help='seq number')
     parser.add_argument('--f','-f',type=str, help='frame to displat can be "start", "mid" or "end"')
     parser.add_argument('--sh','-sh', nargs = '*', dest = 'shots', type=str, help='shot(s) for master to find')
     parser.add_argument('--task','-task',type=str, help='task to grab the images')
