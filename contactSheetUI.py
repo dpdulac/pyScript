@@ -17,7 +17,7 @@ import subprocess
 _USER_ = os.environ['USER']
 _OUTIMAGEPATH_ = '/s/prodanim/asterix2/_sandbox/'+_USER_
 _TASKLIST_=['compo_comp','light_precomp','light_prelight','art_reference','mattepaint_deliver']
-_OUTPUTFORMAT_=['tif','jpg']
+_OUTPUTFORMAT_=['jpg','tif','exr']
 #tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
 #sg = sgw._sg
 
