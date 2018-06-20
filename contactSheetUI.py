@@ -257,15 +257,18 @@ class shotUI(QWidget):
 
         if self.displatInRV.isChecked():
             print 'opening RV'
-            rvCommand = 'rv'
-            for image in imageList:
-                rvCommand = rvCommand + ' ' + image
-            os.system(rvCommand)
+            playInRv(imageList)
 
         print "you're a legend"
 
 
-
+def playInRv(imagesList=[]):
+    rvCommand = 'rv '
+    for image in imagesList:
+        rvCommand = rvCommand + ' ' + image
+    #rvCommand = rvCommand + ' -pyeval "import rv.commands; rv.commands.stop(); print \'donuts\'"'
+    os.system(rvCommand)
+    #os.system("rvpush py-eval 'rv.commands.stop()'")
 
 class findFileUI(QWidget):
     def __init__(self,parent,dodelete=True):
@@ -473,12 +476,13 @@ def main():
         BuildShotUI()
         app.exec_()
     else:
-        imageList = commandLine(seq,task,format)
+        imagesList = commandLine(seq,task,format)
         print 'opening RV'
-        rvCommand = 'rv'
-        for image in imageList:
-            rvCommand = rvCommand + ' ' + image
-        os.system(rvCommand)
+        playInRv(imagesList)
+        # rvCommand = 'rv'
+        # for image in imagesList:
+        #     rvCommand = rvCommand + ' ' + image
+        # os.system(rvCommand)
 
     print "you're a legend"
 
