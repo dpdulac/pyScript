@@ -12,7 +12,7 @@
 import os, sys, argparse
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
-import subprocess
+import datetime
 
 _USER_ = os.environ['USER']
 _OUTIMAGEPATH_ = '/s/prodanim/asterix2/_sandbox/'+_USER_

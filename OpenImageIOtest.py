@@ -93,7 +93,8 @@ def findMinMaxSingleChannel(filename, output = 'both'):
         return minval[0],maxval[0]
 
 def convertExr(filename = '/s/prodanim/asterix2/_sandbox/duda/tmp/s9997_cMarketing06-base-confo_anim-ALL_6K-primary-mono.0101.exr'):
-    outFilename = filename.replace('.exr','.tif')
+    outFilename = filename.replace('.exr','.jpg')
+    print outFilename
     inFile = oiio.ImageBuf(filename)
     inFileMono = oiio.ImageBuf()
 
@@ -103,8 +104,8 @@ def convertExr(filename = '/s/prodanim/asterix2/_sandbox/duda/tmp/s9997_cMarketi
     oiio.ImageBufAlgo.channels(inFileMono,inFile,("R",))
     stats = oiio.PixelStats()
     #get the stats fronm buffer
-    oiio.ImageBufAlgo.computePixelStats(inFileMono,stats)
-    print stats.max[0]
+    # oiio.ImageBufAlgo.computePixelStats(inFileMono,stats)
+    # print stats.max[0]
     # reelOut = oiio.ImageBuf()
     # oiio.ImageBufAlgo.channels(reelOut,inFile,(0,1,2))
 
@@ -113,7 +114,7 @@ def convertExr(filename = '/s/prodanim/asterix2/_sandbox/duda/tmp/s9997_cMarketi
     inFile.set_write_format(oiio.UINT16)
 
     #draw a shape on image
-    oiio.ImageBufAlgo.render_box(inFile,500,1600,300,1000,(1,1,1,1),True)
+    #oiio.ImageBufAlgo.render_box(inFile,500,1600,300,1000,(1,1,1,1),True)
 
     print 'bc'
     inFile.write(outFilename)
