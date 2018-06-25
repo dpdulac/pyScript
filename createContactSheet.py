@@ -61,11 +61,16 @@ for key in res.keys():
     if format == 'jpg':
         writeNode = nuke.nodes.Write(name=seq + "WriteLutBurn", colorspace="linear", file_type="jpeg",_jpeg_sub_sampling="4:2:2", file=outFile)
         writeNode['_jpeg_quality'].setValue(0.75)
-    else:
+    elif format == 'tif':
         writeNode = nuke.nodes.Write(name = seq + "WriteLutBurn", colorspace = "linear", file_type = "tiff",file =outFile)
         writeNode['datatype'].setValue('16 bit')
+    else:
+        writeNode = nuke.nodes.Write(name=seq + "WriteLutBurn", colorspace="linear", file_type="exr", file=outFile)
     writeNode['use_limit'].setValue(1)
-    writeNode.setInput(0,colorConvertNode)
+    if format is not 'exr':
+        writeNode.setInput(0,colorConvertNode)
+    else:
+        writeNode.setInput(0, sequenceGroupNode)
     allWriteNode.append(writeNode)
     nuke.scriptSave(outDir + seq + '_contactSheet.nk')
 
