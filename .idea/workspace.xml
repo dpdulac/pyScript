@@ -3,6 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="546b0689-37c3-4979-87ea-25561236a086" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OpenImageIOtest.py" beforeDir="false" afterPath="$PROJECT_DIR$/OpenImageIOtest.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contactSheetUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/contactSheetUI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/createContactSheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/createContactSheet.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -17,71 +19,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="OpenImageIOtest.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="OpenImageIOtest.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1785">
-              <caret line="119" column="29" selection-start-line="119" selection-start-column="4" selection-end-line="119" selection-end-column="29" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="createMovie.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/createMovie.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="15">
-              <caret line="380" column="42" selection-start-line="380" selection-start-column="42" selection-end-line="380" selection-end-column="42" />
-              <folding>
-                <element signature="e#341#366#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="createContactSheet.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/createContactSheet.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="733">
-              <caret line="70" column="48" lean-forward="true" selection-start-line="70" selection-start-column="48" selection-end-line="70" selection-end-column="48" />
-              <folding>
-                <element signature="e#193#204#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="contactSheetUI.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/contactSheetUI.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-269">
-              <caret line="378" column="18" selection-start-line="378" selection-start-column="18" selection-end-line="378" selection-end-column="18" />
-              <folding>
-                <element signature="e#188#212#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="burnLutExr.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/../packages/prods/anim/asterix2/asterix2PipeTools/dev/tools/convertExr/burnLutExr.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4020">
-              <caret line="273" column="16" selection-start-line="273" selection-start-column="16" selection-end-line="273" selection-end-column="16" />
-              <folding>
-                <element signature="e#347#372#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="nukeContactSheet_v004.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/nukeContactSheet_v004.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="13260">
-              <caret line="885" column="38" selection-start-line="885" selection-start-column="38" selection-end-line="885" selection-end-column="66" />
-              <folding>
-                <element signature="e#350#381#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="419">
+              <caret line="155" column="21" selection-start-line="154" selection-start-column="16" selection-end-line="155" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -101,12 +43,15 @@
       <find>taskIn</find>
       <find>fileInQLineEdit</find>
       <find>fileOutPathLineEdit</find>
+      <find>widthBuf</find>
+      <find>heightBuf</find>
     </findStrings>
     <replaceStrings>
       <replace>seqInCombobox</replace>
       <replace>seqInLabel</replace>
       <replace>taskInCombobox</replace>
       <replace>contactOutPathLineEdit</replace>
+      <replace>heightBufImage</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -121,10 +66,10 @@
         <option value="$PROJECT_DIR$/burnLutExrGUI.py" />
         <option value="$PROJECT_DIR$/contactSheetTest.py" />
         <option value="$PROJECT_DIR$/nukeContactSheet_v004.py" />
-        <option value="$PROJECT_DIR$/contactSheetUI.py" />
-        <option value="$PROJECT_DIR$/OpenImageIOtest.py" />
         <option value="$PROJECT_DIR$/../packages/prods/anim/asterix2/asterix2PipeTools/dev/tools/convertExr/burnLutExr.py" />
         <option value="$PROJECT_DIR$/createContactSheet.py" />
+        <option value="$PROJECT_DIR$/contactSheetUI.py" />
+        <option value="$PROJECT_DIR$/OpenImageIOtest.py" />
       </list>
     </option>
   </component>
@@ -155,7 +100,15 @@
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
+  </component>
+  <component name="PyConsoleOptionsProvider">
+    <option name="myPythonConsoleState">
+      <console-settings module-name="newtest" is-module-sdk="true">
+        <option name="myUseModuleSdk" value="true" />
+        <option name="myModuleName" value="newtest" />
+      </console-settings>
+    </option>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -169,7 +122,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.createMovie">
+  <component name="RunManager" selected="Python.OpenImageIOtest">
     <configuration name="OpenImageIOtest" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="newtest" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -403,10 +356,10 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.createMovie" />
-        <item itemvalue="Python.burnLutExr" />
         <item itemvalue="Python.OpenImageIOtest" />
         <item itemvalue="Python.contactSheetUI" />
+        <item itemvalue="Python.createMovie" />
+        <item itemvalue="Python.burnLutExr" />
         <item itemvalue="Python.createContactSheet" />
       </list>
     </recent_temporary>
@@ -583,7 +536,14 @@
       <option name="project" value="LOCAL" />
       <updated>1529600788245</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="test on oiio for max lum">
+      <created>1529919019076</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1529919019076</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -595,7 +555,7 @@
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32953367" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.3284974" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3284974" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -636,13 +596,24 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="3345">
+          <caret line="223" column="21" lean-forward="true" selection-start-line="223" selection-start-column="21" selection-end-line="223" selection-end-column="78" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/nukeContactSheet_v004.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="13260">
           <caret line="885" column="38" selection-start-line="885" selection-start-column="38" selection-end-line="885" selection-end-column="66" />
-          <folding>
-            <element signature="e#350#381#0" expanded="true" />
-          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nukeContactSheet_v004.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="13260">
+          <caret line="885" column="38" selection-start-line="885" selection-start-column="38" selection-end-line="885" selection-end-column="66" />
         </state>
       </provider>
     </entry>
@@ -650,9 +621,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="5655">
           <caret line="380" column="42" lean-forward="true" selection-start-line="380" selection-start-column="42" selection-end-line="380" selection-end-column="42" />
-          <folding>
-            <element signature="e#341#366#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -867,9 +835,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/tmpPyQt.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/createMasterCamKatanaTmp.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1018">
@@ -889,9 +854,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nukeContactSheet_v001.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/presRv.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="58">
@@ -906,9 +868,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/testRv.py">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
     <entry file="file://$PROJECT_DIR$/rvWipe.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
@@ -920,9 +879,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="13260">
           <caret line="885" column="38" selection-start-line="885" selection-start-column="38" selection-end-line="885" selection-end-column="66" />
-          <folding>
-            <element signature="e#350#381#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -957,50 +913,38 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1785">
-          <caret line="119" column="29" selection-start-line="119" selection-start-column="4" selection-end-line="119" selection-end-column="29" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../packages/prods/anim/asterix2/asterix2PipeTools/dev/tools/convertExr/burnLutExr.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4020">
           <caret line="273" column="16" selection-start-line="273" selection-start-column="16" selection-end-line="273" selection-end-column="16" />
-          <folding>
-            <element signature="e#347#372#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/createMovie.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="15">
+        <state relative-caret-position="5655">
           <caret line="380" column="42" selection-start-line="380" selection-start-column="42" selection-end-line="380" selection-end-column="42" />
-          <folding>
-            <element signature="e#341#366#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contactSheetUI.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-269">
-          <caret line="378" column="18" selection-start-line="378" selection-start-column="18" selection-end-line="378" selection-end-column="18" />
-          <folding>
-            <element signature="e#188#212#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/createContactSheet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="733">
-          <caret line="70" column="48" lean-forward="true" selection-start-line="70" selection-start-column="48" selection-end-line="70" selection-end-column="48" />
-          <folding>
-            <element signature="e#193#204#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="990">
+          <caret line="68" column="55" selection-start-line="68" selection-start-column="55" selection-end-line="68" selection-end-column="55" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/contactSheetUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="7305">
+          <caret line="490" column="49" selection-start-line="490" selection-start-column="49" selection-end-line="490" selection-end-column="49" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="419">
+          <caret line="155" column="21" selection-start-line="154" selection-start-column="16" selection-end-line="155" selection-end-column="21" />
         </state>
       </provider>
     </entry>

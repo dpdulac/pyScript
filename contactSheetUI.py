@@ -409,26 +409,43 @@ def BuildShotUI():
     ex= shotUI()
     ex.show()
 
-def commandLine(listSeq=['s0180', 's0010', 's0200', 's0080'],task = 'compo_comp', format = 'jpg'):
+def commandLine(listSeq=['s0180', 's0010', 's0200', 's0080'],task = 'compo_comp', format = 'jpg', noMeta = False):
     nbContactSheet = 1
     imageList = []
     res = {}
     for seq in listSeq:
-        res['contatSheet' + str(nbContactSheet)] = {
-            'status': True,
-            'showTask': True,
-            'task': task,
-            'name': True,
-            'seq': seq,
-            'artist': True,
-            'fileOut': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/'+task+'/' + seq + '_contactSheet.'+format,
-            'fileType': format,
-            'cutOrder': True,
-            'showLabel': True,
-            'version': True,
-            'outDir': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/'+task+'/',
-            'nbShots': len(findShotsInSequence(seq))
-        }
+        if noMeta != False:
+            res['contatSheet' + str(nbContactSheet)] = {
+                'status': True,
+                'showTask': True,
+                'task': task,
+                'name': True,
+                'seq': seq,
+                'artist': True,
+                'fileOut': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/'+task+'/' + seq + '_contactSheet.'+format,
+                'fileType': format,
+                'cutOrder': True,
+                'showLabel': True,
+                'version': True,
+                'outDir': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/'+task+'/',
+                'nbShots': len(findShotsInSequence(seq))
+            }
+        else:
+            res['contatSheet' + str(nbContactSheet)] = {
+                'status': False,
+                'showTask': False,
+                'task': task,
+                'name': False,
+                'seq': seq,
+                'artist': False,
+                'fileOut': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/' + task + '/' + seq + '_contactSheet.' + format,
+                'fileType': format,
+                'cutOrder': False,
+                'showLabel': False,
+                'version': False,
+                'outDir': '/s/prodanim/asterix2/_sandbox/duda/contactSheet/' + seq + '/' + task + '/',
+                'nbShots': len(findShotsInSequence(seq))
+            }
         imageList.append(res['contatSheet' + str(nbContactSheet)]['fileOut'])
         nbContactSheet = nbContactSheet + 1
 
@@ -444,6 +461,7 @@ def get_args():
     parser.add_argument('--x','-x', action='store_true', help='create the contactSheet without opening the GUI if this arguments is not present or no sequences are pass, the GUI will open')
     parser.add_argument('--t','-t',type=str, help='task name: '+ str(_TASKLIST_) + '\nIf no task is chosen, the default is: comp_precomp')
     parser.add_argument('--f','-f',type=str,help='format for the output image the supported format are: '+str(_OUTPUTFORMAT_) + ' with the default being jpg ')
+    parser.add_argument('--nd','-nd', action='store_false', help='do not display metadata')
     args = parser.parse_args()
     seqNumber = args.sequences
     formatedSeq=[]
@@ -465,18 +483,19 @@ def get_args():
             format = 'jpg'
     else:
         format = 'jpg'
+    noMeta = args.nd
 
-    return formatedSeq, noGui, task, format
+    return formatedSeq, noGui, task, format,noMeta
 
 def main():
-    seq, useGui,task, format = get_args()
+    seq, useGui,task, format, noMeta = get_args()
     if not useGui or len(seq) < 1:
         app = QApplication(sys.argv)
         app.setStyle(QStyleFactory.create("plastique"))
         BuildShotUI()
         app.exec_()
     else:
-        imagesList = commandLine(seq,task,format)
+        imagesList = commandLine(seq,task,format,noMeta)
         print 'opening RV'
         playInRv(imagesList)
         # rvCommand = 'rv'

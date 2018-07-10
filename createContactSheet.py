@@ -55,9 +55,6 @@ for key in res.keys():
     sequenceGroupNode['showArtist'].setValue(artist)
     sequenceGroupNode['showCutOrder'].setValue(cutOrder)
 
-    colorConvertNode = nuke.nodes.OCIOColorSpace(in_colorspace="Linear", out_colorspace="Lut")
-    colorConvertNode.setInput(0,sequenceGroupNode)
-
     if format == 'jpg':
         writeNode = nuke.nodes.Write(name=seq + "WriteLutBurn", colorspace="linear", file_type="jpeg",_jpeg_sub_sampling="4:2:2", file=outFile)
         writeNode['_jpeg_quality'].setValue(0.75)
@@ -67,10 +64,13 @@ for key in res.keys():
     else:
         writeNode = nuke.nodes.Write(name=seq + "WriteLutBurn", colorspace="linear", file_type="exr", file=outFile)
     writeNode['use_limit'].setValue(1)
-    if format is not 'exr':
+    if format != 'exr':
+        colorConvertNode = nuke.nodes.OCIOColorSpace(in_colorspace="Linear", out_colorspace="Lut")
+        colorConvertNode.setInput(0, sequenceGroupNode)
         writeNode.setInput(0,colorConvertNode)
     else:
         writeNode.setInput(0, sequenceGroupNode)
+        writeNode['views'].setValue('left')
     allWriteNode.append(writeNode)
     nuke.scriptSave(outDir + seq + '_contactSheet.nk')
 
