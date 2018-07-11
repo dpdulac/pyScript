@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="546b0689-37c3-4979-87ea-25561236a086" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/OpenImageIOtest.py" beforeDir="false" afterPath="$PROJECT_DIR$/OpenImageIOtest.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contactSheetUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/contactSheetUI.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/createContactSheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/createContactSheet.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -19,11 +16,20 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="OpenImageIOtest.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="OpenImageIOtest.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="419">
-              <caret line="155" column="21" selection-start-line="154" selection-start-column="16" selection-end-line="155" selection-end-column="21" />
+            <state relative-caret-position="134">
+              <caret line="130" column="84" selection-start-line="130" selection-start-column="84" selection-end-line="130" selection-end-column="105" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="nukeContactSheet_v004.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/nukeContactSheet_v004.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="12785">
+              <caret line="885" column="38" selection-start-line="885" selection-start-column="38" selection-end-line="885" selection-end-column="66" />
             </state>
           </provider>
         </entry>
@@ -543,19 +549,25 @@
       <option name="project" value="LOCAL" />
       <updated>1529919019076</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="test on oiio for max lum">
+      <created>1531240152201</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1531240152201</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="113" y="31" width="1681" height="1068" extended-state="0" />
-    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24895771" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24895771" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32953367" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.3284974" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.3284974" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -596,6 +608,13 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1950">
+          <caret line="130" column="105" selection-start-line="130" selection-start-column="105" selection-end-line="130" selection-end-column="105" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3345">
@@ -875,13 +894,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/nukeContactSheet_v004.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="13260">
-          <caret line="885" column="38" selection-start-line="885" selection-start-column="38" selection-end-line="885" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/nukeContactSheet.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="15870">
@@ -943,8 +955,15 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="419">
-          <caret line="155" column="21" selection-start-line="154" selection-start-column="16" selection-end-line="155" selection-end-column="21" />
+        <state relative-caret-position="134">
+          <caret line="130" column="84" selection-start-line="130" selection-start-column="84" selection-end-line="130" selection-end-column="105" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nukeContactSheet_v004.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="12785">
+          <caret line="885" column="38" selection-start-line="885" selection-start-column="38" selection-end-line="885" selection-end-column="66" />
         </state>
       </provider>
     </entry>
