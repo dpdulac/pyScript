@@ -366,7 +366,7 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
     # add the checker and seq text
     oiio.ImageBufAlgo.paste(masterBuf,masterBufwidth-(widthChecker+578+space),878+space,0,0,checkerImage)
-    oiio.ImageBufAlgo.paste(masterBuf,(578+space)+(masterBufwidth/2)-maxwidth,masterBufHeight-(518+space+int(1.5*maxheight)),0,0,text)
+    oiio.ImageBufAlgo.paste(masterBuf,(578+space)+(masterBufwidth/2)-maxwidth-200,masterBufHeight-(518+space+int(1.5*maxheight)),0,0,text)
 
     #create the output frame
     output = oiio.ImageBuf()
@@ -394,7 +394,7 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
     print 'and Voila!'
 
 def main():
-    seq = 's0265'
+    seq = 's0080'
     task = 'compo_comp'
     shotList = findShotsInSequence(seq)
     #res = findShotsInList(seq,shotList,'compo_comp')
