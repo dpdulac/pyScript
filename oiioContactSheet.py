@@ -92,9 +92,13 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
                 else:
                     res[entityName]['fInterest'] = v['entity.Shot.sg_frames_of_interest']
                 if imFormat == '.quictime':
-                res[entityName]['cutIn'] = v['entity.Shot.sg_cut_in']
-                res[entityName]['cutOut'] = v['entity.Shot.sg_cut_out']
-                res[entityName]['cutMid'] = int((v['entity.Shot.sg_cut_in'] + v['entity.Shot.sg_cut_out']) / 2)
+                    res[entityName]['cutIn'] = 1
+                    res[entityName]['cutOut'] = int(v['entity.Shot.sg_cut_out']-v['entity.Shot.sg_cut_in'])
+                    res[entityName]['cutMid'] = int((v['entity.Shot.sg_cut_out']-v['entity.Shot.sg_cut_in']) / 2)
+                else:
+                    res[entityName]['cutIn'] = v['entity.Shot.sg_cut_in']
+                    res[entityName]['cutOut'] = v['entity.Shot.sg_cut_out']
+                    res[entityName]['cutMid'] = int((v['entity.Shot.sg_cut_in'] + v['entity.Shot.sg_cut_out']) / 2)
                 res[entityName]['framePath'] = v['path']['local_path_linux']
                 res[entityName]['Task'] = v['task']['name']
 
