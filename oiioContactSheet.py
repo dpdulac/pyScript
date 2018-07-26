@@ -81,15 +81,17 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
         for v in sg.find('PublishedFile', filters, ['code', 'entity','entity.Shot.sg_status_list','entity.Shot.sg_cut_order','version_number', 'path', 'published_file_type', 'entity.Shot.sg_cut_in','entity.Shot.sg_cut_out','task','entity.Shot.sg_sequence','entity.Shot.sg_frames_of_interest'], order=[{'field_name':'version_number','direction':'desc'}]):
             entityName = v['entity']['name']
             if not entityName in res:
-                res[entityName] = {}
-                res[entityName]['imgFormat'] = '.' + v['path']['content_type'][
+                imFormat = '.' + v['path']['content_type'][
                                                      v['path']['content_type'].find("/") + 1:]
+                res[entityName] = {}
+                res[entityName]['imgFormat'] = imFormat
                 res[entityName]['cutOrder'] = v['entity.Shot.sg_cut_order']
                 res[entityName]['fInterest'] = ''
                 if v['entity.Shot.sg_frames_of_interest'] == None:
                     res[entityName]['fInterest'] = v['entity.Shot.sg_cut_in']
                 else:
                     res[entityName]['fInterest'] = v['entity.Shot.sg_frames_of_interest']
+                if imFormat == '.quictime':
                 res[entityName]['cutIn'] = v['entity.Shot.sg_cut_in']
                 res[entityName]['cutOut'] = v['entity.Shot.sg_cut_out']
                 res[entityName]['cutMid'] = int((v['entity.Shot.sg_cut_in'] + v['entity.Shot.sg_cut_out']) / 2)
@@ -102,38 +104,6 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
         switchTask = switchTask + 1
 
     return res
-
-# def findShotsInList( seq='s1300', shotList=[], taskname = 'compo_comp'):
-#     res = {}
-#     found = False
-#     switchTask = taskList.index(taskname)
-#     while found == False:
-#         print taskList[switchTask]
-#         filterType = imFilter(taskList[switchTask])
-#         #print taskList[switchTask]
-#         filters = [
-#             ['project', 'is', {'type': 'Project', 'id': project.id}],
-#             ['entity.Shot.code', 'in', shotList],
-#             ['task', 'name_is', taskList[switchTask]],
-#             filterType
-#         ]
-#         for v in sg.find('PublishedFile', filters, ['code', 'entity','entity.Shot.sg_cut_order', 'version_number', 'path', 'published_file_type', 'entity.Shot.sg_cut_in','entity.Shot.sg_cut_out','task','entity.Shot.sg_sequence'], order=[{'field_name':'created_at','direction':'desc'}]):
-#             entityName = v['entity']['name']
-#             if not entityName in res:
-#                 res[entityName] = v
-#                 res[entityName]['imgFormat'] = '.' + v['path']['content_type'][v['path']['content_type'].find("/") + 1:]
-#                 res[entityName]['cutOrder'] = v['entity.Shot.sg_cut_order']
-#             if v == None:
-#                 print 'no file in: '+ taskList[switchTask]
-#                 found = False
-#             else:
-#                 found = True
-#         switchTask = switchTask + 1
-#         if switchTask >= len(taskList):
-#             print 'not good'
-#             break
-#
-#     return res
 
 def findShotsInList( seq='s1300', shotList=[], taskname = 'compo_comp'):
     res = {}
@@ -257,12 +227,12 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
     oiio.ImageBufAlgo.render_text(na, 20, 140, 'Na', 120, fontname='LiberationSans-Italic',
                                   textcolor=(1, 0, 0, 0))
 
-    #logo
+    # logo
     logo = oiio.ImageBuf('/s/prodanim/asterix2/_source_global/Software/Nuke/scripts/contactSheetDir/logo.jpg')
     widthLogo = logo.spec().width
     heightLogo = logo.spec().height
 
-    #number of row and column for the contactsheet
+    # number of row and column for the contactsheet
     nrow = 5
     ncol =13
 
@@ -327,7 +297,7 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
     masterBufHeight = int(masterBufwidth*1.414)
     masterBuf = oiio.ImageBuf(oiio.ImageSpec(masterBufwidth, masterBufHeight, 3, oiio.FLOAT))
 
-    #create the white border
+    # create the white border
     oiio.ImageBufAlgo.render_box(masterBuf,518,518,masterBufwidth -518,masterBufHeight-518,(1,1,1,0),True)
     oiio.ImageBufAlgo.render_box(masterBuf, 578, 578, masterBufwidth - 578, masterBufHeight - 578, (0, 0, 0, 0), True)
 
@@ -395,20 +365,9 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
 def main():
     seq = 's0080'
-    task = 'compo_comp'
+    task = 'confo_render'
     shotList = findShotsInSequence(seq)
-    #res = findShotsInList(seq,shotList,'compo_comp')
     res = findShots(task,seq,shotList)
-    #pprint.pprint(res)
-    # #pprint.pprint(sg.schema_field_read('Shot'))
-    cutOrderSeq = getOrder(res)
-    # framePath =[]
-    # for shot in cutOrderSeq:
-    #     if res[shot]['imgFormat'] == '.quicktime':
-    #         framePath.append(res[shot]['framePath'])
-    #     else:
-    #         framePath.append(res[shot]['framePath'].replace('%04d',str(res[shot]['cutIn']).zfill(4)))
-    #     print shot, framePath[-1], res[shot]['fInterest'], res[shot]['Task']
     contactSheet(task,seq,res,'tif','quarter')
 
 if __name__ == '__main__':

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/oiioContactSheet.py" line="157" />
+    <bookmark url="file://$PROJECT_DIR$/oiioContactSheet.py" line="128" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="546b0689-37c3-4979-87ea-25561236a086" name="Default" comment="test on oiio for max lum">
+    <list default="true" id="546b0689-37c3-4979-87ea-25561236a086" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/oiioContactSheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/oiioContactSheet.py" afterDir="false" />
     </list>
@@ -20,32 +20,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="nukeContactSheet_v004.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/nukeContactSheet_v004.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-285">
-              <caret line="55" column="8" selection-start-line="55" selection-start-column="8" selection-end-line="55" selection-end-column="35" />
-              <folding>
-                <element signature="e#350#381#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="createMasterCamKatanaTmp.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/createMasterCamKatanaTmp.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="328">
-              <caret line="106" column="92" lean-forward="true" selection-start-line="106" selection-start-column="92" selection-end-line="106" selection-end-column="127" />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="oiioContactSheet.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/oiioContactSheet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1962">
-              <caret line="394" column="30" lean-forward="true" selection-start-line="394" selection-start-column="30" selection-end-line="394" selection-end-column="30" />
+            <state relative-caret-position="467">
+              <caret line="94" selection-start-line="94" selection-end-line="94" />
               <folding>
                 <element signature="e#190#221#0" expanded="true" />
               </folding>
@@ -53,19 +32,33 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="rvWipe.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/rvWipe.py">
+      <file leaf-file-name="OpenImageIOtest_v002.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/OpenImageIOtest_v002.py">
+          <provider selected="true" editor-type-id="text-editor" />
+        </entry>
+      </file>
+      <file leaf-file-name="burnLutExr.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/burnLutExr.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="45" column="13" selection-start-line="45" selection-start-column="13" selection-end-line="45" selection-end-column="47" />
+            <state relative-caret-position="-32" />
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="oiioContactSheet_v001.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/oiioContactSheet_v001.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="271">
+              <caret line="370" column="42" lean-forward="true" selection-start-line="370" selection-start-column="4" selection-end-line="370" selection-end-column="42" />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="extracImageGUI.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/extracImageGUI.py">
+      <file leaf-file-name="OpenImageIOtest.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-8346" />
+            <state relative-caret-position="697">
+              <caret line="227" column="56" lean-forward="true" selection-start-line="227" selection-start-column="56" selection-end-line="227" selection-end-column="56" />
+            </state>
           </provider>
         </entry>
       </file>
@@ -87,6 +80,7 @@
       <find>widthBuf</find>
       <find>heightBuf</find>
       <find>cutOrder</find>
+      <find>listImagesLen</find>
     </findStrings>
     <replaceStrings>
       <replace>seqInCombobox</replace>
@@ -94,6 +88,7 @@
       <replace>taskInCombobox</replace>
       <replace>contactOutPathLineEdit</replace>
       <replace>heightBufImage</replace>
+      <replace>cutOrderSeqLen</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -153,6 +148,11 @@
       </console-settings>
     </option>
   </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -179,24 +179,6 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/OpenImageIOtest.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-      <option name="MODULE_MODE" value="false" />
-    </configuration>
-    <configuration name="burnLutExr" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <module name="newtest" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../packages/prods/anim/asterix2/asterix2PipeTools/dev/tools/convertExr" />
-      <option name="IS_MODULE_SDK" value="false" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/../packages/prods/anim/asterix2/asterix2PipeTools/dev/tools/convertExr/burnLutExr.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -251,6 +233,24 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/oiioContactSheet.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+    </configuration>
+    <configuration name="oiioContactSheet_v001" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <module name="newtest" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/oiioContactSheet_v001.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -394,16 +394,16 @@
       <item itemvalue="Python.contactSheetUI" />
       <item itemvalue="Python.createMovie" />
       <item itemvalue="Python.OpenImageIOtest" />
-      <item itemvalue="Python.burnLutExr" />
       <item itemvalue="Python.oiioContactSheet" />
+      <item itemvalue="Python.oiioContactSheet_v001" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Python.oiioContactSheet" />
+        <item itemvalue="Python.oiioContactSheet_v001" />
         <item itemvalue="Python.OpenImageIOtest" />
         <item itemvalue="Python.contactSheetUI" />
         <item itemvalue="Python.createMovie" />
-        <item itemvalue="Python.burnLutExr" />
       </list>
     </recent_temporary>
   </component>
@@ -607,18 +607,53 @@
       <option name="project" value="LOCAL" />
       <updated>1531398095390</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="test on oiio for max lum">
+      <created>1531834351486</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1531834351486</updated>
+    </task>
+    <task id="LOCAL-00029" summary="test on oiio for max lum">
+      <created>1531834422141</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1531834422141</updated>
+    </task>
+    <task id="LOCAL-00030" summary="test on oiio for max lum">
+      <created>1531917961832</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1531917961832</updated>
+    </task>
+    <task id="LOCAL-00031" summary="test on oiio for max lum">
+      <created>1531918253555</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1531918253556</updated>
+    </task>
+    <task id="LOCAL-00032" summary="test on oiio for max lum">
+      <created>1531918372700</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1531918372700</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="ToolWindowManager">
     <frame x="121" y="31" width="1681" height="1068" extended-state="0" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24895771" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24895771" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="7" />
       <window_info anchor="bottom" id="Python Console" order="7" weight="0.32953367" />
-      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.3284974" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.3284974" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="7" />
       <window_info id="Favorites" order="2" side_tool="true" />
@@ -659,34 +694,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/burnLutExrGUI.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3222">
-          <caret line="184" column="34" selection-start-line="184" selection-start-column="34" selection-end-line="184" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2070">
-          <caret line="115" column="9" selection-start-line="115" selection-start-column="9" selection-end-line="115" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../packages/prods/anim/asterix2/asterix2PipeTools/dev/tools/convertExr/burnLutExr.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5040">
-          <caret line="285" column="4" selection-start-line="285" selection-start-column="4" selection-end-line="285" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/extractDispForKatana.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3060">
-          <caret line="175" column="120" selection-start-line="175" selection-start-column="58" selection-end-line="175" selection-end-column="120" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/extractDisp.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2448">
@@ -816,13 +823,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/burnLutExrGUI.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1320">
-          <caret line="20" selection-start-line="20" selection-end-line="20" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/extractDispForKatana.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-617">
@@ -915,13 +915,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3570">
-          <caret line="238" column="88" selection-start-line="95" selection-end-line="238" selection-end-column="88" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/test.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-6255" />
@@ -961,11 +954,6 @@
     <entry file="file://$PROJECT_DIR$/extractImage.py">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/extracImageGUI.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-8346" />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/nukeContactSheet_v004.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-285">
@@ -1002,10 +990,49 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/extracImageGUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-7890" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/burnLutExr.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-32" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/burnLutExrGUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-3450">
+          <caret line="20" selection-start-line="20" selection-end-line="20" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/ocioConvertImage.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-241" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="697">
+          <caret line="227" column="56" lean-forward="true" selection-start-line="227" selection-start-column="56" selection-end-line="227" selection-end-column="56" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/oiioContactSheet_v001.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="271">
+          <caret line="370" column="42" lean-forward="true" selection-start-line="370" selection-start-column="4" selection-end-line="370" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OpenImageIOtest_v002.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/oiioContactSheet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1962">
-          <caret line="394" column="30" lean-forward="true" selection-start-line="394" selection-start-column="30" selection-end-line="394" selection-end-column="30" />
+        <state relative-caret-position="467">
+          <caret line="94" selection-start-line="94" selection-end-line="94" />
           <folding>
             <element signature="e#190#221#0" expanded="true" />
           </folding>
