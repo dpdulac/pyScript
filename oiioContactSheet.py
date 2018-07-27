@@ -109,10 +109,14 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
                     res[entityName]['cutMid'] = int((v['entity.Shot.sg_cut_in'] + v['entity.Shot.sg_cut_out']) / 2)
                 res[entityName]['framePath'] = v['path']['local_path_linux']
                 res[entityName]['Task'] = v['task']['name']
+                res[entityName]['status'] =v['entity.Shot.sg_status_list']
 
-        listShotInRes = res.keys()
+        listShotInRes = sorted(res.keys())
         shotList = list(set(shotList).difference(listShotInRes))
-        print taskList[switchTask]
+        nbShotInTask = str(listShotInRes).replace('\'','').replace('[','').replace(']','')
+        if len(listShotInRes) == 0:
+            nbShotInTask = 'None'
+        print taskList[switchTask]+': '+ nbShotInTask
         switchTask = switchTask + 1
 
     return res
@@ -268,10 +272,6 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
     cutOrderSeqLen = len(cutOrderSeq)
     a =1
     print 'tendering the frames'
-    # for i in range(1,ncol+1):
-    #     if a == 0:
-    #         break
-    imgw = 0
     for i in range(1, ncol + 1):
         if a == 0:
             break
@@ -314,12 +314,10 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
                 oiio.ImageBufAlgo.zero(tmpData)
                 shotText = shot
                 taskText =  res[shot]['Task']
-                colorTask = (1,1,0,1)
                 if taskText != task:
                     oiio.ImageBufAlgo.fill(tmpData,(1,0,0,1))
-                    colorTask = (1,0,0,1)
-                oiio.ImageBufAlgo.render_text(tmpData,10,28,shotText,40,_FONT_)
-                oiio.ImageBufAlgo.render_text(tmpData, 400, 28, taskText, 40, _FONT_)
+                oiio.ImageBufAlgo.render_text(tmpData,10,30,shotText,35,_FONT_)
+                oiio.ImageBufAlgo.render_text(tmpData, maxwidth-400, 30, taskText.upper(), 35, _FONT_)
                 oiio.ImageBufAlgo.paste(buf, imgw + (j * space), (imgh-40) + (i * space), 0, 0, tmpData)
             imgw = imgw + maxwidth
             nbimage = nbimage + 1
@@ -398,8 +396,8 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
     print 'and Voila!\n'+outdir+' is cooked'
 
 def main():
-    seq = 's0835'
-    task = 'light_prelight'
+    seq = 's0030'
+    task = 'anim_main'
     shotList = findShotsInSequence(seq)
     res = findShots(task,seq,shotList)
     contactSheet(task,seq,res,'tif','quarter')
