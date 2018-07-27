@@ -53,11 +53,20 @@
       <file leaf-file-name="oiioContactSheet.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/oiioContactSheet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="734">
-              <caret line="395" column="26" selection-start-line="395" selection-start-column="26" selection-end-line="395" selection-end-column="26" />
+            <state relative-caret-position="449">
+              <caret line="289" column="79" selection-start-line="289" selection-start-column="79" selection-end-line="289" selection-end-column="79" />
               <folding>
                 <element signature="e#190#221#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="nukeContactSheet_v002.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/nukeContactSheet_v002.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="195">
+              <caret line="98" column="40" lean-forward="true" selection-start-line="98" selection-start-column="4" selection-end-line="98" selection-end-column="40" />
             </state>
           </provider>
         </entry>
@@ -642,7 +651,21 @@
       <option name="project" value="LOCAL" />
       <updated>1531918372700</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="test on oiio for max lum">
+      <created>1532693366545</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1532693366545</updated>
+    </task>
+    <task id="LOCAL-00034" summary="test on oiio for max lum">
+      <created>1532693416976</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1532693416976</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -695,20 +718,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3405">
-          <caret line="227" column="56" lean-forward="true" selection-start-line="227" selection-start-column="56" selection-end-line="227" selection-end-column="56" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/extractDisp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2448">
-          <caret line="141" column="8" selection-start-line="141" selection-start-column="8" selection-end-line="141" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/displayGeoUI.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2124">
@@ -1012,13 +1021,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/oiioContactSheet_v001.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5520">
-          <caret line="370" column="42" selection-start-line="370" selection-start-column="4" selection-end-line="370" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/OpenImageIOtest.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="568">
@@ -1036,10 +1038,27 @@
         <state relative-caret-position="-1080" />
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/oiioContactSheet_v002.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/oiioContactSheet_v001.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5520">
+          <caret line="370" column="42" selection-start-line="370" selection-start-column="4" selection-end-line="370" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nukeContactSheet_v002.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="98" column="40" lean-forward="true" selection-start-line="98" selection-start-column="4" selection-end-line="98" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/oiioContactSheet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="734">
-          <caret line="395" column="26" selection-start-line="395" selection-start-column="26" selection-end-line="395" selection-end-column="26" />
+        <state relative-caret-position="449">
+          <caret line="289" column="79" selection-start-line="289" selection-start-column="79" selection-end-line="289" selection-end-column="79" />
           <folding>
             <element signature="e#190#221#0" expanded="true" />
           </folding>

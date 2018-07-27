@@ -279,11 +279,17 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
         for j in range(1, nrow + 1):
             if nbimage < cutOrderSeqLen and nbimage <= (nrow * ncol):
                 shot = cutOrderSeq[nbimage]
+                pathFile = res[shot]['framePath']
                 fileFromList = []
                 if res[shot]['imgFormat'] == '.quicktime':
-                    fileFromList = oiio.ImageBuf(res[shot]['framePath'], res[shot]['cutMid'], 0)
+                    fileFromList = oiio.ImageBuf(pathFile, res[shot]['cutMid'], 0)
                 else:
-                    fileFromList = oiio.ImageBuf(res[shot]['framePath'].replace('%04d',str(res[shot]['cutMid']).zfill(4)))
+                    if not os.path.isfile(pathFile.replace('%04d',str(res[shot]['cutMid']).zfill(4))):
+                        dirPath = pathFile[:pathFile.rfind('/')]
+                        dirFiles = sorted(os.listdir(dirPath))
+                        fileFromList =oiio.ImageBuf(dirPath + '/' +dirFiles[0])
+                    else:
+                        fileFromList = oiio.ImageBuf(pathFile.replace('%04d',str(res[shot]['cutMid']).zfill(4)))
             else:
                 # fileFromList = text
                 a = 0
