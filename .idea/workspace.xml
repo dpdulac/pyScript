@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/oiioContactSheet.py" line="136" />
+    <bookmark url="file://$PROJECT_DIR$/oiioContactSheet.py" line="140" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="546b0689-37c3-4979-87ea-25561236a086" name="Default" comment="">
@@ -53,8 +53,8 @@
       <file leaf-file-name="oiioContactSheet.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/oiioContactSheet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="449">
-              <caret line="289" column="79" selection-start-line="289" selection-start-column="79" selection-end-line="289" selection-end-column="79" />
+            <state relative-caret-position="509">
+              <caret line="111" column="74" selection-start-line="111" selection-start-column="74" selection-end-line="111" selection-end-column="74" />
               <folding>
                 <element signature="e#190#221#0" expanded="true" />
               </folding>
@@ -62,11 +62,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="nukeContactSheet_v002.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/nukeContactSheet_v002.py">
+      <file leaf-file-name="katanaCommand.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/katanaCommand.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="195">
-              <caret line="98" column="40" lean-forward="true" selection-start-line="98" selection-start-column="4" selection-end-line="98" selection-end-column="40" />
+            <state relative-caret-position="443">
+              <caret line="1144" selection-start-line="1144" selection-end-line="1144" selection-end-column="43" />
             </state>
           </provider>
         </entry>
@@ -665,7 +665,21 @@
       <option name="project" value="LOCAL" />
       <updated>1532693416976</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="test on oiio for max lum">
+      <created>1532694764265</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1532694764265</updated>
+    </task>
+    <task id="LOCAL-00036" summary="test on oiio for max lum">
+      <created>1532711976381</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1532711976381</updated>
+    </task>
+    <option name="localTasksCounter" value="37" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -949,23 +963,9 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/katanaCommand.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="419">
-          <caret line="1144" selection-start-line="1144" selection-end-line="1144" selection-end-column="43" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/extractImage">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-90" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/nukeContactSheet_v004.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-285">
-          <caret line="55" column="8" selection-start-line="55" selection-start-column="8" selection-end-line="55" selection-end-column="35" />
-        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/createMasterCamKatanaTmp.py">
@@ -1050,15 +1050,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/nukeContactSheet_v002.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="195">
+        <state relative-caret-position="-660">
           <caret line="98" column="40" lean-forward="true" selection-start-line="98" selection-start-column="4" selection-end-line="98" selection-end-column="40" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/nukeContactSheet_v004.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="107" column="66" lean-forward="true" selection-start-line="107" selection-start-column="66" selection-end-line="107" selection-end-column="76" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/katanaCommand.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="443">
+          <caret line="1144" selection-start-line="1144" selection-end-line="1144" selection-end-column="43" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/oiioContactSheet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="449">
-          <caret line="289" column="79" selection-start-line="289" selection-start-column="79" selection-end-line="289" selection-end-column="79" />
+        <state relative-caret-position="509">
+          <caret line="111" column="74" selection-start-line="111" selection-start-column="74" selection-end-line="111" selection-end-column="74" />
           <folding>
             <element signature="e#190#221#0" expanded="true" />
           </folding>

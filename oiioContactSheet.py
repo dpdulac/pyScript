@@ -401,6 +401,7 @@ def main():
     shotList = findShotsInSequence(seq)
     res = findShots(task,seq,shotList)
     contactSheet(task,seq,res,'tif','quarter')
+    #pprint.pprint(sg.schema_field_read('Shot'))
 
 if __name__ == '__main__':
     main()
