@@ -14,12 +14,13 @@ import os, pprint, errno, argparse, sys, math
 import OpenImageIO as oiio
 
 _USER_ = os.environ['USER']
-_OUTPATH_ ="/s/prods/captain/_sandbox/" + _USER_ +"/ContactSheet"
+_OUTPATH_ ='/s/prodanim/asterix2/_sandbox/' + _USER_ +"/contactSheet"
+_FONT_ = 'LiberationSans-Italic'
 
 tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
 sg = sgw._sg
 
-taskList = ['compo_stereo','compo_comp','light_precomp','light_prelight','confo_render','anim_master','confo_anim','anim_main','confo_layout']
+taskList = ['compo_stereo','compo_comp','light_precomp','light_prelight','confo_render','anim_master','confo_anim','anim_main','layout_base']
 
 animFilter = {
         'filter_operator' : 'any',
@@ -44,15 +45,22 @@ exrFilter = {
         ]
         }
 
+animMaimFilter= {
+        'filter_operator' : 'any',
+        'filters':[
+            ['published_file_type', 'name_is', 'PlayblastMovie'],
+        ]
+    }
+
 def imFilter(taskname = 'compo_precomp'):
     filterDict = {'editing_edt': animFilter,
                   'layout_base': animFilter,
                   'confo_layout':imageFilterConfoLayout,
-                  'anim_main': animFilter,
+                  'anim_main': animMaimFilter,
                   'light_lighting':exrFilter,
                   'light_precomp':exrFilter,
                   'compo_comp':exrFilter,
-                  'light_prelight': animFilter,
+                  'light_prelight': exrFilter,
                   'compo_stereo':exrFilter,
                   'confo_render':imageFilterConfoLayout,
                   'anim_master':imageFilterConfoLayout,
@@ -91,7 +99,7 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
                     res[entityName]['fInterest'] = v['entity.Shot.sg_cut_in']
                 else:
                     res[entityName]['fInterest'] = v['entity.Shot.sg_frames_of_interest']
-                if imFormat == '.quictime':
+                if imFormat == '.quicktime':
                     res[entityName]['cutIn'] = 1
                     res[entityName]['cutOut'] = int(v['entity.Shot.sg_cut_out']-v['entity.Shot.sg_cut_in'])
                     res[entityName]['cutMid'] = int((v['entity.Shot.sg_cut_out']-v['entity.Shot.sg_cut_in']) / 2)
@@ -145,6 +153,7 @@ def findShotsInList( seq='s1300', shotList=[], taskname = 'compo_comp'):
                     res[entityName]['cutOut']= v['entity.Shot.sg_cut_out']
                     res[entityName]['cutMid'] = int((v['entity.Shot.sg_cut_in'] + v['entity.Shot.sg_cut_out'])/2)
                     res[entityName]['framePath'] = v['path']['local_path_linux']
+
                 found = True
 
             if switchTask >= len(taskList):
@@ -201,7 +210,11 @@ def getOrder(res = {}):
             break
     return shotNb
 
-def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 'full'):
+def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 'full',shotgunData = True):
+    path = _OUTPATH_+'/'+seq+'/'+task+'/'
+    if not os.path.isdir(path):
+        os.makedirs(path)
+    outdir = path+'contactSheet_'+seq+'.'+format
 
     cutOrderSeq = getOrder(res)
 
@@ -222,13 +235,13 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
     # text sequence number
     text = oiio.ImageBuf(oiio.ImageSpec(int(1.5*maxwidth), int(1.5*maxheight), 3, oiio.FLOAT))
-    oiio.ImageBufAlgo.render_text(text, 100, ((maxheight) / 2) +400, seq, 1050, fontname='LiberationSans-Italic',
+    oiio.ImageBufAlgo.render_text(text, 100, ((maxheight) / 2) +400, seq, 1050, fontname=_FONT_,
                                   textcolor=(1, 1, 1, 1))
 
     # na color
     na = oiio.ImageBuf(oiio.ImageSpec(200, 200, 3, oiio.FLOAT))
     oiio.ImageBufAlgo.zero(na)
-    oiio.ImageBufAlgo.render_text(na, 20, 140, 'Na', 120, fontname='LiberationSans-Italic',
+    oiio.ImageBufAlgo.render_text(na, 20, 140, 'Na', 120, fontname=_FONT_,
                                   textcolor=(1, 0, 0, 0))
 
     # logo
@@ -255,45 +268,56 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
     cutOrderSeqLen = len(cutOrderSeq)
     a =1
     print 'tendering the frames'
-    for i in range(1,ncol+1):
+    # for i in range(1,ncol+1):
+    #     if a == 0:
+    #         break
+    imgw = 0
+    for i in range(1, ncol + 1):
         if a == 0:
             break
         imgw = 0
-        for i in range(1, ncol + 1):
-            if a == 0:
-                break
-            imgw = 0
-            for j in range(1, nrow + 1):
-                if nbimage < cutOrderSeqLen and nbimage <= (nrow * ncol):
-                    shot = cutOrderSeq[nbimage]
-                    fileFromList = []
-                    if res[shot]['imgFormat'] == '.quicktime':
-                        fileFromList = oiio.ImageBuf(res[shot]['framePath'], res[shot]['cutMid']-100, 0)
-                    else:
-                        fileFromList = oiio.ImageBuf(res[shot]['framePath'].replace('%04d',str(res[shot]['cutMid']).zfill(4)))
+        for j in range(1, nrow + 1):
+            if nbimage < cutOrderSeqLen and nbimage <= (nrow * ncol):
+                shot = cutOrderSeq[nbimage]
+                fileFromList = []
+                if res[shot]['imgFormat'] == '.quicktime':
+                    fileFromList = oiio.ImageBuf(res[shot]['framePath'], res[shot]['cutMid'], 0)
                 else:
-                    # fileFromList = text
-                    a = 0
-                    break
-                fileFromListWidth = fileFromList.spec().width
-                fileFromListHeight = fileFromList.spec().height
-                if fileFromListWidth > maxwidth or fileFromListHeight > maxheight:
-                    offsetwidth = (fileFromListWidth - maxwidth) / 2
-                    offsetheight = (fileFromListHeight - maxheight) / 2
-                tmpInfile = oiio.ImageBuf(oiio.ImageSpec(maxwidth, maxheight, 4, oiio.FLOAT))
-                oiio.ImageBufAlgo.crop(tmpInfile, fileFromList,
-                                       oiio.ROI(offsetwidth, fileFromListWidth - offsetwidth, offsetheight,
-                                                fileFromListHeight - offsetheight))
-                stats = oiio.PixelStats()
-                if res[shot]['imgFormat'] == '.exr' and format != 'exr':
-                    oiio.ImageBufAlgo.colorconvert(tmpInfile, tmpInfile, 'linear', 'Asterix2_Film')
-                    oiio.ImageBufAlgo.computePixelStats(tmpInfile, stats)
-                averageList.append(stats.avg)
-                oiio.ImageBufAlgo.paste(buf, imgw + (j * space), imgh + (i * space), 0, 0, tmpInfile)
-
-                imgw = imgw + maxwidth
-                nbimage = nbimage + 1
-            imgh = imgh + maxheight
+                    fileFromList = oiio.ImageBuf(res[shot]['framePath'].replace('%04d',str(res[shot]['cutMid']).zfill(4)))
+            else:
+                # fileFromList = text
+                a = 0
+                break
+            fileFromListWidth = fileFromList.spec().width
+            fileFromListHeight = fileFromList.spec().height
+            if fileFromListWidth > maxwidth or fileFromListHeight > maxheight:
+                offsetwidth = (fileFromListWidth - maxwidth) / 2
+                offsetheight = (fileFromListHeight - maxheight) / 2
+            tmpInfile = oiio.ImageBuf(oiio.ImageSpec(maxwidth, maxheight, 3, oiio.FLOAT))
+            oiio.ImageBufAlgo.crop(tmpInfile, fileFromList,
+                                   oiio.ROI(offsetwidth, fileFromListWidth - offsetwidth, offsetheight,
+                                            fileFromListHeight - offsetheight))
+            stats = oiio.PixelStats()
+            if res[shot]['imgFormat'] == '.exr' and format != 'exr':
+                oiio.ImageBufAlgo.colorconvert(tmpInfile, tmpInfile, 'linear', 'Asterix2_Film')
+                oiio.ImageBufAlgo.computePixelStats(tmpInfile, stats)
+            averageList.append(stats.avg)
+            oiio.ImageBufAlgo.paste(buf, imgw + (j * space), imgh + (i * space), 0, 0, tmpInfile)
+            if shotgunData:
+                tmpData = oiio.ImageBuf(oiio.ImageSpec(maxwidth, 40, 3, oiio.FLOAT))
+                oiio.ImageBufAlgo.zero(tmpData)
+                shotText = shot
+                taskText =  res[shot]['Task']
+                colorTask = (1,1,0,1)
+                if taskText != task:
+                    oiio.ImageBufAlgo.fill(tmpData,(1,0,0,1))
+                    colorTask = (1,0,0,1)
+                oiio.ImageBufAlgo.render_text(tmpData,10,28,shotText,40,_FONT_)
+                oiio.ImageBufAlgo.render_text(tmpData, 400, 28, taskText, 40, _FONT_)
+                oiio.ImageBufAlgo.paste(buf, imgw + (j * space), (imgh-40) + (i * space), 0, 0, tmpData)
+            imgw = imgw + maxwidth
+            nbimage = nbimage + 1
+        imgh = imgh + maxheight
 
     print 'adding some salt'
     # create the master buffer
@@ -363,13 +387,13 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
     output.set_write_format(bitFormat)
 
-    output.write('/s/prodanim/asterix2/_sandbox/duda/paintOver/s0180/p0100/testB.'+format)
+    output.write(outdir)
 
-    print 'and Voila!'
+    print 'and Voila!\n'+outdir+' is cooked'
 
 def main():
-    seq = 's0080'
-    task = 'confo_render'
+    seq = 's0835'
+    task = 'light_prelight'
     shotList = findShotsInSequence(seq)
     res = findShots(task,seq,shotList)
     contactSheet(task,seq,res,'tif','quarter')
