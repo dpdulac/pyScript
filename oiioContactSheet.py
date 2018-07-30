@@ -73,6 +73,7 @@ def imFilter(taskname = 'compo_precomp'):
 def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
     res = {}
     switchTask = taskList.index(taskname)
+    testStatus = True
     while shotList != [] and switchTask < len(taskList):
         filterType = imFilter(taskList[switchTask])
         filters = [
@@ -109,7 +110,22 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
                     res[entityName]['cutMid'] = int((v['entity.Shot.sg_cut_in'] + v['entity.Shot.sg_cut_out']) / 2)
                 res[entityName]['framePath'] = v['path']['local_path_linux']
                 res[entityName]['Task'] = v['task']['name']
-                res[entityName]['status'] =v['entity.Shot.sg_status_list']
+                #res[entityName]['status'] =v['entity.Shot.sg_status_list']
+        # if testStatus:
+        #     filterTask = [
+        #         ['project', 'is', {'type': 'Project', 'id': project.id}],
+        #         ['content', 'is', taskname],
+        #         ['entity', 'type_is', 'Shot'],
+        #         ['entity.Shot.sg_sequence', 'name_is', seq],
+        #         ['entity.Shot.code', 'in', res.keys()]
+        #     ]
+        #     for v in sg.find('Task', filterTask, ['code', 'entity', 'sg_status_artistique']):
+        #         entityName = v['entity']['name']
+        #         try:
+        #             res[entityName]['status'] = v['sg_status_artistique']
+        #         except:
+        #             res[entityName]['status'] = 'None'
+        #     testStatus = False
 
         listShotInRes = sorted(res.keys())
         shotList = list(set(shotList).difference(listShotInRes))
@@ -119,6 +135,19 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
         print taskList[switchTask]+': '+ nbShotInTask
         switchTask = switchTask + 1
 
+    filterTask = [
+        ['project', 'is', {'type': 'Project', 'id': project.id}],
+        ['content', 'is', taskname],
+        ['entity', 'type_is', 'Shot'],
+        ['entity.Shot.sg_sequence', 'name_is', seq],
+        ['entity.Shot.code', 'in', res.keys()]
+    ]
+    for v in sg.find('Task', filterTask, ['code', 'entity', 'sg_status_artistique']):
+        entityName = v['entity']['name']
+        try:
+            res[entityName]['status'] = v['sg_status_artistique']
+        except:
+            res[entityName]['status'] = 'None'
     return res
 
 def findShotsInList( seq='s1300', shotList=[], taskname = 'compo_comp'):
@@ -318,6 +347,11 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
                     oiio.ImageBufAlgo.fill(tmpData,(1,0,0,1))
                 oiio.ImageBufAlgo.render_text(tmpData,10,30,shotText,35,_FONT_)
                 oiio.ImageBufAlgo.render_text(tmpData, maxwidth-400, 30, taskText.upper(), 35, _FONT_)
+                if taskText == task:
+                    statusCol = (1, 0, 0)
+                    if res[shot]['status'] == 'cmpt':
+                        statusCol = (0,1,0)
+                    oiio.ImageBufAlgo.fill(tmpData,statusCol,oiio.ROI(maxwidth-50,maxwidth-10,0,40))
                 oiio.ImageBufAlgo.paste(buf, imgw + (j * space), (imgh-40) + (i * space), 0, 0, tmpData)
             imgw = imgw + maxwidth
             nbimage = nbimage + 1
@@ -397,11 +431,11 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
 def main():
     seq = 's0030'
-    task = 'anim_main'
+    task = 'compo_comp'
     shotList = findShotsInSequence(seq)
     res = findShots(task,seq,shotList)
     contactSheet(task,seq,res,'tif','quarter')
-    #pprint.pprint(sg.schema_field_read('Shot'))
+    #pprint.pprint(sg.schema_field_read('Task'))
 
 if __name__ == '__main__':
     main()
