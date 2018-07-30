@@ -243,7 +243,7 @@ def getOrder(res = {}):
             break
     return shotNb
 
-def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 'full',shotgunData = True):
+def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 'full',shotgunData = True, printFormat = False):
     path = _OUTPATH_+'/'+seq+'/'+task+'/'
     if not os.path.isdir(path):
         os.makedirs(path)
@@ -251,10 +251,11 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
     cutOrderSeq = getOrder(res)
 
-    #import the colorchart
-    checkerImage =oiio.ImageBuf('/s/prodanim/asterix2/_sandbox/duda/images/chekerCrop.jpg')
-    widthChecker = checkerImage.spec().width
-    heightChecker = checkerImage.spec().height
+    #import the colorchart if in printFormat mode
+    if printFormat:
+        checkerImage =oiio.ImageBuf('/s/prodanim/asterix2/_sandbox/duda/images/chekerCrop.jpg')
+        widthChecker = checkerImage.spec().width
+        heightChecker = checkerImage.spec().height
 
     # list of color average
     averageList = []
@@ -284,7 +285,17 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
     # number of row and column for the contactsheet
     nrow = 5
-    ncol =13
+    ncol = 0
+    if printFormat:
+        ncol =13
+    else:
+        ncolTmpFloat = float(len(res.keys())/float(nrow))
+        ncolTmpInt = int(len(res.keys())/nrow)
+        if ncolTmpFloat - ncolTmpInt > 0:
+            ncol = ncolTmpInt + 1
+        else:
+            ncol = ncolTmpInt
+
 
     # area containing the images of sequence
     widthBufImage = (maxwidth*nrow)+(space*(nrow+1))
@@ -335,8 +346,9 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
             stats = oiio.PixelStats()
             if res[shot]['imgFormat'] == '.exr' and format != 'exr':
                 oiio.ImageBufAlgo.colorconvert(tmpInfile, tmpInfile, 'linear', 'Asterix2_Film')
-                oiio.ImageBufAlgo.computePixelStats(tmpInfile, stats)
-            averageList.append(stats.avg)
+                if printFormat:
+                    oiio.ImageBufAlgo.computePixelStats(tmpInfile, stats)
+                    averageList.append(stats.avg)
             oiio.ImageBufAlgo.paste(buf, imgw + (j * space), imgh + (i * space), 0, 0, tmpInfile)
             if shotgunData:
                 tmpData = oiio.ImageBuf(oiio.ImageSpec(maxwidth, 40, 3, oiio.FLOAT))
@@ -360,7 +372,9 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
     print 'adding some salt'
     # create the master buffer
     masterBufwidth = widthBufImage+(578*2)
-    masterBufHeight = int(masterBufwidth*1.414)
+    masterBufHeight = int(heightBufImage + (4 * maxheight) + (2 * 578))
+    if printFormat:
+        masterBufHeight = int(masterBufwidth*1.414)
     masterBuf = oiio.ImageBuf(oiio.ImageSpec(masterBufwidth, masterBufHeight, 3, oiio.FLOAT))
 
     # create the white border
@@ -376,32 +390,37 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
     # #paste the sequence number
     oiio.ImageBufAlgo.paste(masterBuf, 840, 120 , 0, 0, logo)
 
-    #
-    # create the average color box
-    startcolumnBox = 1178+(space)
-    endColumnBox = startcolumnBox +200
-    startRowBox = 578+(2*space)
-    averageScene = (0,0,0)
-    for col in averageList:
-        if len(col) > 2:
-            averageScene = tuple(map(sum,zip(averageScene,col)))
-            oiio.ImageBufAlgo.fill(masterBuf,col,oiio.ROI(startRowBox,startRowBox+200,startcolumnBox,endColumnBox))
-        else:
-            oiio.ImageBufAlgo.paste(masterBuf,startRowBox,startcolumnBox,0,0,na)
-        startRowBox = startRowBox+200
-        if startRowBox > masterBufwidth-(578+(4*space)+(2*widthChecker)):
-            startRowBox = 578 + (2*space)
-            startcolumnBox = (1178)+200+int(space*1.5)
-            endColumnBox = startcolumnBox + 200
+    if printFormat:
+        # create the average color box
+        startcolumnBox = 1178+(space)
+        endColumnBox = startcolumnBox +200
+        startRowBox = 578+(2*space)
+        averageScene = (0,0,0)
+        for col in averageList:
+            if len(col) > 2:
+                averageScene = tuple(map(sum,zip(averageScene,col)))
+                oiio.ImageBufAlgo.fill(masterBuf,col,oiio.ROI(startRowBox,startRowBox+200,startcolumnBox,endColumnBox))
+            else:
+                oiio.ImageBufAlgo.paste(masterBuf,startRowBox,startcolumnBox,0,0,na)
+            startRowBox = startRowBox+200
+            if startRowBox > masterBufwidth-(578+(4*space)+(2*widthChecker)):
+                startRowBox = 578 + (2*space)
+                startcolumnBox = (1178)+200+int(space*1.5)
+                endColumnBox = startcolumnBox + 200
 
-    print 'smoldering the lot'
-    # create the box with the average of scene color
-    averageScene = tuple([x/cutOrderSeqLen for x in averageScene])
-    oiio.ImageBufAlgo.fill(masterBuf, averageScene,
-                           oiio.ROI(masterBufwidth-((2*widthChecker)+578+(space*2)), masterBufwidth-(widthChecker+578+(2*space)), 878+space, 878+space+heightChecker))
+        print 'smoldering the lot'
+        # create the box with the average of scene color
+        averageScene = tuple([x/cutOrderSeqLen for x in averageScene])
+        oiio.ImageBufAlgo.fill(masterBuf, averageScene,
+                               oiio.ROI(masterBufwidth-((2*widthChecker)+578+(space*2)), masterBufwidth-(widthChecker+578+(2*space)), 878+space, 878+space+heightChecker))
 
-    # add the checker and seq text
-    oiio.ImageBufAlgo.paste(masterBuf,masterBufwidth-(widthChecker+578+space),878+space,0,0,checkerImage)
+        # add the checker and seq text
+        oiio.ImageBufAlgo.paste(masterBuf,masterBufwidth-(widthChecker+578+space),878+space,0,0,checkerImage)
+    else:
+        textTask = oiio.ImageBuf(oiio.ImageSpec(int(3 * maxwidth), int(1.5 * maxheight), 3, oiio.FLOAT))
+        oiio.ImageBufAlgo.render_text(textTask, 100, ((maxheight) / 2) + 400, task.upper(), 500, fontname=_FONT_,
+                                      textcolor=(1, 1, 1, 1))
+        oiio.ImageBufAlgo.paste(masterBuf, (578 + space) + (masterBufwidth / 2) - maxwidth - 800,(518 + (space*3) ), 0, 0, textTask)
     oiio.ImageBufAlgo.paste(masterBuf,(578+space)+(masterBufwidth/2)-maxwidth-200,masterBufHeight-(518+space+int(1.5*maxheight)),0,0,text)
 
     #create the output frame
@@ -430,11 +449,11 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
     print 'and Voila!\n'+outdir+' is cooked'
 
 def main():
-    seq = 's0030'
+    seq = 's0265'
     task = 'compo_comp'
     shotList = findShotsInSequence(seq)
     res = findShots(task,seq,shotList)
-    contactSheet(task,seq,res,'tif','quarter')
+    contactSheet(task,seq,res,'jpg','quarter',printFormat = True)
     #pprint.pprint(sg.schema_field_read('Task'))
 
 if __name__ == '__main__':
