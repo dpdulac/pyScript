@@ -449,11 +449,11 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
     print 'and Voila!\n'+outdir+' is cooked'
 
 def main():
-    seq = 's0265'
+    seq = 's0100'
     task = 'compo_comp'
     shotList = findShotsInSequence(seq)
     res = findShots(task,seq,shotList)
-    contactSheet(task,seq,res,'jpg','quarter',printFormat = True)
+    contactSheet(task,seq,res,'jpg',scale='quarter',printFormat = True)
     #pprint.pprint(sg.schema_field_read('Task'))
 
 if __name__ == '__main__':
