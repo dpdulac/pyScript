@@ -71,6 +71,9 @@ def imFilter(taskname = 'compo_precomp'):
 
 #main call to SG api extract information from published files
 def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
+    if taskname not in taskList:
+        taskname = taskList[0]
+    print 'using : '
     res = {}
     switchTask = taskList.index(taskname)
     testStatus = True
@@ -110,31 +113,17 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
                     res[entityName]['cutMid'] = int((v['entity.Shot.sg_cut_in'] + v['entity.Shot.sg_cut_out']) / 2)
                 res[entityName]['framePath'] = v['path']['local_path_linux']
                 res[entityName]['Task'] = v['task']['name']
-                #res[entityName]['status'] =v['entity.Shot.sg_status_list']
-        # if testStatus:
-        #     filterTask = [
-        #         ['project', 'is', {'type': 'Project', 'id': project.id}],
-        #         ['content', 'is', taskname],
-        #         ['entity', 'type_is', 'Shot'],
-        #         ['entity.Shot.sg_sequence', 'name_is', seq],
-        #         ['entity.Shot.code', 'in', res.keys()]
-        #     ]
-        #     for v in sg.find('Task', filterTask, ['code', 'entity', 'sg_status_artistique']):
-        #         entityName = v['entity']['name']
-        #         try:
-        #             res[entityName]['status'] = v['sg_status_artistique']
-        #         except:
-        #             res[entityName]['status'] = 'None'
-        #     testStatus = False
+                res[entityName]['version']= v['version_number']
 
         listShotInRes = sorted(res.keys())
         shotList = list(set(shotList).difference(listShotInRes))
-        nbShotInTask = str(listShotInRes).replace('\'','').replace('[','').replace(']','')
+        #nbShotInTask = str(listShotInRes).replace('\'','').replace('[','').replace(']','')
         if len(listShotInRes) == 0:
             nbShotInTask = 'None'
-        print taskList[switchTask]+': '+ nbShotInTask
+        print '\t'+taskList[switchTask]#+': '+ nbShotInTask
         switchTask = switchTask + 1
 
+    # find the artistic status of the main task for each shot
     filterTask = [
         ['project', 'is', {'type': 'Project', 'id': project.id}],
         ['content', 'is', taskname],
@@ -148,6 +137,24 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
             res[entityName]['status'] = v['sg_status_artistique']
         except:
             res[entityName]['status'] = 'None'
+
+    # find all version for the shot in res
+    for shot in res.keys():
+        if res[shot]['Task'] == taskname :
+            versionList = []
+            filters = [
+                ['project', 'is', {'type': 'Project', 'id': project.id}],
+                ['entity.Shot.code', 'is', shot],
+                ['entity.Shot.sg_status_list', 'is_not', 'omt'],
+                ['task', 'name_is', res[shot]['Task']],
+            ]
+
+            fileFound = sg.find('PublishedFile', filters,
+                                ['code', 'entity', 'version_number'],order=[{'field_name': 'version_number', 'direction': 'desc'}])
+            for version in fileFound:
+                if str(version['version_number']) not in versionList:
+                    versionList.append(str(version['version_number']))
+            res[shot]['versionsList']=versionList
     return res
 
 def findShotsInList( seq='s1300', shotList=[], taskname = 'compo_comp'):
@@ -244,10 +251,13 @@ def getOrder(res = {}):
     return shotNb
 
 def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 'full',shotgunData = True, printFormat = False):
+
     path = _OUTPATH_+'/'+seq+'/'+task+'/'
     if not os.path.isdir(path):
         os.makedirs(path)
-    outdir = path+'contactSheet_'+seq+'.'+format
+    outdir = path + 'contactSheet_' + seq + '.' + format
+    if printFormat:
+        outdir = path + 'contactSheet_print_' + seq + '.' + format
 
     cutOrderSeq = getOrder(res)
 
@@ -267,11 +277,6 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
     maxwidth = 2048
     maxheight = 858
 
-    # text sequence number
-    text = oiio.ImageBuf(oiio.ImageSpec(int(1.5*maxwidth), int(1.5*maxheight), 3, oiio.FLOAT))
-    oiio.ImageBufAlgo.render_text(text, 100, ((maxheight) / 2) +400, seq, 1050, fontname=_FONT_,
-                                  textcolor=(1, 1, 1, 1))
-
     # na color
     na = oiio.ImageBuf(oiio.ImageSpec(200, 200, 3, oiio.FLOAT))
     oiio.ImageBufAlgo.zero(na)
@@ -280,14 +285,26 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
     # logo
     logo = oiio.ImageBuf('/s/prodanim/asterix2/_source_global/Software/Nuke/scripts/contactSheetDir/logo.jpg')
-    widthLogo = logo.spec().width
-    heightLogo = logo.spec().height
 
-    # number of row and column for the contactsheet
+    # number of row and column and page (if in printFormat) for the contactsheet
     nrow = 5
     ncol = 0
+    nbPage = 1
     if printFormat:
         ncol =13
+        imbNb = 1
+        nbPage =1
+        for shot in cutOrderSeq:
+            imMod = imbNb%66  # (ncol*nrow) + 1
+            if imMod != 0:
+                res[shot]['page'] = nbPage
+            else:
+                nbPage = nbPage + 1
+                res[shot]['page'] = nbPage
+            imbNb = imbNb + 1
+        tmpLogo = oiio.ImageBuf(oiio.ImageSpec(1558, 1030, 3, oiio.FLOAT))
+        oiio.ImageBufAlgo.resize(tmpLogo, logo)
+        logo = tmpLogo
     else:
         ncolTmpFloat = float(len(res.keys())/float(nrow))
         ncolTmpInt = int(len(res.keys())/nrow)
@@ -295,6 +312,12 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
             ncol = ncolTmpInt + 1
         else:
             ncol = ncolTmpInt
+        tmpLogo = oiio.ImageBuf(oiio.ImageSpec(2366, 1544, 3, oiio.FLOAT))
+        oiio.ImageBufAlgo.resize(tmpLogo, logo)
+        logo = tmpLogo
+
+    widthLogo = logo.spec().width
+    heightLogo = logo.spec().height
 
 
     # area containing the images of sequence
@@ -320,7 +343,7 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
             if nbimage < cutOrderSeqLen and nbimage <= (nrow * ncol):
                 shot = cutOrderSeq[nbimage]
                 pathFile = res[shot]['framePath']
-                fileFromList = []
+                fileFromList = oiio.ImageBuf()
                 if res[shot]['imgFormat'] == '.quicktime':
                     fileFromList = oiio.ImageBuf(pathFile, res[shot]['cutMid'], 0)
                 else:
@@ -348,7 +371,7 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
                 oiio.ImageBufAlgo.colorconvert(tmpInfile, tmpInfile, 'linear', 'Asterix2_Film')
                 if printFormat:
                     oiio.ImageBufAlgo.computePixelStats(tmpInfile, stats)
-                    averageList.append(stats.avg)
+            averageList.append(stats.avg)
             oiio.ImageBufAlgo.paste(buf, imgw + (j * space), imgh + (i * space), 0, 0, tmpInfile)
             if shotgunData:
                 tmpData = oiio.ImageBuf(oiio.ImageSpec(maxwidth, 40, 3, oiio.FLOAT))
@@ -358,7 +381,7 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
                 if taskText != task:
                     oiio.ImageBufAlgo.fill(tmpData,(1,0,0,1))
                 oiio.ImageBufAlgo.render_text(tmpData,10,30,shotText,35,_FONT_)
-                oiio.ImageBufAlgo.render_text(tmpData, maxwidth-400, 30, taskText.upper(), 35, _FONT_)
+                oiio.ImageBufAlgo.render_text(tmpData, maxwidth-450, 30, taskText.upper()+'  v'+str(res[shot]['version']), 35, _FONT_)
                 if taskText == task:
                     statusCol = (1, 0, 0)
                     if res[shot]['status'] == 'cmpt':
@@ -383,14 +406,17 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
     # paste the buffer contactsheet in the main buffer
     oiio.ImageBufAlgo.paste(masterBuf, 578, 578+(2*maxheight), 0, 0, buf)
+    # top bar
     oiio.ImageBufAlgo.render_box(masterBuf,578,(578+(2*maxheight))-60,masterBufwidth-578,578+(2*maxheight),(1,1,1,0),True)
+    # bottom bar
     oiio.ImageBufAlgo.render_box(masterBuf,578,578+heightBufImage+(2*maxheight),masterBufwidth-578,578+heightBufImage+(2*maxheight)+60,(1,1,1,1),True)
 
-    print 'a bit of peper'
+    print 'a bit of pepper'
     # #paste the sequence number
-    oiio.ImageBufAlgo.paste(masterBuf, 840, 120 , 0, 0, logo)
+
 
     if printFormat:
+        print 'smoldering the lot'
         # create the average color box
         startcolumnBox = 1178+(space)
         endColumnBox = startcolumnBox +200
@@ -408,7 +434,6 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
                 startcolumnBox = (1178)+200+int(space*1.5)
                 endColumnBox = startcolumnBox + 200
 
-        print 'smoldering the lot'
         # create the box with the average of scene color
         averageScene = tuple([x/cutOrderSeqLen for x in averageScene])
         oiio.ImageBufAlgo.fill(masterBuf, averageScene,
@@ -416,12 +441,14 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
         # add the checker and seq text
         oiio.ImageBufAlgo.paste(masterBuf,masterBufwidth-(widthChecker+578+space),878+space,0,0,checkerImage)
+
+    # adding the task,seq number and logo
+    if printFormat:
+        oiio.ImageBufAlgo.paste(masterBuf, (masterBufwidth / 2) - (widthLogo/2), 60, 0, 0, logo)
     else:
-        textTask = oiio.ImageBuf(oiio.ImageSpec(int(3 * maxwidth), int(1.5 * maxheight), 3, oiio.FLOAT))
-        oiio.ImageBufAlgo.render_text(textTask, 100, ((maxheight) / 2) + 400, task.upper(), 500, fontname=_FONT_,
-                                      textcolor=(1, 1, 1, 1))
-        oiio.ImageBufAlgo.paste(masterBuf, (578 + space) + (masterBufwidth / 2) - maxwidth - 800,(518 + (space*3) ), 0, 0, textTask)
-    oiio.ImageBufAlgo.paste(masterBuf,(578+space)+(masterBufwidth/2)-maxwidth-200,masterBufHeight-(518+space+int(1.5*maxheight)),0,0,text)
+        oiio.ImageBufAlgo.paste(masterBuf, (masterBufwidth / 2) - (widthLogo/2), 628, 0, 0, logo)
+    oiio.ImageBufAlgo.render_text(masterBuf, int(masterBufwidth/2)+200, int(masterBufHeight-(maxheight+200)), task.upper(), 400, fontname=_FONT_,textcolor=(1, 1, 1, 1))
+    oiio.ImageBufAlgo.render_text(masterBuf,x=int((masterBufwidth/2)-(1.35*maxwidth)), y=int(masterBufHeight-(maxheight+200)), text=seq, fontsize=1050, fontname=_FONT_,textcolor=(1, 1, 1, 1))
 
     #create the output frame
     output = oiio.ImageBuf()
@@ -446,14 +473,14 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
     output.write(outdir)
 
-    print 'and Voila!\n'+outdir+' is cooked'
+    print 'and Voila!\n'+outdir+' is cooked, Enjoy with no moderation!!!!'
 
 def main():
-    seq = 's0100'
-    task = 'compo_comp'
+    seq = 's0265'
+    task = 'anim_main'
     shotList = findShotsInSequence(seq)
     res = findShots(task,seq,shotList)
-    contactSheet(task,seq,res,'jpg',scale='quarter',printFormat = True)
+    contactSheet(task,seq,res,'jpg',scale='half',printFormat = True)
     #pprint.pprint(sg.schema_field_read('Task'))
 
 if __name__ == '__main__':
