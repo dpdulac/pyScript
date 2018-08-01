@@ -315,101 +315,109 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
         tmpLogo = oiio.ImageBuf(oiio.ImageSpec(2366, 1544, 3, oiio.FLOAT))
         oiio.ImageBufAlgo.resize(tmpLogo, logo)
         logo = tmpLogo
-
     widthLogo = logo.spec().width
     heightLogo = logo.spec().height
 
-
+    # create the master buffer
     # area containing the images of sequence
-    widthBufImage = (maxwidth*nrow)+(space*(nrow+1))
-    heightBufImage = (maxheight*ncol)+(space*(ncol+1))
-    buf = oiio.ImageBuf(oiio.ImageSpec(widthBufImage, heightBufImage, 3, oiio.FLOAT))
+    widthShotArea = (maxwidth * nrow) + (space * (nrow + 1))
+    heightShotArea = (maxheight * ncol) + (space * (ncol + 1))
+    masterBufwidth = widthShotArea + (578 * 2)
+    masterBufHeight = int(heightShotArea + (4 * maxheight) + (2 * 578))
+    if printFormat:
+        masterBufHeight = int(masterBufwidth * 1.414)
+    masterBuf = oiio.ImageBuf(oiio.ImageSpec(masterBufwidth, masterBufHeight, 3, oiio.FLOAT))
+    # create the white border
+    oiio.ImageBufAlgo.render_box(masterBuf, 518, 518, masterBufwidth - 518, masterBufHeight - 518, (1, 1, 1, 0), True)
+    oiio.ImageBufAlgo.render_box(masterBuf, 578, 578, masterBufwidth - 578, masterBufHeight - 578, (0, 0, 0, 0), True)
+    # top bar
+    oiio.ImageBufAlgo.render_box(masterBuf, 578, (578 + (2 * maxheight)) - 60, masterBufwidth - 578,
+                                 578 + (2 * maxheight), (1, 1, 1, 0), True)
+    # bottom bar
+    oiio.ImageBufAlgo.render_box(masterBuf, 578, 578 + heightShotArea + (2 * maxheight), masterBufwidth - 578,
+                                 578 + heightShotArea + (2 * maxheight) + 60, (1, 1, 1, 1), True)
+    # adding the task,seq number and logo
+    if printFormat:
+        oiio.ImageBufAlgo.paste(masterBuf, (masterBufwidth / 2) - (widthLogo / 2), 60, 0, 0, logo)
+    else:
+        oiio.ImageBufAlgo.paste(masterBuf, (masterBufwidth / 2) - (widthLogo / 2), 628, 0, 0, logo)
+    oiio.ImageBufAlgo.render_text(masterBuf, int(masterBufwidth / 2) + 200, int(masterBufHeight - (maxheight + 200)),
+                                  task.upper(), 400, fontname=_FONT_, textcolor=(1, 1, 1, 1))
+    oiio.ImageBufAlgo.render_text(masterBuf, x=int((masterBufwidth / 2) - (1.35 * maxwidth)),
+                                  y=int(masterBufHeight - (maxheight + 200)), text=seq, fontsize=1050, fontname=_FONT_,
+                                  textcolor=(1, 1, 1, 1))
 
-    # offset to move the image
-    offsetwidth = 0
-    offsetheight = 0
+    masterBuf,averageList = placeImages(res=res,task=task,cutOrderSeq = cutOrderSeq,imgh = 578+(2*maxheight),masterBuf=masterBuf,printFormat=printFormat,ncol=ncol,nrow=nrow,space=space,maxwidth=maxwidth,maxheight=maxheight)
 
-
-    imgh = 0
-    nbimage = 0
-    cutOrderSeqLen = len(cutOrderSeq)
-    a =1
-    print 'tendering the frames'
-    for i in range(1, ncol + 1):
-        if a == 0:
-            break
-        imgw = 0
-        for j in range(1, nrow + 1):
-            if nbimage < cutOrderSeqLen and nbimage <= (nrow * ncol):
-                shot = cutOrderSeq[nbimage]
-                pathFile = res[shot]['framePath']
-                fileFromList = oiio.ImageBuf()
-                if res[shot]['imgFormat'] == '.quicktime':
-                    fileFromList = oiio.ImageBuf(pathFile, res[shot]['cutMid'], 0)
-                else:
-                    if not os.path.isfile(pathFile.replace('%04d',str(res[shot]['cutMid']).zfill(4))):
-                        dirPath = pathFile[:pathFile.rfind('/')]
-                        dirFiles = sorted(os.listdir(dirPath))
-                        fileFromList =oiio.ImageBuf(dirPath + '/' +dirFiles[0])
-                    else:
-                        fileFromList = oiio.ImageBuf(pathFile.replace('%04d',str(res[shot]['cutMid']).zfill(4)))
-            else:
-                # fileFromList = text
-                a = 0
-                break
-            fileFromListWidth = fileFromList.spec().width
-            fileFromListHeight = fileFromList.spec().height
-            if fileFromListWidth > maxwidth or fileFromListHeight > maxheight:
-                offsetwidth = (fileFromListWidth - maxwidth) / 2
-                offsetheight = (fileFromListHeight - maxheight) / 2
-            tmpInfile = oiio.ImageBuf(oiio.ImageSpec(maxwidth, maxheight, 3, oiio.FLOAT))
-            oiio.ImageBufAlgo.crop(tmpInfile, fileFromList,
-                                   oiio.ROI(offsetwidth, fileFromListWidth - offsetwidth, offsetheight,
-                                            fileFromListHeight - offsetheight))
-            stats = oiio.PixelStats()
-            if res[shot]['imgFormat'] == '.exr' and format != 'exr':
-                oiio.ImageBufAlgo.colorconvert(tmpInfile, tmpInfile, 'linear', 'Asterix2_Film')
-                if printFormat:
-                    oiio.ImageBufAlgo.computePixelStats(tmpInfile, stats)
-            averageList.append(stats.avg)
-            oiio.ImageBufAlgo.paste(buf, imgw + (j * space), imgh + (i * space), 0, 0, tmpInfile)
-            if shotgunData:
-                tmpData = oiio.ImageBuf(oiio.ImageSpec(maxwidth, 40, 3, oiio.FLOAT))
-                oiio.ImageBufAlgo.zero(tmpData)
-                shotText = shot
-                taskText =  res[shot]['Task']
-                if taskText != task:
-                    oiio.ImageBufAlgo.fill(tmpData,(1,0,0,1))
-                oiio.ImageBufAlgo.render_text(tmpData,10,30,shotText,35,_FONT_)
-                oiio.ImageBufAlgo.render_text(tmpData, maxwidth-450, 30, taskText.upper()+'  v'+str(res[shot]['version']), 35, _FONT_)
-                if taskText == task:
-                    statusCol = (1, 0, 0)
-                    if res[shot]['status'] == 'cmpt':
-                        statusCol = (0,1,0)
-                    oiio.ImageBufAlgo.fill(tmpData,statusCol,oiio.ROI(maxwidth-50,maxwidth-10,0,40))
-                oiio.ImageBufAlgo.paste(buf, imgw + (j * space), (imgh-40) + (i * space), 0, 0, tmpData)
-            imgw = imgw + maxwidth
-            nbimage = nbimage + 1
-        imgh = imgh + maxheight
+    # # offset to move the image
+    # offsetwidth = 0
+    # offsetheight = 0
+    # imgh = 578+(2*maxheight)
+    # nbimage = 0
+    # cutOrderSeqLen = len(cutOrderSeq)
+    # outLoop =1
+    # print 'tendering the frames'
+    # for i in range(1, ncol + 1):
+    #     if outLoop == 0:
+    #         break
+    #     imgw = 578
+    #     for j in range(1, nrow + 1):
+    #         xPos = imgw + (j * space)   # placement of the image in x
+    #         yPos = imgh + (i * space)   # placement of the image in y
+    #         if nbimage < cutOrderSeqLen and nbimage <= (nrow * ncol):
+    #             shot = cutOrderSeq[nbimage]
+    #             pathFile = res[shot]['framePath']
+    #             fileFromList = oiio.ImageBuf()
+    #             # if it's a quicktime movie
+    #             if res[shot]['imgFormat'] == '.quicktime':
+    #                 fileFromList = oiio.ImageBuf(pathFile, res[shot]['cutMid'], 0)
+    #             else:
+    #                 if not os.path.isfile(pathFile.replace('%04d',str(res[shot]['cutMid']).zfill(4))):
+    #                     dirPath = pathFile[:pathFile.rfind('/')]
+    #                     dirFiles = sorted(os.listdir(dirPath))
+    #                     fileFromList =oiio.ImageBuf(dirPath + '/' +dirFiles[0])
+    #                 else:
+    #                     fileFromList = oiio.ImageBuf(pathFile.replace('%04d',str(res[shot]['cutMid']).zfill(4)))
+    #         else:
+    #             # fileFromList = text
+    #             outLoop = 0
+    #             break
+    #         fileFromListWidth = fileFromList.spec().width
+    #         fileFromListHeight = fileFromList.spec().height
+    #         if fileFromListWidth > maxwidth or fileFromListHeight > maxheight:
+    #             tmpInfile = oiio.ImageBuf(oiio.ImageSpec(maxwidth, maxheight, 3, oiio.FLOAT))
+    #             offsetwidth = (fileFromListWidth - maxwidth) / 2
+    #             offsetheight = (fileFromListHeight - maxheight) / 2
+    #             oiio.ImageBufAlgo.crop(tmpInfile, fileFromList,oiio.ROI(offsetwidth, fileFromListWidth - offsetwidth, offsetheight,fileFromListHeight - offsetheight))
+    #             fileFromList = tmpInfile
+    #         stats = oiio.PixelStats()
+    #         if res[shot]['imgFormat'] == '.exr' and format != 'exr':
+    #             oiio.ImageBufAlgo.colorconvert(fileFromList, fileFromList, 'linear', 'Asterix2_Film')
+    #             if printFormat:
+    #                 oiio.ImageBufAlgo.computePixelStats(fileFromList, stats)
+    #         averageList.append(stats.avg)
+    #         oiio.ImageBufAlgo.paste(masterBuf, xPos, yPos, 0, 0, fileFromList)
+    #         # if user want to display shotgun data
+    #         if shotgunData:
+    #             shotText = shot
+    #             taskText =  res[shot]['Task']
+    #             if taskText != task:
+    #                 oiio.ImageBufAlgo.fill(masterBuf,(1,0,0),oiio.ROI(xPos,xPos+maxwidth,yPos-40,yPos))
+    #             oiio.ImageBufAlgo.render_text(masterBuf,xPos +10,yPos-10,shotText,35,_FONT_)
+    #             oiio.ImageBufAlgo.render_text(masterBuf, xPos+maxwidth-450, yPos-10, taskText.upper()+'  v'+str(res[shot]['version']), 35, _FONT_)
+    #             if taskText == task:
+    #                 statusCol = (1, 0, 0)
+    #                 if res[shot]['status'] == 'cmpt':
+    #                     statusCol = (0,1,0)
+    #                 oiio.ImageBufAlgo.fill(masterBuf,statusCol,oiio.ROI(xPos+maxwidth-50,xPos+maxwidth-10,yPos-40,yPos))
+    #         imgw = imgw + maxwidth
+    #         nbimage = nbimage + 1
+    #     imgh = imgh + maxheight
 
     print 'adding some salt'
-    # create the master buffer
-    masterBufwidth = widthBufImage+(578*2)
-    masterBufHeight = int(heightBufImage + (4 * maxheight) + (2 * 578))
-    if printFormat:
-        masterBufHeight = int(masterBufwidth*1.414)
-    masterBuf = oiio.ImageBuf(oiio.ImageSpec(masterBufwidth, masterBufHeight, 3, oiio.FLOAT))
-
-    # create the white border
-    oiio.ImageBufAlgo.render_box(masterBuf,518,518,masterBufwidth -518,masterBufHeight-518,(1,1,1,0),True)
-    oiio.ImageBufAlgo.render_box(masterBuf, 578, 578, masterBufwidth - 578, masterBufHeight - 578, (0, 0, 0, 0), True)
 
     # paste the buffer contactsheet in the main buffer
-    oiio.ImageBufAlgo.paste(masterBuf, 578, 578+(2*maxheight), 0, 0, buf)
-    # top bar
-    oiio.ImageBufAlgo.render_box(masterBuf,578,(578+(2*maxheight))-60,masterBufwidth-578,578+(2*maxheight),(1,1,1,0),True)
-    # bottom bar
-    oiio.ImageBufAlgo.render_box(masterBuf,578,578+heightBufImage+(2*maxheight),masterBufwidth-578,578+heightBufImage+(2*maxheight)+60,(1,1,1,1),True)
+    #oiio.ImageBufAlgo.paste(masterBuf, 578, 578+(2*maxheight), 0, 0, buf)
 
     print 'a bit of pepper'
     # #paste the sequence number
@@ -442,14 +450,6 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
         # add the checker and seq text
         oiio.ImageBufAlgo.paste(masterBuf,masterBufwidth-(widthChecker+578+space),878+space,0,0,checkerImage)
 
-    # adding the task,seq number and logo
-    if printFormat:
-        oiio.ImageBufAlgo.paste(masterBuf, (masterBufwidth / 2) - (widthLogo/2), 60, 0, 0, logo)
-    else:
-        oiio.ImageBufAlgo.paste(masterBuf, (masterBufwidth / 2) - (widthLogo/2), 628, 0, 0, logo)
-    oiio.ImageBufAlgo.render_text(masterBuf, int(masterBufwidth/2)+200, int(masterBufHeight-(maxheight+200)), task.upper(), 400, fontname=_FONT_,textcolor=(1, 1, 1, 1))
-    oiio.ImageBufAlgo.render_text(masterBuf,x=int((masterBufwidth/2)-(1.35*maxwidth)), y=int(masterBufHeight-(maxheight+200)), text=seq, fontsize=1050, fontname=_FONT_,textcolor=(1, 1, 1, 1))
-
     #create the output frame
     output = oiio.ImageBuf()
     if scale == 'half':
@@ -475,12 +475,83 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
     print 'and Voila!\n'+outdir+' is cooked, Enjoy with no moderation!!!!'
 
+def placeImages(res = {}, shotgunData = True, task ='compo_compc', cutOrderSeq =[], imgh= 2294, masterBuf = oiio.ImageBuf(), printFormat = False, ncol = 13, nrow = 5, space =40, maxwidth=2048, maxheight=858):
+    offsetwidth = 0
+    offsetheight = 0
+    averageList = []
+    nbimage = 0
+    cutOrderSeqLen = len(cutOrderSeq)
+    outLoop = 1
+    print 'tendering the frames'
+    for i in range(1, ncol + 1):
+        if outLoop == 0:
+            break
+        imgw = 578
+        for j in range(1, nrow + 1):
+            xPos = imgw + (j * space)  # placement of the image in x
+            yPos = imgh + (i * space)  # placement of the image in y
+            if nbimage < cutOrderSeqLen and nbimage <= (nrow * ncol):
+                shot = cutOrderSeq[nbimage]
+                pathFile = res[shot]['framePath']
+                fileFromList = oiio.ImageBuf()
+                # if it's a quicktime movie
+                if res[shot]['imgFormat'] == '.quicktime':
+                    fileFromList = oiio.ImageBuf(pathFile, res[shot]['cutMid'], 0)
+                else:
+                    if not os.path.isfile(pathFile.replace('%04d', str(res[shot]['cutMid']).zfill(4))):
+                        dirPath = pathFile[:pathFile.rfind('/')]
+                        dirFiles = sorted(os.listdir(dirPath))
+                        fileFromList = oiio.ImageBuf(dirPath + '/' + dirFiles[0])
+                    else:
+                        fileFromList = oiio.ImageBuf(pathFile.replace('%04d', str(res[shot]['cutMid']).zfill(4)))
+            else:
+                # fileFromList = text
+                outLoop = 0
+                break
+            fileFromListWidth = fileFromList.spec().width
+            fileFromListHeight = fileFromList.spec().height
+            if fileFromListWidth > maxwidth or fileFromListHeight > maxheight:
+                tmpInfile = oiio.ImageBuf(oiio.ImageSpec(maxwidth, maxheight, 3, oiio.FLOAT))
+                offsetwidth = (fileFromListWidth - maxwidth) / 2
+                offsetheight = (fileFromListHeight - maxheight) / 2
+                oiio.ImageBufAlgo.crop(tmpInfile, fileFromList,
+                                       oiio.ROI(offsetwidth, fileFromListWidth - offsetwidth, offsetheight,
+                                                fileFromListHeight - offsetheight))
+                fileFromList = tmpInfile
+            stats = oiio.PixelStats()
+            if res[shot]['imgFormat'] == '.exr' and format != 'exr':
+                oiio.ImageBufAlgo.colorconvert(fileFromList, fileFromList, 'linear', 'Asterix2_Film')
+                if printFormat:
+                    oiio.ImageBufAlgo.computePixelStats(fileFromList, stats)
+            averageList.append(stats.avg)
+            oiio.ImageBufAlgo.paste(masterBuf, xPos, yPos, 0, 0, fileFromList)
+            # if user want to display shotgun data
+            if shotgunData:
+                shotText = shot
+                taskText = res[shot]['Task']
+                if taskText != task:
+                    oiio.ImageBufAlgo.fill(masterBuf, (1, 0, 0), oiio.ROI(xPos, xPos + maxwidth, yPos - 40, yPos))
+                oiio.ImageBufAlgo.render_text(masterBuf, xPos + 10, yPos - 10, shotText, 35, _FONT_)
+                oiio.ImageBufAlgo.render_text(masterBuf, xPos + maxwidth - 450, yPos - 10,
+                                              taskText.upper() + '  v' + str(res[shot]['version']), 35, _FONT_)
+                if taskText == task:
+                    statusCol = (1, 0, 0)
+                    if res[shot]['status'] == 'cmpt':
+                        statusCol = (0, 1, 0)
+                    oiio.ImageBufAlgo.fill(masterBuf, statusCol,
+                                           oiio.ROI(xPos + maxwidth - 50, xPos + maxwidth - 10, yPos - 40, yPos))
+            imgw = imgw + maxwidth
+            nbimage = nbimage + 1
+        imgh = imgh + maxheight
+
+    return masterBuf, averageList
+
 def main():
     seq = 's0265'
-    task = 'anim_main'
+    task = 'compo_comp'
     shotList = findShotsInSequence(seq)
     res = findShots(task,seq,shotList)
-    contactSheet(task,seq,res,'jpg',scale='half',printFormat = True)
+    contactSheet(task,seq,res,'jpg',scale='half',printFormat = False)
     #pprint.pprint(sg.schema_field_read('Task'))
 
 if __name__ == '__main__':

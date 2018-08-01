@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/oiioContactSheet.py" line="169" />
+    <bookmark url="file://$PROJECT_DIR$/oiioContactSheet.py" line="176" />
+    <bookmark url="file://$PROJECT_DIR$/oiioContactSheet.py" line="316" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="546b0689-37c3-4979-87ea-25561236a086" name="Default" comment="">
@@ -53,8 +54,8 @@
       <file leaf-file-name="oiioContactSheet.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/oiioContactSheet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="482">
-              <caret line="455" column="34" selection-start-line="455" selection-start-column="34" selection-end-line="455" selection-end-column="34" />
+            <state relative-caret-position="315">
+              <caret line="414" column="33" lean-forward="true" selection-start-line="351" selection-start-column="6" selection-end-line="414" selection-end-column="33" />
               <folding>
                 <element signature="e#190#221#0" expanded="true" />
               </folding>
@@ -99,6 +100,7 @@
       <find>heightBuf</find>
       <find>cutOrder</find>
       <find>listImagesLen</find>
+      <find>heightBufImage</find>
     </findStrings>
     <replaceStrings>
       <replace>seqInCombobox</replace>
@@ -107,6 +109,8 @@
       <replace>contactOutPathLineEdit</replace>
       <replace>heightBufImage</replace>
       <replace>cutOrderSeqLen</replace>
+      <replace>heightShotArea</replace>
+      <replace>fileFromList</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -709,7 +713,28 @@
       <option name="project" value="LOCAL" />
       <updated>1532942452445</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="test on oiio for max lum">
+      <created>1532944434428</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1532944434428</updated>
+    </task>
+    <task id="LOCAL-00041" summary="test on oiio for max lum">
+      <created>1533056259416</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1533056259416</updated>
+    </task>
+    <task id="LOCAL-00042" summary="test on oiio for max lum">
+      <created>1533056312042</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1533056312042</updated>
+    </task>
+    <option name="localTasksCounter" value="43" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -762,13 +787,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/displayGeoUI.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2124">
-          <caret line="121" column="4" selection-start-line="121" selection-start-column="4" selection-end-line="121" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/burnLutExrGUI.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3222">
@@ -1099,10 +1117,13 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/oiioContactSheet_v003.py">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
     <entry file="file://$PROJECT_DIR$/oiioContactSheet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="482">
-          <caret line="455" column="34" selection-start-line="455" selection-start-column="34" selection-end-line="455" selection-end-column="34" />
+        <state relative-caret-position="315">
+          <caret line="414" column="33" lean-forward="true" selection-start-line="351" selection-start-column="6" selection-end-line="414" selection-end-column="33" />
           <folding>
             <element signature="e#190#221#0" expanded="true" />
           </folding>
