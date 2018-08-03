@@ -12,6 +12,7 @@
 from sgtkLib import tkutil, tkm
 import os, pprint, errno, argparse, sys, math
 import OpenImageIO as oiio
+from PIL import Image
 
 _USER_ = os.environ['USER']
 _OUTPATH_ ='/s/prodanim/asterix2/_sandbox/' + _USER_ +"/contactSheet"
@@ -70,12 +71,11 @@ def imFilter(taskname = 'compo_precomp'):
     return filterDict[taskname]
 
 #main call to SG api extract information from published files
-def findShots(taskname='compo_comp', seq='p00300', shotList=[],findVersions = False):
+def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
     if taskname not in taskList:
         taskname = taskList[0]
     print 'using : '
     res = {}
-    tmp ={}
     switchTask = taskList.index(taskname)
     testStatus = True
     while shotList != [] and switchTask < len(taskList):
@@ -94,6 +94,7 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[],findVersions = Fa
         for v in sg.find('PublishedFile', filters, ['code', 'entity','entity.Shot.sg_status_list','entity.Shot.sg_cut_order','version_number', 'path', 'published_file_type', 'entity.Shot.sg_cut_in','entity.Shot.sg_cut_out','task','entity.Shot.sg_sequence','entity.Shot.sg_frames_of_interest'], order=[{'field_name':'version_number','direction':'desc'}]):
             versionNb =v['version_number']
             entityName = v['entity']['name']
+
             if not entityName in res:
                 imFormat = '.' + v['path']['content_type'][
                                                      v['path']['content_type'].find("/") + 1:]
@@ -116,6 +117,12 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[],findVersions = Fa
                 res[entityName]['framePath'] = v['path']['local_path_linux']
                 res[entityName]['Task'] = v['task']['name']
                 res[entityName]['version']= v['version_number']
+                res[entityName]['versionNb'] = {}
+                res[entityName]['versionNb'][versionNb] = v['path']['local_path_linux']
+            elif versionNb not in res[entityName]['versionNb']:
+                res[entityName]['versionNb'][versionNb] = v['path']['local_path_linux']
+            else:
+                continue
 
         listShotInRes = sorted(res.keys())
         shotList = list(set(shotList).difference(listShotInRes))
@@ -133,7 +140,7 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[],findVersions = Fa
         ['entity.Shot.sg_sequence', 'name_is', seq],
         ['entity.Shot.code', 'in', res.keys()]
     ]
-    for v in sg.find('Task', filterTask, ['code', 'entity', 'sg_status_artistique']):
+    for v in sg.find('Task', filterTask, ['code', 'entity', 'sg_status_artistique','version_number']):
         entityName = v['entity']['name']
         try:
             res[entityName]['status'] = v['sg_status_artistique']
@@ -141,23 +148,24 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[],findVersions = Fa
             res[entityName]['status'] = 'None'
 
     # find all version for the shot in res
-    if findVersions:
-        for shot in res.keys():
-            if res[shot]['Task'] == taskname :
-                versionList = []
-                filters = [
-                    ['project', 'is', {'type': 'Project', 'id': project.id}],
-                    ['entity.Shot.code', 'is', shot],
-                    ['entity.Shot.sg_status_list', 'is_not', 'omt'],
-                    ['task', 'name_is', res[shot]['Task']],
-                ]
-
-                fileFound = sg.find('PublishedFile', filters,
-                                    ['code', 'entity', 'version_number'],order=[{'field_name': 'version_number', 'direction': 'desc'}])
-                for version in fileFound:
-                    if str(version['version_number']) not in versionList:
-                        versionList.append(str(version['version_number']))
-                res[shot]['versionsList']=versionList
+    # if findVersions:
+    #     for shot in res.keys():
+    #         if res[shot]['Task'] == taskname :
+    #             versionList = []
+    #             filters = [
+    #                 ['project', 'is', {'type': 'Project', 'id': project.id}],
+    #                 ['entity.Shot.code', 'is', shot],
+    #                 ['entity.Shot.sg_status_list', 'is_not', 'omt'],
+    #                 ['task', 'name_is', res[shot]['Task']],
+    #             ]
+    #
+    #             fileFound = sg.find('PublishedFile', filters,
+    #                                 ['code', 'entity', 'version_number'],order=[{'field_name': 'version_number', 'direction': 'desc'}])
+    #             for version in fileFound:
+    #                 if str(version['version_number']) not in versionList:
+    #                     versionList.append(str(version['version_number']))
+    #             res[shot]['versionsList']=versionList
+    # pprint.pprint(res)
     return res
 
 def findShotsInList( seq='s1300', shotList=[], taskname = 'compo_comp'):
@@ -307,6 +315,7 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
                     dictListShot[contactsheet]['listShot'] = []
                     dictListShot[contactsheet]['masterBuf'] = oiio.ImageBuf()
                     dictListShot[contactsheet]['page'] = nbPage
+                    dictListShot[contactsheet]['imagePath']=  path + 'contactSheet_print_' + seq + '_'+str(nbPage).zfill(3)+'.' + format
                 dictListShot[contactsheet]['listShot'].append(shot)
             else:
                 nbPage = nbPage + 1
@@ -315,6 +324,7 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
                     dictListShot[contactsheet]['listShot'] = []
                     dictListShot[contactsheet]['masterBuf'] = oiio.ImageBuf()
                     dictListShot[contactsheet]['page'] = nbPage
+                    dictListShot[contactsheet]['imagePath'] = path + 'contactSheet_print_' + seq + '_' + str(nbPage).zfill(3) + '.' + format
                 dictListShot[contactsheet]['listShot'].append(shot)
             imbNb = imbNb + 1
 
@@ -397,16 +407,17 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
         print 'adding some salt\na bit of pepper\nsmoldering the lot'
 
         # create the outputs frame
-        for contactSheet in dictListShot.keys():
+        outdir =''
+        for key in dictListShot.keys():
             output = oiio.ImageBuf()
             if scale == 'half':
                 output = oiio.ImageBuf(oiio.ImageSpec(int(masterBufwidth / 2), int(masterBufHeight / 2), 3, oiio.FLOAT))
-                oiio.ImageBufAlgo.resize(output, dictListShot[contactSheet]['masterBuf'])
+                oiio.ImageBufAlgo.resize(output, dictListShot[key]['masterBuf'])
             elif scale == 'quarter':
                 output = oiio.ImageBuf(oiio.ImageSpec(int(masterBufwidth / 4), int(masterBufHeight / 4), 3, oiio.FLOAT))
-                oiio.ImageBufAlgo.resize(output, dictListShot[contactSheet]['masterBuf'])
+                oiio.ImageBufAlgo.resize(output, dictListShot[key]['masterBuf'])
             else:
-                output = dictListShot[contactSheet]['masterBuf']
+                output = dictListShot[key]['masterBuf']
 
             bitFormat = oiio.UINT8
             if format == 'exr':
@@ -417,8 +428,16 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
                 bitFormat == oiio.UINT8
 
             output.set_write_format(bitFormat)
-            outdir = path + 'contactSheet_print_' + seq + '_'+str(dictListShot[contactSheet]['page']).zfill(3)+'.' + format
-            output.write(outdir)
+            outdir = outdir+ dictListShot[key]['imagePath'] + ', '
+
+            output.write(dictListShot[key]['imagePath'])
+
+        listForPdf = []
+        for key in dictListShot:
+            listForPdf.append(dictListShot[key]['imagePath'])
+        pdfFile = Image.open(listForPdf[0])
+        pdfFile.save(path + 'contactSheet_print_' + seq +'.pdf',append_images=listForPdf[1])
+
 
     else:
         ncolTmpFloat = float(len(res.keys())/float(nrow))
@@ -466,7 +485,7 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
         output.write(outdir)
 
-    print 'and Voila!\n'+outdir+' is cooked, Enjoy with no moderation!!!!'
+    print 'and Voila!\n'+outdir+' is cooked, \nEnjoy with no moderation!!!!'
 
 def createMasterBuf(maxwidth=2048, maxheight=858, printFormat=True, nrow=5, ncol=13 ,space=40, seq='s0265', task='compo_comp', topBar=True, bottomBar=True):
     # create the master buffer
@@ -497,7 +516,7 @@ def createMasterBuf(maxwidth=2048, maxheight=858, printFormat=True, nrow=5, ncol
                                   textcolor=(1, 1, 1, 1))
     return masterBuf,masterBufwidth,masterBufHeight
 
-def placeImages(res = {}, shotgunData = True, task ='compo_compc', cutOrderSeq =[], imgh= 2294, masterBuf = oiio.ImageBuf(), printFormat = False, ncol = 13, nrow = 5, space =40, maxwidth=2048, maxheight=858, averageList = []):
+def placeImages(res = {}, shotgunData = True, task ='compo_comp', cutOrderSeq =[], imgh= 2294, masterBuf = oiio.ImageBuf(), printFormat = False, ncol = 13, nrow = 5, space =40, maxwidth=2048, maxheight=858, averageList = []):
     offsetwidth = 0
     offsetheight = 0
     nbimage = 0
@@ -567,11 +586,11 @@ def placeImages(res = {}, shotgunData = True, task ='compo_compc', cutOrderSeq =
     return masterBuf, averageList
 
 def main():
-    seq = 's0110'
-    task = 'light_prelight'
+    seq = 's0265'
+    task = 'compo_comp'
     shotList = findShotsInSequence(seq)
     res = findShots(task,seq,shotList)
-    #contactSheet(task,seq,res,'jpg',scale='half',printFormat = False,nrow=10)
+    contactSheet(task,seq,res,'jpg',scale='half',printFormat = True,nrow=5)
     #pprint.pprint(sg.schema_field_read('Task'))
 
 if __name__ == '__main__':
