@@ -610,6 +610,7 @@ def get_args():
     parser.add_argument('--f','-f',type=str,help='format for the output image the supported format are: '+str(_OUTPUTFORMAT_) + ' with the default being jpg ')
     parser.add_argument('--nd','-nd', action='store_false', help='do not display metadata')
     parser.add_argument('--s','s',type=str, help='output image size thr argument are "full", "half", "quarter"\nIf no scale is chosen, the default is: quarter')
+    parser.add_argument('--pf','-pf', action='store_false', help='output image in print format (A4,A3)')
     args = parser.parse_args()
     seqNumber = args.sequences
     formatedSeq=[]
@@ -631,18 +632,32 @@ def get_args():
             format = 'jpg'
     else:
         format = 'jpg'
+
     noMeta = args.nd
 
-    return formatedSeq, noGui, task, format,noMeta
+    outImSize = args.s
+    if outImSize is not None:
+        if outImSize not in _OUTSIZE_:
+            outImSize = 'quarter'
+    else:
+        outImSize = 'quarter'
+
+    printFormat = args.pf
+
+    return formatedSeq, noGui, task, format,noMeta,outImSize,printFormat
 
 def main():
-    seq = 's0265'
-    task = 'compo_comp'
-    shotList = findShotsInSequence(seq)
-    res = findShots(task,seq,shotList)
-    contactSheet(task,seq,res,'tif',scale='quarter',printFormat = False,nrow=5)
-    print findPrinters()
-    #pprint.pprint(sg.schema_field_read('Task'))
+    sequences, noGui, task, format,noMeta,outImSize,printFormat = get_args()
+    for seq in sequences:
+        shotList = findShotsInSequence(seq)
+        res = findShots(task,seq,shotList)
+        contactSheet(task, seq, res, format, scale=outImSize, printFormat=printFormat, nrow=5,shotgunData=noMeta)
+    # seq = 's0265'
+    # task = 'compo_comp'
+    # shotList = findShotsInSequence(seq)
+    # res = findShots(task,seq,shotList)
+    # contactSheet(task,seq,res,'tif',scale='quarter',printFormat = False,nrow=5)
+    # #pprint.pprint(sg.schema_field_read('Task'))
 
 if __name__ == '__main__':
     main()
