@@ -10,7 +10,7 @@
 
 """
 from sgtkLib import tkutil, tkm
-import os, pprint, errno, argparse, sys, math
+import os, pprint, errno, argparse, sys, math,subprocess
 import OpenImageIO as oiio
 from PIL import Image
 
@@ -21,7 +21,9 @@ _FONT_ = 'LiberationSans-Italic'
 tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
 sg = sgw._sg
 
-taskList = ['compo_stereo','compo_comp','light_precomp','light_prelight','confo_render','anim_master','confo_anim','anim_main','layout_base']
+_TASKLIST_ = ['compo_stereo','compo_comp','light_precomp','light_prelight','confo_render','anim_master','confo_anim','anim_main','layout_base']
+_OUTPUTFORMAT_=['jpg','tif','exr']
+_OUTSIZE_ = ["full", "half", "quarter"]
 
 animFilter = {
         'filter_operator' : 'any',
@@ -72,17 +74,17 @@ def imFilter(taskname = 'compo_precomp'):
 
 #main call to SG api extract information from published files
 def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
-    if taskname not in taskList:
-        taskname = taskList[0]
+    if taskname not in _TASKLIST_:
+        taskname = _TASKLIST_[0]
     print 'using : '
     res = {}
-    switchTask = taskList.index(taskname)
+    switchTask = _TASKLIST_.index(taskname)
     testStatus = True
-    while shotList != [] and switchTask < len(taskList):
-        filterType = imFilter(taskList[switchTask])
+    while shotList != [] and switchTask < len(_TASKLIST_):
+        filterType = imFilter(_TASKLIST_[switchTask])
         filters = [
             ['project', 'is', {'type':'Project', 'id':project.id}],
-            ['task', 'name_is', taskList[switchTask]],
+            ['task', 'name_is', _TASKLIST_[switchTask]],
             #['entity', 'is_not', None],
             ['entity', 'type_is', 'Shot'],
             ['entity.Shot.sg_sequence','name_is', seq],
@@ -129,7 +131,7 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
         #nbShotInTask = str(listShotInRes).replace('\'','').replace('[','').replace(']','')
         if len(listShotInRes) == 0:
             nbShotInTask = 'None'
-        print '\t'+taskList[switchTask]#+': '+ nbShotInTask
+        print '\t'+_TASKLIST_[switchTask]#+': '+ nbShotInTask
         switchTask = switchTask + 1
 
     # find the artistic status of the main task for each shot
@@ -172,15 +174,15 @@ def findShotsInList( seq='s1300', shotList=[], taskname = 'compo_comp'):
     res = {}
     for shot in shotList:
         found = False
-        switchTask = taskList.index(taskname)
+        switchTask = _TASKLIST_.index(taskname)
         while found == False:
-            print taskList[switchTask],shot
-            filterType = imFilter(taskList[switchTask])
+            print _TASKLIST_[switchTask],shot
+            filterType = imFilter(_TASKLIST_[switchTask])
             filters = [
             ['project', 'is', {'type': 'Project', 'id': project.id}],
             ['entity.Shot.code', 'is', shot],
             ['entity.Shot.sg_status_list', 'is_not', 'omt'],
-            ['task', 'name_is', taskList[switchTask]],
+            ['task', 'name_is', _TASKLIST_[switchTask]],
             filterType
             ]
 
@@ -207,7 +209,7 @@ def findShotsInList( seq='s1300', shotList=[], taskname = 'compo_comp'):
 
                 found = True
 
-            if switchTask >= len(taskList):
+            if switchTask >= len(_TASKLIST_):
                 print 'not good'
                 break
 
@@ -261,7 +263,7 @@ def getOrder(res = {}):
             break
     return shotNb
 
-def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 'full',shotgunData = True, printFormat = False, nrow =5):
+def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 'full',shotgunData = True, printFormat = False, nrow =5, pdf =True):
 
     logoFile = '/s/prodanim/asterix2/_source_global/Software/Nuke/scripts/contactSheetDir/logo.jpg'
     checkerFile = '/s/prodanim/asterix2/_sandbox/duda/images/chekerCrop.jpg'
@@ -423,7 +425,7 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
             if format == 'exr':
                 bitFormat = oiio.HALF
             elif format == 'tif':
-                bitFormat = oiio.UINT16
+                bitFormat = oiio.UINT8
             else:
                 bitFormat == oiio.UINT8
 
@@ -432,11 +434,17 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
             output.write(dictListShot[key]['imagePath'])
 
-        listForPdf = []
-        for key in dictListShot:
-            listForPdf.append(dictListShot[key]['imagePath'])
-        pdfFile = Image.open(listForPdf[0])
-        pdfFile.save(path + 'contactSheet_print_' + seq +'.pdf',append_images=listForPdf[1])
+            if pdf:
+            #listForPdf = []
+                for key in dictListShot:
+                    infilePath = dictListShot[key]['imagePath']
+                    if format != 'jpg':
+                        infile = oiio.ImageBuf(infilePath)
+                        infile.write(infilePath.replace(format,'jpg'))
+                        infilePath = infilePath.replace(format,'jpg')
+                #listForPdf.append(dictListShot[key]['imagePath'])
+                    pdfFile = Image.open(infilePath)
+                    pdfFile.save(infilePath.replace('jpg','pdf'))
 
 
     else:
@@ -585,12 +593,55 @@ def placeImages(res = {}, shotgunData = True, task ='compo_comp', cutOrderSeq =[
 
     return masterBuf, averageList
 
+def findPrinters():
+    tmpPrinterList = subprocess.Popen(['lpstat','-a'],stdout=subprocess.PIPE).communicate()[0]
+    printerList = []
+    for line in tmpPrinterList.splitlines():
+        printerList.append(line[:line.find(' ')])
+    return printerList
+
+def get_args():
+    #Assign description to the help doc
+    parser = argparse.ArgumentParser(description = "create a contactSheet for sequence")
+    #shot argument
+    parser.add_argument('sequences', type=str,nargs='*', help='seq number(s) you can put multiple sequence separated by a space (i.e: 10 20 200 40)')
+    parser.add_argument('--x','-x', action='store_true', help='create the contactSheet without opening the GUI if this arguments is not present or no sequences are pass, the GUI will open')
+    parser.add_argument('--t','-t',type=str, help='task name: '+ str(_TASKLIST_) + '\nIf no task is chosen, the default is: comp_precomp')
+    parser.add_argument('--f','-f',type=str,help='format for the output image the supported format are: '+str(_OUTPUTFORMAT_) + ' with the default being jpg ')
+    parser.add_argument('--nd','-nd', action='store_false', help='do not display metadata')
+    parser.add_argument('--s','s',type=str, help='output image size thr argument are "full", "half", "quarter"\nIf no scale is chosen, the default is: quarter')
+    args = parser.parse_args()
+    seqNumber = args.sequences
+    formatedSeq=[]
+    if seqNumber is not None and len(seqNumber)>0:
+        for seq in seqNumber:
+            if seq.find('s') < 0:
+                seq = "s"+ seq.zfill(4)
+                formatedSeq.append(seq)
+    noGui = args.x
+    task =args.t
+    if task is not None:
+        if task not in _TASKLIST_:
+            task = 'compo_comp'
+    else:
+        task = 'compo_comp'
+    format = args.f
+    if format is not None:
+        if format not in _OUTPUTFORMAT_:
+            format = 'jpg'
+    else:
+        format = 'jpg'
+    noMeta = args.nd
+
+    return formatedSeq, noGui, task, format,noMeta
+
 def main():
     seq = 's0265'
     task = 'compo_comp'
     shotList = findShotsInSequence(seq)
     res = findShots(task,seq,shotList)
-    contactSheet(task,seq,res,'jpg',scale='half',printFormat = True,nrow=5)
+    contactSheet(task,seq,res,'tif',scale='quarter',printFormat = False,nrow=5)
+    print findPrinters()
     #pprint.pprint(sg.schema_field_read('Task'))
 
 if __name__ == '__main__':
