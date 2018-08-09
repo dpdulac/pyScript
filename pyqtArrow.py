@@ -52,7 +52,7 @@ class FrameLayout(QWidget):
         def __init__(self, parent=None, title="", collapsed=False):
             QFrame.__init__(self, parent=parent)
             self.setMinimumHeight(24)
-            self.move(QPoint(24, 0))
+            #self.move(QPoint(24, 0))
             #self.setStyleSheet("border:1px solid rgb(41, 41, 41); ")
             self.mainQvboxLayout = QVBoxLayout()
             self.fileGroup = QGroupBox('atom')

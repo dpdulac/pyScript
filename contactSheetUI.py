@@ -276,21 +276,27 @@ class findFileUI(QWidget):
         self.dodelete = dodelete
         self.master = parent
         self.initUI()
-        self.listOfShots=[]
 
     def initUI(self):
         self.fileNb = self.master.fileNb
         self.mainQvboxLayout = QVBoxLayout()
+        self.qwidgetList = []
 
         self.fileGroup = QGroupBox('contactSheet'+str(self.fileNb))
         self.fileGroup.setCheckable(True)
         self.fileGroup.setChecked(True)
-        self.mainFileGridLayout = QGridLayout(self.fileGroup)
+        self.fileGroup.setFlat(False)
+        self.wipQvboxLayout = QVBoxLayout(self.fileGroup)
+        self.wid = QWidget()
+        self.mainFileGridLayout = QGridLayout()
+        self.wid.setLayout(self.mainFileGridLayout)
+        self.wipQvboxLayout.addWidget(self.wid)
 
 
         self.fileInGridLayout = QGridLayout()
         self.seqInCombobox = QComboBox()
         self.seqInCombobox.setToolTip('sequence for contactSheet')
+        self.qwidgetList.append(self.seqInCombobox)
         if len(self.master.allShots)==0:
             self.listOfShots = findAllSequence()
             self.seqInCombobox.addItems(self.listOfShots)
@@ -318,12 +324,12 @@ class findFileUI(QWidget):
         self.fileOutPathLabel.setAlignment(Qt.AlignCenter)
         self.contactOutPathLineEdit = QLineEdit()
         self.contactOutPathLineEdit.setText(_OUTIMAGEPATH_+'/contactSheet/')
-
         self.contactOutPathLineEdit.setToolTip('path for frame output')
         self.fileOutNameLabel = QLabel('out name')
         self.fileOutNameLabel.setAlignment(Qt.AlignCenter)
         self.fileOutNameLineEdit = QLineEdit()
         self.fileOutNameLineEdit.setToolTip('name for the output frame')
+        self.qwidgetList.append(self.fileOutNameLineEdit)
         self.fileOutTypeLabel = QLabel('file type')
         self.fileOutTypeLabel.setAlignment(Qt.AlignCenter)
         self.fileOutTypComboBox = QComboBox()
@@ -346,11 +352,29 @@ class findFileUI(QWidget):
         self.fileOutTypComboBox.currentIndexChanged.connect(self.comboChanged)
         self.seqInCombobox.currentIndexChanged.connect(self.seqComboChanged)
         self.fileOutButton.clicked.connect(self.findDir)
+        self.fileGroup.toggled.connect(self.test)
 
         self.seqComboChanged()
         self.mainQvboxLayout.addWidget(self.fileGroup)
         self.mainQvboxLayout.addStretch(1)
         self.setLayout(self.mainQvboxLayout)
+
+
+    def test(self):
+        if not self.fileGroup.isChecked():
+            self.wid.setVisible(False)
+            self.fileGroup.setFlat(True)
+            height = self.master.scroll.height() - 197
+            self.master.scroll.setFixedHeight(height)
+            #if len(self.master.allShots) <3:
+            self.master.setFixedHeight(self.master.height() - 197)
+        else:
+            self.wid.setVisible(True)
+            self.fileGroup.setFlat(False)
+            height = self.master.scroll.height() + 197
+            self.master.scroll.setFixedHeight(height)
+            #if len(self.master.allShots) <3:
+            self.master.setFixedHeight(self.master.height() + 197)
 
     def seqComboChanged(self):
         self.seqName = self.seqInCombobox.currentText()

@@ -647,17 +647,17 @@ def get_args():
     return formatedSeq, noGui, task, format,noMeta,outImSize,printFormat
 
 def main():
-    sequences, noGui, task, format,noMeta,outImSize,printFormat = get_args()
-    for seq in sequences:
-        shotList = findShotsInSequence(seq)
-        res = findShots(task,seq,shotList)
-        contactSheet(task, seq, res, format, scale=outImSize, printFormat=printFormat, nrow=5,shotgunData=noMeta)
-    # seq = 's0265'
-    # task = 'compo_comp'
-    # shotList = findShotsInSequence(seq)
-    # res = findShots(task,seq,shotList)
-    # contactSheet(task,seq,res,'tif',scale='quarter',printFormat = False,nrow=5)
-    # #pprint.pprint(sg.schema_field_read('Task'))
+    # sequences, noGui, task, format,noMeta,outImSize,printFormat = get_args()
+    # for seq in sequences:
+    #     shotList = findShotsInSequence(seq)
+    #     res = findShots(task,seq,shotList)
+    #     contactSheet(task, seq, res, format, scale=outImSize, printFormat=printFormat, nrow=5,shotgunData=noMeta)
+    seq = 's1160'
+    task = 'compo_comp'
+    shotList = findShotsInSequence(seq)
+    res = findShots(task,seq,shotList)
+    contactSheet(task,seq,res,'jpg',scale='quarter',printFormat = False,nrow=5)
+    #pprint.pprint(sg.schema_field_read('Task'))
 
 if __name__ == '__main__':
     main()
