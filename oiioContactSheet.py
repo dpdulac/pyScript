@@ -646,6 +646,7 @@ def get_args():
     parser.add_argument('--s','-s',type=str, help='output image size the argument are "full", "half", "quarter"\nIf no scale is chosen, the default is: quarter')
     parser.add_argument('--pf','-pf', action='store_true', help='output image in print format (A4,A3)')
     parser.add_argument('--ncol','-ncol', type=int, help='number of column for the contactSheet(do not apply in print format)')
+    parser.add_argument('--nrv','-nrv', action='store_false', help=' do not display the resulting image(s) in rv')
     args = parser.parse_args()
     seqNumber = args.sequences
     formatedSeq=[]
@@ -686,17 +687,20 @@ def get_args():
     else:
         nrow = 5
 
-    return formatedSeq, noGui, task, format, noMeta, outImSize, printFormat, nrow
+    nrv = args.nrv
+
+    return formatedSeq, noGui, task, format, noMeta, outImSize, printFormat, nrow,nrv
 
 def main():
-    sequences, noGui, task, format,noMeta,outImSize,printFormat, nrow = get_args()
+    sequences, noGui, task, format,noMeta,outImSize,printFormat, nrow,nrv  = get_args()
     imageList = []
     for seq in sequences:
         shotList = findShotsInSequence(seq)
         res = findShots(task,seq,shotList)
         imageList.append(contactSheet(task, seq, res, format, scale=outImSize, printFormat=printFormat, nrow=nrow,shotgunData=noMeta))
-    print 'serving in rv'
-    playInRv(imageList)
+    if nrv:
+        print 'serving in rv'
+        playInRv(imageList)
     # seq = 's1160'
     # task = 'light_prelight'
     # shotList = findShotsInSequence(seq)
