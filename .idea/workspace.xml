@@ -6,7 +6,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="546b0689-37c3-4979-87ea-25561236a086" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/oiioContactSheetUI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/oiioContactSheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/oiioContactSheet.py" afterDir="false" />
     </list>
@@ -25,8 +24,8 @@
       <file leaf-file-name="contactSheetUI.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/contactSheetUI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="7980">
-              <caret line="532" column="10" lean-forward="true" selection-start-line="513" selection-end-line="532" selection-end-column="10" />
+            <state relative-caret-position="-272">
+              <caret line="477" column="20" lean-forward="true" selection-start-line="435" selection-end-line="477" selection-end-column="20" />
               <folding>
                 <element signature="e#188#212#0" expanded="true" />
               </folding>
@@ -37,8 +36,8 @@
       <file leaf-file-name="oiioContactSheetUI.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/oiioContactSheetUI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="463">
-              <caret line="118" column="75" lean-forward="true" selection-start-line="118" selection-start-column="75" selection-end-line="118" selection-end-column="75" />
+            <state relative-caret-position="1725">
+              <caret line="118" column="75" selection-start-line="118" selection-start-column="75" selection-end-line="118" selection-end-column="75" />
               <folding>
                 <element signature="e#192#216#0" expanded="true" />
               </folding>
@@ -49,8 +48,8 @@
       <file leaf-file-name="createMasterCamKatanaTmp.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/createMasterCamKatanaTmp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1050">
-              <caret line="427" column="8" lean-forward="true" selection-start-line="427" selection-start-column="8" selection-end-line="427" selection-end-column="44" />
+            <state relative-caret-position="6330">
+              <caret line="427" column="8" selection-start-line="427" selection-start-column="8" selection-end-line="427" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -67,12 +66,10 @@
       <file leaf-file-name="oiioContactSheet.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/oiioContactSheet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="149">
-              <caret line="636" column="56" selection-start-line="636" selection-start-column="56" selection-end-line="636" selection-end-column="56" />
+            <state relative-caret-position="299">
+              <caret line="697" column="18" selection-start-line="697" selection-start-column="18" selection-end-line="697" selection-end-column="18" />
               <folding>
                 <element signature="e#190#221#0" expanded="true" />
-                <element signature="e#22970#24758#0" />
-                <element signature="e#24990#28611#0" />
               </folding>
             </state>
           </provider>
@@ -81,7 +78,7 @@
       <file leaf-file-name="burnLutExrGUI.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/burnLutExrGUI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-3405">
+            <state relative-caret-position="300">
               <caret line="20" selection-start-line="20" selection-end-line="20" />
             </state>
           </provider>
@@ -90,7 +87,7 @@
       <file leaf-file-name="pyqtArrow.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pyqtArrow.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="421">
+            <state relative-caret-position="795">
               <caret line="55" column="13" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="13" />
               <folding>
                 <element signature="e#183#208#0" expanded="true" />
@@ -171,6 +168,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -182,7 +180,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -264,7 +261,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/oiioContactSheet.py" />
-      <option name="PARAMETERS" value="1160 -x -t anim_main -nd" />
+      <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
@@ -466,20 +463,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1517470742753</updated>
-    </task>
-    <task id="LOCAL-00001" summary="dddd">
-      <created>1518027849271</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1518027849271</updated>
-    </task>
-    <task id="LOCAL-00002" summary="new burnlut using oiio only">
-      <created>1518181099594</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1518181099594</updated>
     </task>
     <task id="LOCAL-00003" summary="new burnlut using oiio onlyv">
       <created>1518194993909</created>
@@ -810,7 +793,21 @@
       <option name="project" value="LOCAL" />
       <updated>1533802124272</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="test on oiio for max lum">
+      <created>1534164598608</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1534164598609</updated>
+    </task>
+    <task id="LOCAL-00051" summary="test on oiio for max lum">
+      <created>1534169737114</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1534169737114</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -1150,7 +1147,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/pyqtArrow.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="421">
+        <state relative-caret-position="795">
           <caret line="55" column="13" selection-start-line="55" selection-start-column="13" selection-end-line="55" selection-end-column="13" />
           <folding>
             <element signature="e#183#208#0" expanded="true" />
@@ -1160,46 +1157,44 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/createMasterCamKatanaTmp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1050">
-          <caret line="427" column="8" lean-forward="true" selection-start-line="427" selection-start-column="8" selection-end-line="427" selection-end-column="44" />
+        <state relative-caret-position="6330">
+          <caret line="427" column="8" selection-start-line="427" selection-start-column="8" selection-end-line="427" selection-end-column="44" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/burnLutExrGUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-3405">
+        <state relative-caret-position="300">
           <caret line="20" selection-start-line="20" selection-end-line="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/contactSheetUI.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="7980">
-          <caret line="532" column="10" lean-forward="true" selection-start-line="513" selection-end-line="532" selection-end-column="10" />
-          <folding>
-            <element signature="e#188#212#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/oiioContactSheetUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="463">
-          <caret line="118" column="75" lean-forward="true" selection-start-line="118" selection-start-column="75" selection-end-line="118" selection-end-column="75" />
+        <state relative-caret-position="1725">
+          <caret line="118" column="75" selection-start-line="118" selection-start-column="75" selection-end-line="118" selection-end-column="75" />
           <folding>
             <element signature="e#192#216#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/contactSheetUI.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-272">
+          <caret line="477" column="20" lean-forward="true" selection-start-line="435" selection-end-line="477" selection-end-column="20" />
+          <folding>
+            <element signature="e#188#212#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/oiioContactSheet.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="149">
-          <caret line="636" column="56" selection-start-line="636" selection-start-column="56" selection-end-line="636" selection-end-column="56" />
+        <state relative-caret-position="299">
+          <caret line="697" column="18" selection-start-line="697" selection-start-column="18" selection-end-line="697" selection-end-column="18" />
           <folding>
             <element signature="e#190#221#0" expanded="true" />
-            <element signature="e#22970#24758#0" />
-            <element signature="e#24990#28611#0" />
           </folding>
         </state>
       </provider>

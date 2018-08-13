@@ -695,7 +695,7 @@ def main():
         shotList = findShotsInSequence(seq)
         res = findShots(task,seq,shotList)
         imageList.append(contactSheet(task, seq, res, format, scale=outImSize, printFormat=printFormat, nrow=nrow,shotgunData=noMeta))
-    print 'opening in rv'
+    print 'serving in rv'
     playInRv(imageList)
     # seq = 's1160'
     # task = 'light_prelight'
