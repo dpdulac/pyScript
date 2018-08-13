@@ -377,7 +377,7 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
                 print 'tendering the frames'
                 dictListShot[contactSheet]['masterBuf'], averageList = placeImages(res=res, task=task, cutOrderSeq=dictListShot[contactSheet]['listShot'], imgh=578 + (2 * maxheight),
                                                      masterBuf=dictListShot[contactSheet]['masterBuf'], printFormat=printFormat, ncol=ncol, nrow=nrow,
-                                                     space=space, maxwidth=maxwidth, maxheight=maxheight,averageList=averageList)
+                                                     space=space, maxwidth=maxwidth, maxheight=maxheight,averageList=averageList, shotgunData=shotgunData)
             else:
                 dictListShot[contactSheet]['masterBuf'], masterBufwidth, masterBufHeight = createMasterBuf(
                     maxwidth=maxwidth, maxheight=maxheight,
@@ -398,7 +398,7 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
                                                                                    printFormat=printFormat, ncol=ncol,
                                                                                    nrow=nrow,
                                                                                    space=space, maxwidth=maxwidth,
-                                                                                   maxheight=maxheight,averageList=averageList)
+                                                                                   maxheight=maxheight,averageList=averageList,shotgunData=shotgunData)
 
         # create the average color box
         startcolumnBox = 1178 + (space)
@@ -491,7 +491,7 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
         oiio.ImageBufAlgo.paste(masterBuf, (masterBufwidth / 2) - (widthLogo / 2), 628, 0, 0, logo)
         masterBuf, averageList = placeImages(res=res, task=task, cutOrderSeq=cutOrderSeq, imgh=578 + (2 * maxheight),
                                              masterBuf=masterBuf, printFormat=printFormat, ncol=ncol, nrow=nrow,
-                                             space=space, maxwidth=maxwidth, maxheight=maxheight)
+                                             space=space, maxwidth=maxwidth, maxheight=maxheight, shotgunData=shotgunData)
 
         print 'adding some salt\na bit of pepper\nsmoldering the lot'
         #create the output frame
@@ -518,6 +518,7 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
         output.write(outdir)
 
     print 'and Voila!\n'+outdir+' is cooked, \nEnjoy with no moderation!!!!'
+    return outdir
 
 def createMasterBuf(maxwidth=2048, maxheight=858, printFormat=True, nrow=5, ncol=13 ,space=40, seq='s0265', task='compo_comp', topBar=True, bottomBar=True):
     # create the master buffer
@@ -624,6 +625,15 @@ def findPrinters():
         printerList.append(line[:line.find(' ')])
     return printerList
 
+def playInRv(imagesList=[]):
+    rvCommand = 'rv '
+    for image in imagesList:
+        rvCommand = rvCommand + ' ' + image
+    #rvCommand = rvCommand + ' -pyeval "import rv.commands; rv.commands.stop(); print \'donuts\'"'
+    os.system(rvCommand)
+    #os.system("rvpush py-eval 'rv.commands.stop()'")
+
+
 def get_args():
     #Assign description to the help doc
     parser = argparse.ArgumentParser(description = "create a contactSheet for sequence")
@@ -635,6 +645,7 @@ def get_args():
     parser.add_argument('--nd','-nd', action='store_false', help='do not display metadata')
     parser.add_argument('--s','-s',type=str, help='output image size the argument are "full", "half", "quarter"\nIf no scale is chosen, the default is: quarter')
     parser.add_argument('--pf','-pf', action='store_true', help='output image in print format (A4,A3)')
+    parser.add_argument('--ncol','-ncol', type=int, help='number of column for the contactSheet(do not apply in print format)')
     args = parser.parse_args()
     seqNumber = args.sequences
     formatedSeq=[]
@@ -668,14 +679,24 @@ def get_args():
 
     printFormat = args.pf
 
-    return formatedSeq, noGui, task, format, noMeta, outImSize, printFormat
+    nrow = args.ncol
+    if nrow is not None:
+        if nrow < 3:
+            nrow = 5
+    else:
+        nrow = 5
+
+    return formatedSeq, noGui, task, format, noMeta, outImSize, printFormat, nrow
 
 def main():
-    sequences, noGui, task, format,noMeta,outImSize,printFormat = get_args()
+    sequences, noGui, task, format,noMeta,outImSize,printFormat, nrow = get_args()
+    imageList = []
     for seq in sequences:
         shotList = findShotsInSequence(seq)
         res = findShots(task,seq,shotList)
-        contactSheet(task, seq, res, format, scale=outImSize, printFormat=printFormat, nrow=5,shotgunData=noMeta)
+        imageList.append(contactSheet(task, seq, res, format, scale=outImSize, printFormat=printFormat, nrow=nrow,shotgunData=noMeta))
+    print 'opening in rv'
+    playInRv(imageList)
     # seq = 's1160'
     # task = 'light_prelight'
     # shotList = findShotsInSequence(seq)
