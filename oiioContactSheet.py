@@ -170,6 +170,30 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
     # pprint.pprint(res)
     return res
 
+def findAllSequence(all = False):
+    from sgtkLib import tkutil, tkm
+    tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
+    sg = sgw._sg
+
+    filters = [
+        ['project', 'is', {'type':'Project', 'id':project.id}],
+    ]
+    seqShots =[]
+    #get all the name of the shots and masters from the sequence
+    for v in sg.find('Sequence',filters,['entity','code','description']):
+        seq = v['code']
+        if all:
+            if not seq in seqShots:
+                seqShots.append(seq)
+        else:
+            if int(seq[seq.find('s')+1:]) <9000:
+                if not seq in seqShots:
+                    seqShots.append(seq)
+            else:
+                print  seq + ' will not be included'
+    seqShots=sorted(seqShots)
+    return seqShots
+
 def findShotsInList( seq='s1300', shotList=[], taskname = 'compo_comp'):
     res = {}
     for shot in shotList:
@@ -609,8 +633,8 @@ def get_args():
     parser.add_argument('--t','-t',type=str, help='task name: '+ str(_TASKLIST_) + '\nIf no task is chosen, the default is: comp_precomp')
     parser.add_argument('--f','-f',type=str,help='format for the output image the supported format are: '+str(_OUTPUTFORMAT_) + ' with the default being jpg ')
     parser.add_argument('--nd','-nd', action='store_false', help='do not display metadata')
-    parser.add_argument('--s','s',type=str, help='output image size thr argument are "full", "half", "quarter"\nIf no scale is chosen, the default is: quarter')
-    parser.add_argument('--pf','-pf', action='store_false', help='output image in print format (A4,A3)')
+    parser.add_argument('--s','-s',type=str, help='output image size the argument are "full", "half", "quarter"\nIf no scale is chosen, the default is: quarter')
+    parser.add_argument('--pf','-pf', action='store_true', help='output image in print format (A4,A3)')
     args = parser.parse_args()
     seqNumber = args.sequences
     formatedSeq=[]
@@ -644,20 +668,23 @@ def get_args():
 
     printFormat = args.pf
 
-    return formatedSeq, noGui, task, format,noMeta,outImSize,printFormat
+    return formatedSeq, noGui, task, format, noMeta, outImSize, printFormat
 
 def main():
-    # sequences, noGui, task, format,noMeta,outImSize,printFormat = get_args()
-    # for seq in sequences:
-    #     shotList = findShotsInSequence(seq)
-    #     res = findShots(task,seq,shotList)
-    #     contactSheet(task, seq, res, format, scale=outImSize, printFormat=printFormat, nrow=5,shotgunData=noMeta)
-    seq = 's1160'
-    task = 'compo_comp'
-    shotList = findShotsInSequence(seq)
-    res = findShots(task,seq,shotList)
-    contactSheet(task,seq,res,'jpg',scale='quarter',printFormat = False,nrow=5)
-    #pprint.pprint(sg.schema_field_read('Task'))
+    sequences, noGui, task, format,noMeta,outImSize,printFormat = get_args()
+    for seq in sequences:
+        shotList = findShotsInSequence(seq)
+        res = findShots(task,seq,shotList)
+        contactSheet(task, seq, res, format, scale=outImSize, printFormat=printFormat, nrow=5,shotgunData=noMeta)
+    # seq = 's1160'
+    # task = 'light_prelight'
+    # shotList = findShotsInSequence(seq)
+    # res = findShots(task,seq,shotList)
+    # contactSheet(task,seq,res,'jpg',scale='quarter',printFormat = False,nrow=10)
+    # sequences = findAllSequence()
+    # print len(sequences)/8.0
+    #for item in range(sequences):
+
 
 if __name__ == '__main__':
     main()

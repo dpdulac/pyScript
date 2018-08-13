@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/oiioContactSheet.py" line="197" />
-    <bookmark url="file://$PROJECT_DIR$/oiioContactSheet.py" line="477" />
+    <bookmark url="file://$PROJECT_DIR$/oiioContactSheet.py" line="221" />
+    <bookmark url="file://$PROJECT_DIR$/oiioContactSheet.py" line="501" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="546b0689-37c3-4979-87ea-25561236a086" name="Default" comment="">
+      <change afterPath="$PROJECT_DIR$/oiioContactSheetUI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contactSheetUI.py" beforeDir="false" afterPath="$PROJECT_DIR$/contactSheetUI.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/oiioContactSheet.py" beforeDir="false" afterPath="$PROJECT_DIR$/oiioContactSheet.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pyqtArrow.py" beforeDir="false" afterPath="$PROJECT_DIR$/pyqtArrow.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -23,13 +22,25 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="contactSheetUI.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="contactSheetUI.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/contactSheetUI.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="135">
-              <caret line="368" column="13" selection-start-line="368" selection-start-column="13" selection-end-line="368" selection-end-column="13" />
+            <state relative-caret-position="7980">
+              <caret line="532" column="10" lean-forward="true" selection-start-line="513" selection-end-line="532" selection-end-column="10" />
               <folding>
                 <element signature="e#188#212#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="oiioContactSheetUI.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/oiioContactSheetUI.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="463">
+              <caret line="118" column="75" lean-forward="true" selection-start-line="118" selection-start-column="75" selection-end-line="118" selection-end-column="75" />
+              <folding>
+                <element signature="e#192#216#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -53,11 +64,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="oiioContactSheet.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="oiioContactSheet.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/oiioContactSheet.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="419">
-              <caret line="654" column="16" selection-start-line="654" selection-start-column="16" selection-end-line="654" selection-end-column="16" />
+            <state relative-caret-position="149">
+              <caret line="636" column="56" selection-start-line="636" selection-start-column="56" selection-end-line="636" selection-end-column="56" />
               <folding>
                 <element signature="e#190#221#0" expanded="true" />
                 <element signature="e#22970#24758#0" />
@@ -143,8 +154,9 @@
         <option value="$PROJECT_DIR$/OpenImageIOtest.py" />
         <option value="$PROJECT_DIR$/oiioContactSheet_v004.py" />
         <option value="$PROJECT_DIR$/pyqtArrow.py" />
-        <option value="$PROJECT_DIR$/oiioContactSheet.py" />
         <option value="$PROJECT_DIR$/contactSheetUI.py" />
+        <option value="$PROJECT_DIR$/oiioContactSheetUI.py" />
+        <option value="$PROJECT_DIR$/oiioContactSheet.py" />
       </list>
     </option>
   </component>
@@ -202,7 +214,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.contactSheetUI">
+  <component name="RunManager" selected="Python.oiioContactSheet">
     <configuration name="burnLutExrGUI" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="newtest" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -252,12 +264,12 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/oiioContactSheet.py" />
-      <option name="PARAMETERS" value="" />
+      <option name="PARAMETERS" value="1160 -x -t anim_main -nd" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
       <option name="MODULE_MODE" value="false" />
     </configuration>
-    <configuration name="oiioContactSheet_v001" type="PythonConfigurationType" factoryName="Python" temporary="true">
+    <configuration name="oiioContactSheetUI" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <module name="newtest" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -269,7 +281,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/oiioContactSheet_v001.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/oiioContactSheetUI.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -430,17 +442,17 @@
     <list>
       <item itemvalue="Python.contactSheetUI" />
       <item itemvalue="Python.oiioContactSheet" />
-      <item itemvalue="Python.oiioContactSheet_v001" />
       <item itemvalue="Python.pyqtArrow" />
       <item itemvalue="Python.burnLutExrGUI" />
+      <item itemvalue="Python.oiioContactSheetUI" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Python.oiioContactSheet" />
+        <item itemvalue="Python.oiioContactSheetUI" />
         <item itemvalue="Python.contactSheetUI" />
         <item itemvalue="Python.burnLutExrGUI" />
-        <item itemvalue="Python.oiioContactSheet" />
         <item itemvalue="Python.pyqtArrow" />
-        <item itemvalue="Python.oiioContactSheet_v001" />
       </list>
     </recent_temporary>
   </component>
@@ -791,7 +803,14 @@
       <option name="project" value="LOCAL" />
       <updated>1533641242581</updated>
     </task>
-    <option name="localTasksCounter" value="49" />
+    <task id="LOCAL-00049" summary="test on oiio for max lum">
+      <created>1533802124272</created>
+      <option name="number" value="00049" />
+      <option name="presentableId" value="LOCAL-00049" />
+      <option name="project" value="LOCAL" />
+      <updated>1533802124272</updated>
+    </task>
+    <option name="localTasksCounter" value="50" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -844,18 +863,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/oiioContactSheet.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4905">
-          <caret line="329" column="151" selection-start-line="329" selection-start-column="151" selection-end-line="329" selection-end-column="151" />
-          <folding>
-            <element signature="e#190#221#0" expanded="true" />
-            <element signature="e#22970#24758#0" />
-            <element signature="e#24990#28611#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../packages/prods/anim/asterix2/asterix2PipeTools/dev/tools/convertExr/burnLutExr.py" />
     <entry file="file://$PROJECT_DIR$/extractDispForKatana.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -1165,24 +1172,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/oiioContactSheet.py">
+    <entry file="file://$PROJECT_DIR$/contactSheetUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="419">
-          <caret line="654" column="16" selection-start-line="654" selection-start-column="16" selection-end-line="654" selection-end-column="16" />
+        <state relative-caret-position="7980">
+          <caret line="532" column="10" lean-forward="true" selection-start-line="513" selection-end-line="532" selection-end-column="10" />
           <folding>
-            <element signature="e#190#221#0" expanded="true" />
-            <element signature="e#22970#24758#0" />
-            <element signature="e#24990#28611#0" />
+            <element signature="e#188#212#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/contactSheetUI.py">
+    <entry file="file://$PROJECT_DIR$/oiioContactSheetUI.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="368" column="13" selection-start-line="368" selection-start-column="13" selection-end-line="368" selection-end-column="13" />
+        <state relative-caret-position="463">
+          <caret line="118" column="75" lean-forward="true" selection-start-line="118" selection-start-column="75" selection-end-line="118" selection-end-column="75" />
           <folding>
-            <element signature="e#188#212#0" expanded="true" />
+            <element signature="e#192#216#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/oiioContactSheet.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="149">
+          <caret line="636" column="56" selection-start-line="636" selection-start-column="56" selection-end-line="636" selection-end-column="56" />
+          <folding>
+            <element signature="e#190#221#0" expanded="true" />
+            <element signature="e#22970#24758#0" />
+            <element signature="e#24990#28611#0" />
           </folding>
         </state>
       </provider>
