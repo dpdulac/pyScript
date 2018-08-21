@@ -185,7 +185,8 @@ class findFileUI(QWidget):
         self.seqInCombobox.setToolTip('sequence for contactSheet')
         self.qwidgetList.append(self.seqInCombobox)
         if len(self.master.allShots)==0:
-            self.listOfShots = pg.findAllSequence()
+            #self.listOfShots = pg.findAllSequence()
+            self.listOfShots = testData._TMPSEQ_
             self.seqInCombobox.addItems(self.listOfShots)
             self.master.allSeqName=[str(self.seqInCombobox.itemText(i)) for i in range(self.seqInCombobox.count())]
         else:

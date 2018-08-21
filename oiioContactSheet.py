@@ -704,7 +704,7 @@ def main():
     if nrv:
         print 'serving in rv'
         playInRv(imageList)
-    seq = 's1160'
+    # seq = 's1160'
     # task = 'light_prelight'
     # shotList = findShotsInSequence(seq)
     # res = findShots(task,seq,shotList)
