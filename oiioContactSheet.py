@@ -693,6 +693,9 @@ def get_args():
 
 def main():
     sequences, noGui, task, format,noMeta,outImSize,printFormat, nrow,nrv  = get_args()
+    # shotList = findShotsInSequence(sequences)
+    # res = findShots(task,sequences,shotList)
+    # pprint.pprint(res)
     imageList = []
     for seq in sequences:
         shotList = findShotsInSequence(seq)
@@ -701,12 +704,13 @@ def main():
     if nrv:
         print 'serving in rv'
         playInRv(imageList)
-    # seq = 's1160'
+    seq = 's1160'
     # task = 'light_prelight'
     # shotList = findShotsInSequence(seq)
     # res = findShots(task,seq,shotList)
     # contactSheet(task,seq,res,'jpg',scale='quarter',printFormat = False,nrow=10)
     # sequences = findAllSequence()
+    # print sequences
     # print len(sequences)/8.0
     #for item in range(sequences):
 

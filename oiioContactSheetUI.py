@@ -9,6 +9,8 @@
   :author: duda
 
 """
+
+_TMPSEQ_= ['s0010', 's0020', 's0030', 's0040', 's0050', 's0060', 's0070', 's0080', 's0090', 's0100', 's0110', 's0120', 's0130', 's0135', 's0140', 's0155', 's0160', 's0170', 's0180', 's0200', 's0210', 's0220', 's0230', 's0235', 's0240', 's0250', 's0265', 's0320', 's0330', 's0331', 's0332', 's0350', 's0360', 's0390', 's0400', 's0410', 's0411', 's0412', 's0413', 's0430', 's0440', 's0460', 's0470', 's0480', 's0490', 's0525', 's0660', 's0675', 's0730', 's0740', 's0750', 's0765', 's0790', 's0800', 's0820', 's0835', 's0860', 's0870', 's0880', 's0900', 's0920', 's0930', 's0940', 's0950', 's0980', 's1040', 's1050', 's1060', 's1070', 's1075', 's1080', 's1090', 's1100', 's1160', 's1245', 's1260', 's1270', 's1280', 's1290']
 import os, sys, argparse
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
@@ -31,7 +33,7 @@ class shotUI(QWidget):
         self.scroll = QScrollArea()
         self.scroll.setWidget(self.widget)
         self.scroll.setWidgetResizable(True)
-        self.scroll.setFixedHeight(250)
+        self.scroll.setFixedHeight(274)
 
         self.sequenceComboBox = QComboBox()
         self.sequenceComboBox.addItems(pg.findAllSequence())
@@ -162,8 +164,10 @@ class findFileUI(QWidget):
         self.fileNb = self.master.fileNb
         self.mainQvboxLayout = QVBoxLayout()
         self.qwidgetList = []
+        self.sequenceName = self.master.sequenceComboBox.currentText()
+        self.task = self.master.taskComboBox.currentText()
 
-        self.fileGroup = QGroupBox('contactSheet'+str(self.fileNb))
+        self.fileGroup = QGroupBox(self.sequenceName+' ' +self.task)
         self.fileGroup.setCheckable(True)
         self.fileGroup.setChecked(True)
         self.fileGroup.setFlat(False)
