@@ -9,7 +9,7 @@
   :author: duda
 
 """
-from sgtkLib import tkutil, tkm
+from sgtKLib import tkutil, tkm
 import os, pprint, errno, argparse, sys, math,subprocess
 import OpenImageIO as oiio
 from PIL import Image
