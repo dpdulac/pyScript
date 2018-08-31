@@ -38,7 +38,12 @@ else:
 os.environ['KATANA_RESOURCES'] += os.pathsep + "/homes/duda/.katana/UIPlugins"
 os.environ['PYTHONPATH'] +=  os.pathsep + "/homes/duda/.katana/Script"
 #add the lua path
-os.environ['LUA_PATH'] += ";" +"/homes/duda/.katana/LuaScript/?.lua"
+try:
+    os.environ['LUA_PATH']
+except KeyError:
+    os.environ['LUA_PATH'] ="/homes/duda/.katana/LuaScript/?.lua"
+else:
+    os.environ['LUA_PATH'] += ";" + "/homes/duda/.katana/LuaScript/?.lua"
 
 #append my script directory
 #sys.path.append("/s/prodanim/asterix2/_sandbox/duda/Katana/Startup")
