@@ -11,13 +11,24 @@
 """
 import OpenImageIO as oiio
 import os, pprint, errno, argparse, sys
+from sgtkLib import tkutil, tkm
 
-seqA = "/s/prodanim/asterix2/sequences/s0040/s0040_p0135/compo_stereo/compo_stereo/publish/images/s0040_p0135-base-compo_stereo-v006/left/s0040_p0135-base-compo_stereo-left.%04d.exr"
-seqB = "/s/prodanim/asterix2/sequences/s0040/s0040_p0135/compo_di/compo_di/publish/images/s0040_p0135-base-compo_di-v001/left/s0040_p0135-base-compo_di-left.%04d.exr"
-#imgC = "/s/prodanim/asterix2/sequences/s0040/s0040_p0135/compo/compo_comp/publish/images/s0040_p0135-base-compo_comp-v013/left/s0040_p0135-base-compo_comp-left.0101.exr"
-listBadFrame =[]
+_USER_ = os.environ['USER']
+_OUTPATH_ ='/s/prodanim/asterix2/_sandbox/' + _USER_ +"/contactSheet"
+_FONT_ = 'LiberationSans-Italic'
+
+tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
+sg = sgw._sg
+
+
 
 def main():
+    seqA = "/s/prodanim/asterix2/sequences/s0040/s0040_p0135/compo_stereo/compo_stereo/publish/images/s0040_p0135-base-compo_stereo-v006/left/s0040_p0135-base-compo_stereo-left.%04d.exr"
+    seqB = "/s/prodanim/asterix2/sequences/s0040/s0040_p0135/compo_di/compo_di/publish/images/s0040_p0135-base-compo_di-v001/left/s0040_p0135-base-compo_di-left.%04d.exr"
+    # imgC = "/s/prodanim/asterix2/sequences/s0040/s0040_p0135/compo/compo_comp/publish/images/s0040_p0135-base-compo_comp-v013/left/s0040_p0135-base-compo_comp-left.0101.exr"
+    listBadFrame = []
+    matchStatus = '\x1b[0;32;40m match\x1b[0m'
+    wrongStatus = "\x1b[0;31;40m doesn't match\x1b[0m"
     # print_format_table()
     for imNb in range(101,260+1):
         imLeft = False
@@ -32,15 +43,15 @@ def main():
         imLeft = doCompare(imgA,imgB)
         imRight = doCompare(imgARight,imgBRight)
         if imLeft:
-            imLestStatus = '\x1b[0;32;40m good \x1b[0m'
+            imLestStatus = matchStatus
         else:
-            imLestStatus = '\x1b[0;31;40m bad \x1b[0m'
+            imLestStatus = wrongStatus
         if imRight:
-            imRightStatus = '\x1b[0;32;40m good \x1b[0m'
+            imRightStatus = matchStatus
         else:
-            imRightStatus = '\x1b[0;31;40m bad \x1b[0m'
+            imRightStatus = wrongStatus
 
-        print('for frame nb '+frameNb+ ' the left image is: '+ imLestStatus+', the right image is: '+imRightStatus)
+        print('for frame nb '+frameNb+ ' the left images'+ imLestStatus+', the right images '+imRightStatus)
 #     bufB = oiio.ImageBuf()
 #     oiio.ImageBufAlgo.channels(bufB,oiio.ImageBuf(imgB),(0,1,2))
 #
