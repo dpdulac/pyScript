@@ -19,7 +19,7 @@ __copyright__ = "Copyright 2017, Mikros Animation"
 from PyQt4.QtGui import *
 from PyQt4.QtCore import *
 import OpenImageIO as oiio
-import PyOpenColorIO as OCIO
+#import PyOpenColorIO as OCIO
 from array import *
 import os, sys
 
