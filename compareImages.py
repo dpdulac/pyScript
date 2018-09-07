@@ -24,67 +24,110 @@ exrFilter = {
         'filter_operator' : 'any',
         'filters':[
             ['published_file_type', 'name_is', 'CompoImageSequence'],
-            #['published_file_type', 'name_is', 'GenericImageSequence'],
         ]
         }
+compo_stereoFilter = {
+    'filter_operator': 'all',
+    'filters':[
+        ['sg_task', 'name_is', 'compo_stereo'],
+        ['sg_status_list', 'is', 'cmpt'],
+    ]
+}
 
-def findShots(taskname='compo_comp', seq=40, shot = 135):
+compo_diFilter = {
+    'filter_operator': 'all',
+    'filters':[
+        ['sg_task', 'name_is', 'compo_di'],
+        ['sg_status_list', 'is', 'chk'],
+    ]
+}
+def findShots( seq=40, shot = 135):
     seqShot = 's'+str(seq).zfill(4)+'_p'+str(shot).zfill(4)
-    print seqShot
     filters = [
-        ['project', 'is', {'type':'Project', 'id':project.id}],
-        ['task', 'name_is', taskname],
+        ['project', 'is', {'type': 'Project', 'id': project.id}],
+        ['entity', 'type_is', 'Shot'],
         ['entity.Shot.code', 'is', seqShot],
-        #['entity.Shot.sg_status_artistique','is', 'cmpt'],
-        #['entity.Shot.sg_status_artistique','contains','cmpt'],
+        ['sg_task', 'name_is', 'compo_stereo'],
+        ['sg_status_list', 'is', 'cmpt'],
+    ]
+
+    res = {}
+    for v in sg.find('Version', filters,
+                     ['code', 'entity', 'sg_tank_version_number', 'sg_path_to_frames', 'sg_first_frame'],
+                     order=[{'field_name': 'version_number', 'direction': 'desc'}]):
+        entityName = v['entity']['name']
+        if not entityName in res:
+            res['name'] = entityName
+            res['framePathCOmpoStereo'] = v['sg_path_to_frames']
+            tmpVersion = res['framePathCOmpoStereo'][res['framePathCOmpoStereo'].find('-v')+1:]
+            res['version comp_stereo']= tmpVersion[:tmpVersion.find('/')]
+
+    try:
+        res['framePathCOmpoStereo']
+    except:
+        print("\x1b[0;31;40m"+'no shot for ' + seqShot + ' in compo_stereo marked as cmpt as been found'+"\x1b[0m")
+        exit(0)
+
+
+    filters = [
+        ['project', 'is', {'type': 'Project', 'id': project.id}],
+        ['task', 'name_is', 'compo_di'],
+        ['entity', 'type_is', 'Shot'],
+        ['entity.Shot.code', 'is', seqShot],
+        ['sg_tank_eye', 'is', 'left'],
         exrFilter,
     ]
 
-    res = {}
-    for v in sg.find('PublishedFile', filters, ['code', 'entity','entity.Shot.sg_status_artistique', 'version_number', 'path', 'published_file_type', 'entity.Shot.sg_cut_in','entity.Shot.sg_cut_out','task','entity.Shot.sg_sequence'], order=[{'field_name':'version_number','direction':'desc'}]):
-
+    for v in sg.find('PublishedFile', filters,
+                     ['code', 'entity', 'version_number', 'path', 'published_file_type', 'entity.Shot.sg_cut_in',
+                      'entity.Shot.sg_cut_out', 'task', 'entity.Shot.sg_sequence'],
+                     order=[{'field_name': 'version_number', 'direction': 'asc'}]):
         entityName = v['entity']['name']
-        if not entityName in res:
-            res[entityName] = {}
-            res[entityName]['cutIn'] = v['entity.Shot.sg_cut_in']
-            res[entityName]['cutOut'] = v['entity.Shot.sg_cut_out']
-            res[entityName]['framePath'] = v['path']['local_path_linux']
-            res[entityName]['Task'] = v['task']['name']
-            res[entityName]['version'] = v['version_number']
-            res[entityName]['imgFormat'] = '.'+ v['path']['content_type'][v['path']['content_type'].find("/")+1:]
-            res[entityName]['status']=v['entity.Shot.sg_status_list']
+        if entityName == res['name']:
+            res['cutIn']= v['entity.Shot.sg_cut_in']
+            res['cutOut'] = v['entity.Shot.sg_cut_out']
+            res['framePathCompoDi'] = v['path']['local_path_linux']
+            res['version comp_di'] = 'v'+str(v['version_number']).zfill(3)
 
+    try:
+        res['framePathCompoDi']
+    except:
+        print("\x1b[0;31;40m"+'no shot for '+ res['name'] + ' in compo_di marked as check as been found'+"\x1b[0m")
+        exit(0)
     return res
 
-def findAprouved(taskname = 'compo_di',seq=40):
-    seq = 's'+str(seq).zfill(4)
-    filterTask = [
-        ['project', 'is', {'type': 'Project', 'id': project.id}],
-        ['content', 'is', taskname],
-        ['entity', 'type_is', 'Shot'],
-        ['entity.Shot.sg_sequence', 'name_is', seq],
-        ['sg_status_artistique','is','cmpt']
-        #['entity.Shot.code', 'in', res.keys()]
-    ]
-    res = {}
-    for v in sg.find('Task', filterTask, ['code', 'entity', 'sg_status_artistique','entity.Shot.code','entity.Shot.version_number' 'version_name']):
-        entityName = v['entity']['name']
-        res[entityName] = {}
-        try:
-            res[entityName]['status'] = v['sg_status_artistique']
-            res[entityName]['version'] = v['entity.Shot.version_name']
-        except:
-            res[entityName]['status'] = 'None'
-           # res[entityName]['version'] = v['code']
+# def findVersion(seq=40, shot = 135):
+#     seqShot = 's'+str(seq).zfill(4)+'_p'+str(shot).zfill(4)
+#     print seqShot
+#     filters = [
+#         ['project', 'is', {'type':'Project', 'id':project.id}],
+#         ['entity', 'type_is', 'Shot'],
+#         ['entity.Shot.code', 'is', seqShot],
+#         ['sg_task', 'name_is', 'compo_stereo'],
+#         ['sg_status_list', 'is', 'cmpt'],
+#         #compo_stereoFilter,
+#         #exrFilter,
+#     ]
+#
+#     res = {}
+#     for v in sg.find('Version', filters, ['code', 'entity', 'sg_status_list', 'sg_path_to_frames', 'sg_first_frame', 'sg_last_frame'], order=[{'field_name':'version_number','direction':'desc'}]):
+#
+#         print v['sg_path_to_frames'],v['sg_first_frame'], v['sg_last_frame'], v['sg_status_list']
 
-    return res
-
-def compareStereo(seqA = '', seqB = ''):
+def compareStereo(res={}):
+    seqA = res['framePathCOmpoStereo']
+    seqB = res['framePathCompoDi']
+    cutIn = res['cutIn']
+    cutOut = res['cutOut']
 
     matchStatus = '\x1b[0;32;40m match\x1b[0m'
     wrongStatus = "\x1b[0;31;40m doesn't match\x1b[0m"
 
-    for imNb in range(101,260+1):
+    print '\n\n\n\x1b[0;32;40m---Starting comparison for shot '+ res['name']+' of '+res['version comp_stereo']+ ' compo_stereo to '+res['version comp_di']+ ' compo_di for frame '+ str(cutIn)+' to frame '+str(cutOut)+'---\x1b[0m'
+    # print 'comparing version: '+ res['version comp_stereo'] + ' of compo_stereo to version ' +res['version comp_di'] + ' of compo_di'
+    # print 'checking from frame: '+ str(cutIn) + ' to frame: ' + str(cutOut)
+
+    for imNb in range(cutIn,cutOut+1):
         imLeft = False
         imRight = False
         imLestStatus = ''
@@ -110,6 +153,7 @@ def compareStereo(seqA = '', seqB = ''):
 
 def doCompare(imgA='',imgB=''):
     bufB = oiio.ImageBuf()
+    # get rid of extra channels in the di-matte image
     oiio.ImageBufAlgo.channels(bufB, oiio.ImageBuf(imgB), (0, 1, 2))
 
     comp = oiio.CompareResults()
@@ -121,26 +165,42 @@ def doCompare(imgA='',imgB=''):
     else:
         return False
 
-def print_format_table():
-    """
-    prints table of formatted text format options
-    """
-    for style in range(9):
-        for fg in range(30,38):
-            s1 = ''
-            for bg in range(40,48):
-                format = ';'.join([str(style), str(fg), str(bg)])
-                s1 += '\x1b[%sm %s \x1b[0m' % (format, format)
-            print(s1)
-        print('\n')
+def get_args():
+    #Assign description to the help doc
+    parser = argparse.ArgumentParser(description = "create a contactSheet for sequence")
+    #shot argument
+    parser.add_argument('sequences', type=str,nargs='*', help='seq number follow by shot number sequence and shot need to be separated by a space (i.e: 40 130)')
+    args = parser.parse_args()
+    seqShotNumber = args.sequences
+    try:
+        a = len(seqShotNumber) >2
+    except:
+        print('usage checkStereoToDi seq nb shot nd (i.e: checkStereoToDi 30 50')
+        exit(0)
+
+
+    return seqShotNumber
+
+# def print_format_table():
+#     """
+#     prints table of formatted text format options
+#     """
+#     for style in range(9):
+#         for fg in range(30,38):
+#             s1 = ''
+#             for bg in range(40,48):
+#                 format = ';'.join([str(style), str(fg), str(bg)])
+#                 s1 += '\x1b[%sm %s \x1b[0m' % (format, format)
+#             print(s1)
+#         print('\n')
 
 def main():
     # print_format_table()
-    pprint.pprint(findShots('compo_di'))
-    #print findAprouved()
-    seqA = "/s/prodanim/asterix2/sequences/s0040/s0040_p0135/compo_stereo/compo_stereo/publish/images/s0040_p0135-base-compo_stereo-v006/left/s0040_p0135-base-compo_stereo-left.%04d.exr"
-    seqB = "/s/prodanim/asterix2/sequences/s0040/s0040_p0135/compo_di/compo_di/publish/images/s0040_p0135-base-compo_di-v001/left/s0040_p0135-base-compo_di-left.%04d.exr"
-    #compareStereo(seqA,seqB)
+    # findVersion(30,50)
+    seqShot = get_args()
+    res = findShots(seqShot[0],seqShot[1])
+    #pprint.pprint(res)
+    compareStereo(res)
 
 if __name__ == '__main__':
     main()
