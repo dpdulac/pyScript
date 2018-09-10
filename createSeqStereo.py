@@ -43,7 +43,49 @@ def findShots( seq='s0040'):
 
     return res
 
+def getOrder(res = {}):
+    shotNb = []
+    for key in res.keys():
+        shotNb.append(key)
+    for j in range(len(shotNb)):
+    #initially swapped is false
+        swapped = False
+        i = 0
+        while i<len(res)-1:
+        #comparing the adjacent elements
+            if res[shotNb[i]]['cutOrder']>res[shotNb[i+1]]['cutOrder']:
+                #swapping
+                shotNb[i],shotNb[i+1] = shotNb[i+1],shotNb[i]
+                #Changing the value of swapped
+                swapped = True
+            i = i+1
+    #if swapped is false then the list is sorted
+    #we can stop the loop
+        if swapped == False:
+            break
+    return shotNb
+
 def main():
+    leftMov = '/tmp/outputLeft.mkv'
+    rightMov = '/tmp/outputRight.mkv'
+    stereoMov = '/tmp/outputStereo.mkv'
+    res = findShots()
+    listShotOrdered = getOrder(res)
+    fileLeftMov = '/tmp/leftMovTx.tx'
+    fileRightMov = '/tmp/rightMovTx.tx'
+    fileTx = open(fileLeftMov, "w")
+    fileTy = open(fileRightMov, "w")
+    for shot in listShotOrdered:
+        #os.system('cp '+res[shot]['framePathCompoStereoLeft'] +' /s/prodanim/asterix2/_sandbox/duda/tmp/')
+        fileTx.write("file '" + res[shot]['framePathCompoStereoLeft'] + "'\n")
+        fileTy.write("file '" + res[shot]['framePathCompoStereoRight'] + "'\n")
+    fileTx.close()
+    fileTy.close()
+    os.system("ffmpeg -loglevel error -f concat -safe 0 -r '24' -i "+ fileLeftMov+' -y -c copy -map_metadata 0 /tmp/outputLeft.mkv')
+    os.system("ffmpeg -loglevel error -f concat -safe 0 -r '24' -i " + fileRightMov + ' -y -c copy -map_metadata 0 /tmp/outputRight.mkv')
+    commandLine = 'ffmpeg -loglevel error -i ' + leftMov + ' -i ' + rightMov + " -codec:v copy -codec:a copy -map 0:v -map 1:v -map 0:a -metadata stereo_mode=left_right -aspect 3.555 -y " + stereoMov
+    os.system(commandLine)
+
     pprint.pprint(findShots())
 
 if __name__ == '__main__':
