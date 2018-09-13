@@ -15,15 +15,17 @@ import sys,os,pprint
 from sgtkLib import tkutil, tkm
 
 _USER_ = os.environ['USER']
+_OUTPATH_ ='/s/prodanim/asterix2/_source_global/stereoMov/'
 tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
 sg = sgw._sg
 
-def findShots( seq='s0040'):
+def findShots( seq=40):
+    seqString = 's'+str(seq).zfill(4)
     filters = [
         ['project', 'is', {'type': 'Project', 'id': project.id}],
         ['entity', 'type_is', 'Shot'],
         #['entity.Shot.code', 'is', seqShot],
-        ['entity.Shot.sg_sequence', 'name_is', seq],
+        ['entity.Shot.sg_sequence', 'name_is', seqString],
         ['sg_task', 'name_is', 'compo_stereo'],
         ['sg_status_list', 'is', 'cmpt'],
     ]
@@ -66,25 +68,42 @@ def getOrder(res = {}):
     return shotNb
 
 def main():
+    seq = '860'
     leftMov = '/tmp/outputLeft.mkv'
     rightMov = '/tmp/outputRight.mkv'
-    stereoMov = '/tmp/outputStereo.mkv'
-    res = findShots()
+    stereoMov = _USER_+'/tmp/outputStereo.mkv'
+    res = findShots(seq)
     listShotOrdered = getOrder(res)
     fileLeftMov = '/tmp/leftMovTx.tx'
     fileRightMov = '/tmp/rightMovTx.tx'
     fileTx = open(fileLeftMov, "w")
     fileTy = open(fileRightMov, "w")
+
+    # checking the output dir
+    path = _OUTPATH_ + 's'+str(seq).zfill(4) + '/'
+    if not os.path.isdir(path):
+        os.makedirs(path)
+    outdir = path + 's'+str(seq).zfill(4)+'_stereoMov' + '.mkv'
+
+
     for shot in listShotOrdered:
         #os.system('cp '+res[shot]['framePathCompoStereoLeft'] +' /s/prodanim/asterix2/_sandbox/duda/tmp/')
+        print 'preparing: ' + shot
         fileTx.write("file '" + res[shot]['framePathCompoStereoLeft'] + "'\n")
         fileTy.write("file '" + res[shot]['framePathCompoStereoRight'] + "'\n")
     fileTx.close()
     fileTy.close()
+    print 'outputing the movie for left and right eyes'
     os.system("ffmpeg -loglevel error -f concat -safe 0 -r '24' -i "+ fileLeftMov+' -y -c copy -map_metadata 0 /tmp/outputLeft.mkv')
     os.system("ffmpeg -loglevel error -f concat -safe 0 -r '24' -i " + fileRightMov + ' -y -c copy -map_metadata 0 /tmp/outputRight.mkv')
-    commandLine = 'ffmpeg -loglevel error -i ' + leftMov + ' -i ' + rightMov + " -codec:v copy -codec:a copy -map 0:v -map 1:v -map 0:a -metadata stereo_mode=left_right -aspect 3.555 -y " + stereoMov
+    print 'creating stereo movie for the seq: '+ str(seq) +'\noutput in: ' + outdir
+    commandLine = 'ffmpeg -loglevel error -i ' + leftMov + ' -i ' + rightMov + " -codec:v copy -codec:a copy -map 0:v -map 1:v -map 0:a -metadata stereo_mode=left_right -aspect 3.555 -y " + outdir
     os.system(commandLine)
+    # remove the unnescesary files
+    os.remove(leftMov)
+    os.remove(rightMov)
+    os.remove(fileLeftMov)
+    os.remove(fileRightMov)
 
     pprint.pprint(findShots())
 

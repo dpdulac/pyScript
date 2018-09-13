@@ -137,6 +137,12 @@ def compareStereo(res={}):
         imgB= seqB.replace('%04d', frameNb)
         imgARight = imgA.replace('left','right')
         imgBRight =imgB.replace('left','right')
+        # test if images exist
+        for im in [imgA,imgARight,imgB,imgBRight]:
+            test = oiio.ImageInput.open(im)
+            if not test:
+                print "\x1b[0;31;40m",oiio.geterror(),"\x1b[0m"
+                exit(0)
         imLeft = doCompare(imgA,imgB)
         imRight = doCompare(imgARight,imgBRight)
         if imLeft:
@@ -158,7 +164,7 @@ def doCompare(imgA='',imgB=''):
 
     comp = oiio.CompareResults()
 
-    oiio.ImageBufAlgo.compare(oiio.ImageBuf(imgA), bufB, 1.0 / 255.0, 0.0, comp)
+    oiio.ImageBufAlgo.compare(oiio.ImageBuf(imgA), bufB, 1.0e-6, 1.0e-6, comp)
 
     if comp.nwarn == 0 and comp.nfail == 0:
         return True
