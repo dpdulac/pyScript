@@ -19,6 +19,35 @@ _OUTPATH_ ='/s/prodanim/asterix2/_source_global/stereoMov/'
 tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
 sg = sgw._sg
 
+""" 
+    find all the sequences in the project
+    @ all use all the sequence otherwise use only sequence under 9000
+    
+"""
+def findAllSequence(all = False):
+    from sgtkLib import tkutil, tkm
+    tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
+    sg = sgw._sg
+
+    filters = [
+        ['project', 'is', {'type':'Project', 'id':project.id}],
+    ]
+    seqShots =[]
+    #get all the name of the shots and masters from the sequence
+    for v in sg.find('Sequence',filters,['entity','code','description']):
+        seq = v['code']
+        if all:
+            if not seq in seqShots:
+                seqShots.append(seq)
+        else:
+            if int(seq[seq.find('s')+1:]) <9000:
+                if not seq in seqShots:
+                    seqShots.append(seq)
+            else:
+                print  seq + ' will not be included'
+    seqShots=sorted(seqShots)
+    return seqShots
+
 def findShots( seq=40):
     seqString = 's'+str(seq).zfill(4)
     filters = [
@@ -26,6 +55,7 @@ def findShots( seq=40):
         ['entity', 'type_is', 'Shot'],
         #['entity.Shot.code', 'is', seqShot],
         ['entity.Shot.sg_sequence', 'name_is', seqString],
+        ['entity.Shot.sg_status_list', 'is_not', 'omt'],
         ['sg_task', 'name_is', 'compo_stereo'],
         ['sg_status_list', 'is', 'cmpt'],
     ]

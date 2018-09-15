@@ -201,7 +201,6 @@ def get_args():
 #         print('\n')
 
 def main():
-    print oiio.openimageio_version
     # print_format_table()
     # findVersion(30,50)
     seqShot = get_args()
