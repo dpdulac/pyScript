@@ -83,8 +83,7 @@ def findShots( seq=40, shot = 135):
 
     return res
 
-def compareStereo(res={}):
-    openRv = False
+def compareStereo(res={},rv=False):
     seqA = res['framePathCompoComp']
     seqB = res['framePathCompoStereo']
     cutIn = res['cutIn']
@@ -115,11 +114,10 @@ def compareStereo(res={}):
             imLestStatus = matchStatus
         else:
             imLestStatus = wrongStatus
-            openRv = True
 
         print('for frame nb '+frameNb+ ' the images'+ imLestStatus)
 
-    if openRv:
+    if rv:
         print path
         os.system('rv '+ path )
 
@@ -147,20 +145,22 @@ def get_args():
     parser = argparse.ArgumentParser(description = "compare the compo_comp left images to compo_stereo left images for the shot")
     #shot argument
     parser.add_argument('sequences', type=str,nargs='*', help='seq number follow by shot number sequence and shot need to be separated by a space (i.e: 40 130)')
+    parser.add_argument('--rv', '-rv', action='store_true', help=' do not display the resulting image(s) in rv')
     args = parser.parse_args()
     seqShotNumber = args.sequences
+    rv = args.rv
     try:
         a = len(seqShotNumber) >2
     except:
         print('usage checkCompoToStereo seq nb shot nd (i.e: checkCompoToStereo 30 50')
         exit(0)
-    return seqShotNumber
+    return seqShotNumber,rv
 
 def main():
-    seqShot = get_args()
+    seqShot , rv= get_args()
     res = findShots(seqShot[0], seqShot[1])
     pprint.pprint(res)
-    compareStereo(res)
+    compareStereo(res,rv)
 
 if __name__ == '__main__':
     main()
