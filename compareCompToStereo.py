@@ -90,7 +90,7 @@ def compareStereo(res={},rv=False):
     cutOut = res['cutOut']
 
     path = _OUTPATH_+'/'+res['name']+'/'
-
+    diff = False
     matchStatus = '\x1b[0;32;40m match\x1b[0m'
     wrongStatus = "\x1b[0;31;40m don't match\x1b[0m"
 
@@ -114,10 +114,11 @@ def compareStereo(res={},rv=False):
             imLestStatus = matchStatus
         else:
             imLestStatus = wrongStatus
+            diff = True
 
         print('for frame nb '+frameNb+ ' the images'+ imLestStatus)
 
-    if rv:
+    if rv and diff:
         print path
         os.system('rv '+ path )
 
@@ -125,7 +126,7 @@ def doCompare(imgA='',imgB='',path = ''):
 
     comp = oiio.CompareResults()
 
-    oiio.ImageBufAlgo.compare(oiio.ImageBuf(imgA), oiio.ImageBuf(imgB), 1/255.0, 0.5, comp)
+    oiio.ImageBufAlgo.compare(oiio.ImageBuf(imgA), oiio.ImageBuf(imgB), 1/100.0, 1.0, comp)
 
     if comp.nwarn == 0 and comp.nfail == 0:
         return True
