@@ -145,23 +145,36 @@ def get_args():
     #Assign description to the help doc
     parser = argparse.ArgumentParser(description = "compare the compo_comp left images to compo_stereo left images for the shot")
     #shot argument
-    parser.add_argument('sequences', type=str,nargs='*', help='seq number follow by shot number sequence and shot need to be separated by a space (i.e: 40 130)')
+    parser.add_argument('sequences', type=str,nargs='*', help='seq number follow by shot number can have multiple seq. Sequence and shot need to be separated by a - (i.e: 40-130 10-10 180-10)')
     parser.add_argument('--rv', '-rv', action='store_true', help=' do not display the resulting image(s) in rv')
     args = parser.parse_args()
     seqShotNumber = args.sequences
     rv = args.rv
+    if len(seqShotNumber) > 1:
+        rv = False
+
+    seqShotToDo = []
+    for seqShots in seqShotNumber:
+        if seqShots.find('-') < 0:
+            print "\x1b[0;31;40m usage: sequence number follow by a '-' then shot number (i.e: 430-10)"
+            print seqShots+ ' will not be include in the list\x1b[0m'
+        else:
+            seqShotToDo.append(seqShots)
     try:
-        a = len(seqShotNumber) >2
+        len(seqShotToDo) > 0
     except:
-        print('usage checkCompoToStereo seq nb shot nd (i.e: checkCompoToStereo 30 50')
+
+        print 'seq number follow by shot number can have multiple seq. Sequence and shot need to be separated by a - (i.e: 40-130 10-10 180-10)'
         exit(0)
-    return seqShotNumber,rv
+
+    return seqShotToDo,rv
 
 def main():
     seqShot , rv= get_args()
-    res = findShots(seqShot[0], seqShot[1])
-    pprint.pprint(res)
-    compareStereo(res,rv)
+    for shot in seqShot:
+        res = findShots(shot.split('-')[0], shot.split('-')[1])
+        #pprint.pprint(res)
+        compareStereo(res,rv)
 
 if __name__ == '__main__':
     main()
