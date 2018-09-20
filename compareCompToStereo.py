@@ -38,7 +38,7 @@ def findShots( seq=40, shot = 135,status ='chk'):
         ['entity', 'type_is', 'Shot'],
         ['entity.Shot.code', 'is', seqShot],
         ['sg_task', 'name_is', 'compo_comp'],
-        ['sg_status_list', 'is', status],
+        ['sg_status_list', 'is', 'cmpt'],
     ]
 
     res = {}
@@ -57,16 +57,19 @@ def findShots( seq=40, shot = 135,status ='chk'):
     try:
         res['framePathCompoComp']
     except:
-        print("\x1b[0;31;40m"+'no shot for ' + seqShot + ' in compo_stereo marked '+status+' has been found'+"\x1b[0m")
+        print("\x1b[0;31;40m"+'no shot for ' + seqShot + ' in compo_stereo marked cmpt has been found'+"\x1b[0m")
         exit(0)
 
     # filter for compo_stereo
+    filterStatus =['entity', 'is_not', None]
+    if not status == 'chk':
+        filterStatus = ['sg_status_list', 'is', 'cmpt']
     filters = [
         ['project', 'is', {'type': 'Project', 'id': project.id}],
         ['entity', 'type_is', 'Shot'],
         ['entity.Shot.code', 'is', seqShot],
         ['sg_task', 'name_is', 'compo_stereo'],
-        ['sg_status_list', 'is', 'cmpt'],
+        filterStatus,
     ]
     for v in sg.find('Version', filters,
                      ['code', 'entity', 'sg_tank_version_number', 'sg_path_to_frames', 'sg_first_frame'],
@@ -80,7 +83,7 @@ def findShots( seq=40, shot = 135,status ='chk'):
     try:
         res['framePathCompoStereo']
     except:
-        print("\x1b[0;31;40m"+'no shot for ' + seqShot + ' in compo_stereo marked as cmpt as been found'+"\x1b[0m")
+        print("\x1b[0;31;40m"+'no shot for ' + seqShot + ' in compo_stereo marked '+status+' as been found'+"\x1b[0m")
         exit(0)
 
     return res
@@ -125,9 +128,11 @@ def compareStereo(res={},rv=False):
 
         print('for frame nb '+frameNb+ ' the images'+ imLestStatus)
 
-    if rv and diff:
-        print path
-        os.system('rv '+ path )
+    # if rv and diff:
+    #     print path
+    #     os.system('rv '+ path )
+    shotList = [seqA,seqB,path]
+    return shotList,diff
 
 def doCompare(imgA='',imgB='',path = '',errorTol=0.01, warnTol = 1.0):
 
@@ -148,6 +153,12 @@ def doCompare(imgA='',imgB='',path = '',errorTol=0.01, warnTol = 1.0):
         oiio.ImageBufAlgo.pow(test,diff,(.3,.3,.3,1.0))
         test.write(pathFrame)
         return False
+
+def doRv(shotList=[],rv=True):
+    if rv:
+        command = 'rv ' + ' '+ shotList[0]+ ' '+ shotList[1]+ ' '+ shotList[2]+ ' -wipe'
+        print command
+        os.system(command)
 
 def get_args():
     #Assign description to the help doc
@@ -188,7 +199,10 @@ def main():
     for shot in seqShot:
         res = findShots(shot.split('-')[0], shot.split('-')[1],status)
         #pprint.pprint(res)
-        compareStereo(res,rv)
+        shotList, error =compareStereo(res,rv)
+        if rv and error:
+            doRv(shotList)
+
 
 if __name__ == '__main__':
     main()
