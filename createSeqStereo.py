@@ -98,7 +98,7 @@ def getOrder(res = {}):
     return shotNb
 
 def main():
-    seq = '1280'
+    seq = '60'
     leftMov = '/tmp/outputLeft.mkv'
     rightMov = '/tmp/outputRight.mkv'
     stereoMov = _USER_+'/tmp/outputStereo.mkv'
