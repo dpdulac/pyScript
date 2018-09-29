@@ -22,12 +22,22 @@ import os
 # user name
 _USER_ = os.environ['USER']
 
+#add path to KATANA_RESOURCES
+os.environ['KATANA_RESOURCES'] += os.pathsep + "/homes/"+_USER_+"/.katana/UIPlugins"+os.pathsep+"/s/prodanim/asterix2/_sandbox/duda/Katana/resources/lightshader.v.0.1/trunk/lightshader/katana/Resources"
+print os.environ['KATANA_RESOURCES']
+
 #set KATANA_HOME
-os.environ["KATANA_HOME"] = "/s/prods/captain/_sandbox/"+ _USER_
+try :
+    os.environ["PROD_ROOT"]
+except KeyError:
+    os.environ["KATANA_HOME"] ="/tmp"
+else:
+    os.environ["KATANA_HOME"] = os.environ["PROD_ROOT"]+"/_sandbox/"+ _USER_
 
 #if in arnold-5 add my shaderpath
 pathArnoldPlugin = "/s/prodanim/asterix2/_sandbox/"+_USER_+"/oslShader"
 if not os.path.isdir(pathArnoldPlugin):
+    print "Creating: "+pathArnoldPlugin
     os.makedirs(pathArnoldPlugin)
 try:
     os.environ['ARNOLD_PLUGIN_PATH']
@@ -40,12 +50,11 @@ else:
     else:
         print "using Arnold-4"
 
-#add path to KATANA_RESOURCES
-os.environ['KATANA_RESOURCES'] += os.pathsep + "/homes/"+_USER_+"/.katana/UIPlugins"
 os.environ['PYTHONPATH'] +=  os.pathsep + "/homes/"+_USER_+"/.katana/Script"
 #add the lua path
 luaPath = "/homes/"+_USER_+"/.katana/LuaScript/"
 if not os.path.isdir(luaPath):
+    print "Creating: " + luaPath
     os.makedirs(luaPath)
 try:
     os.environ['LUA_PATH']
