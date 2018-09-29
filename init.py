@@ -23,9 +23,7 @@ import os
 _USER_ = os.environ['USER']
 
 #add path to KATANA_RESOURCES
-os.environ['KATANA_RESOURCES'] += os.pathsep + "/homes/"+_USER_+"/.katana/UIPlugins"+os.pathsep+"/s/prodanim/asterix2/_sandbox/duda/Katana/resources/lightshader.v.0.1/trunk/lightshader/katana/Resources"
-print os.environ['KATANA_RESOURCES']
-
+os.environ['KATANA_RESOURCES'] += os.pathsep + "/homes/"+_USER_+"/.katana/UIPlugins"+os.pathsep+"/homes/duda/katanaResources/lightshaderResources/"
 #set KATANA_HOME
 try :
     os.environ["PROD_ROOT"]
