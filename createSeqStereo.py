@@ -145,7 +145,7 @@ def createMovie(seq='10',doStereo = True):
         path = _OUTPATH_ + 'leftMov/s' + str(seq).zfill(4) + '/'
         if not os.path.isdir(path):
             os.makedirs(path)
-        outdir = path + 's' + str(seq).zfill(4) + '_stereoMov' + '.mkv'
+        outdir = path + 's' + str(seq).zfill(4) + '_Mov' + '.mkv'
         for shot in listShotOrdered:
             #os.system('cp '+res[shot]['framePathCompoStereoLeft'] +' /s/prodanim/asterix2/_sandbox/duda/tmp/')
             print 'preparing: ' + shot
@@ -154,7 +154,7 @@ def createMovie(seq='10',doStereo = True):
         print 'outputing the movie for left eye'
         os.system("ffmpeg -loglevel error -f concat -safe 0 -r '24' -i " + fileLeftMov + ' -y -c copy -map_metadata 0 '+outdir)
         os.remove(fileLeftMov)
-    pprint.pprint(findShots())
+    #pprint.pprint(findShots())
 
 def get_args():
     #Assign description to the help doc
