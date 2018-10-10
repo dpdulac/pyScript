@@ -460,15 +460,15 @@ def contactSheet(task='compo_comp', seq = 's0180',res={},format = 'jpg',scale = 
 
             if pdf:
             #listForPdf = []
-                for key in dictListShot:
-                    infilePath = dictListShot[key]['imagePath']
-                    if format != 'jpg':
-                        infile = oiio.ImageBuf(infilePath)
-                        infile.write(infilePath.replace(format,'jpg'))
-                        infilePath = infilePath.replace(format,'jpg')
-                #listForPdf.append(dictListShot[key]['imagePath'])
-                    pdfFile = Image.open(infilePath)
-                    pdfFile.save(infilePath.replace('jpg','pdf'))
+                #for key in dictListShot:
+                infilePath = dictListShot[key]['imagePath']
+                if format != 'jpg':
+                    infile = oiio.ImageBuf(infilePath)
+                    infile.write(infilePath.replace(format,'jpg'))
+                    infilePath = infilePath.replace(format,'jpg')
+            #listForPdf.append(dictListShot[key]['imagePath'])
+                pdfFile = Image.open(infilePath)
+                pdfFile.save(infilePath.replace('jpg','pdf'))
 
 
     else:

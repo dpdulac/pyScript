@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# coding:utf-8
+# coding=utf-8
 """:mod:`createMasterCamKatanaTmp` -- dummy module
 ===================================
 
@@ -206,8 +206,10 @@ def createCam(seq = 's0060',camDict = {}):
 
     #create the merge node which assemble al the camera
     mergeNode = NodegraphAPI.CreateNode('Merge',group)
+    NodegraphAPI.SetNodeComment(mergeNode,"merge all the sequence cameras and the masterCam together")
     #create the switch Node
     switchNode = NodegraphAPI.CreateNode('Switch',group)
+    NodegraphAPI.SetNodeComment(switchNode,"switch between all cameras to create the masterCam animation")
     switchNodeIn = switchNode.getParameter('in')
 
     for key in getOrder(camDict):
@@ -298,6 +300,23 @@ def createCam(seq = 's0060',camDict = {}):
     mergeNode.addInputPort(inputName)
     switchNode.getOutputPort('output').connect(mergeNode.getInputPort(inputName))
 
+    # create the opscript node to add the masterCam in the cameraList
+    opscriptNode = NodegraphAPI.CreateNode('OpScript',group)
+    opscriptNode.setName('addCamMasterToCamList')
+    NodegraphAPI.SetNodeComment(opscriptNode,"add the masterCam center,left and right to the cameraList ")
+    opscriptNode.getParameter('CEL').setValue('/root/world',0)
+    # set the script node
+    opscriptNode.getParameter('script.lua').setValue("local camList = Interface.GetAttr('globals.cameraList')"
+                                                     "\nlocal tableCamList = camList:getNearestSample(0)"
+                                                     "\ntable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCamera/stereoCameraCenterCamShape')"
+                                                     "\ntable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraLeft/stereoCameraLetfShape')"
+                                                     "\ntable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraRight/stereoCameraRightShape')"
+                                                     "\nInterface.SetAttr('globals.cameraList',StringAttribute(tableCamList))",0)
+    #connect the opscriptnode to the merge node
+    mergeNode.getOutputPort('out').connect(opscriptNode.getInputPort('i0'))
+    opscriptNodePos = (mergePos[0],mergePos[1]-100)
+    NodegraphAPI.SetNodePosition(opscriptNode, opscriptNodePos)
+
     # create a prune node to switch off the stereo camera
     pruneNode = NodegraphAPI.CreateNode('Prune',group)
     pruneNode.setName('Prune_stereo_'+seq)
@@ -305,15 +324,16 @@ def createCam(seq = 's0060',camDict = {}):
     pruneNode.getParameter('cel').setValue("(( /root/world/cam/Cam_s*/stereoCameraRight  /root/world/cam/Cam_s*/stereoCameraLeft)) + "
                                            "(( /root/world/cam/MasterCam/stereoCameraLeft  /root/world/cam/MasterCam/stereoCameraRight))",0)
     # connect the merge group to the prune node
-    mergeNode.getOutputPort('out').connect(pruneNode.getInputPort('A'))
-    prunePos = (mergePos[0],mergePos[1]-100)
+    opscriptNode.getOutputPort('out').connect(pruneNode.getInputPort('A'))
+    prunePos = (mergePos[0],mergePos[1]-200)
     NodegraphAPI.SetNodePosition(pruneNode,prunePos)
 
     #connect the merge to the out port of the group
     returnGroup = group.getReturnPort('out')
     pruneNode.getOutputPort('out').connect(returnGroup)
     #set the out time of the project to maxOutTime
-    root.getParameter('outTime').setValue(maxOutTime,0)
+    root.getParameter('outTime').setValue(camFrame-1,0)
+    print maxOutTime,camFrame
 
     #put the node under the mouse
     currentSelection = NodegraphAPI.GetAllSelectedNodes()
@@ -433,7 +453,8 @@ class CamMixUI(QMainWindow):
             description =res[key]['description']
             if description == None:
                 description = ""
-            seqName = QString(key+" ["+ description +"]")
+            # seqName = QString(key+" ["+ description +"]")
+            seqName = QString(key)
             self.seqMenuBar.addAction(seqName)
 
         self.seqMenuBar.triggered.connect(self.processtrigger)
@@ -462,10 +483,10 @@ class CamMixUI(QMainWindow):
         self.controlCheckFrameOfInt.setChecked(True)  # set the check to Frame of interest
         self.shotWidgets = []  # empty the list of shot widgets
         inc = 0  # reset the incrementation for positioning the shot layout
-        seqString= str(q.text())  # get the name and description of the sequence
+        seqString= str(q.text()) # get the name and description of the sequence
         self.groupBoxSeq.setTitle(seqString)  # set the name of the groupbox to be the sequence name and description
         print seqString
-        self.seqName = seqString[:seqString.find(' ')]  # extract the seq name alone
+        self.seqName = seqString  # extract the seq name alone
         shotInSeq = findShotsInSequence(self.seqName) # find all the shot in this sequence
         allCamPath = findShots(self.seqName,shotInSeq) # find the information for each shot
 
