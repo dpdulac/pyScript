@@ -203,6 +203,9 @@ def createCam(seq = 's0060',camDict = {}):
     groupNodeAttrDict = {'ns_basicDisplay': 1,'ns_iconName': ''}
     group.setAttributes(groupNodeAttrDict)
     group.addOutputPort('out')
+    # create parameter for the group node
+    celParam = group.getParameters().createChildNumber('outputCam', 0)
+    celParam.setHintString("{'options__order': ['All', 'masterCam'], 'help': 'choose if all the camera of the sequences will be in the SceneGraph or only the masterCam', 'widget': 'mapper', 'options': {'All': 0.0, 'masterCam': 1.0}}")
 
     #create the merge node which assemble al the camera
     mergeNode = NodegraphAPI.CreateNode('Merge',group)
@@ -293,6 +296,21 @@ def createCam(seq = 's0060',camDict = {}):
     #position of the merge node
     mergePos = (pos[0]/2,-300)
     NodegraphAPI.SetNodePosition(mergeNode,mergePos)
+
+    # create the switch node to output all camera or only the master camera
+    switchMasterNode = NodegraphAPI.CreateNode('Switch', group)
+    switchMasterNode.setName('switchMasterNode')
+    NodegraphAPI.SetNodeComment(switchMasterNode,'swich to all camera or only masterCam')
+    switchMasterNode.getParameter('in').setExpression('getParent().outputCam', True)
+    # connect the port
+    switchMasterNode.addInputPort('i0')
+    switchMasterNode.addInputPort('i1')
+    mergeNode.getOutputPort('out').connect(switchMasterNode.getInputPort('i0'))
+    switchNode.getOutputPort('output').connect(switchMasterNode.getInputPort('i1'))
+    # position the switchMasterNode
+    switchMasterNodePos = (mergePos[0], mergePos[1] - 50)
+    NodegraphAPI.SetNodePosition(switchMasterNode, switchMasterNodePos)
+
     #position for the switch node
     NodegraphAPI.SetNodePosition(switchNode,(mergePos[0]+300,-200))
     #connect the switch node to the merge node
@@ -303,17 +321,28 @@ def createCam(seq = 's0060',camDict = {}):
     # create the opscript node to add the masterCam in the cameraList
     opscriptNode = NodegraphAPI.CreateNode('OpScript',group)
     opscriptNode.setName('addCamMasterToCamList')
+    opscriptNodeParam = opscriptNode.getParameters().createChildGroup('user')
+    opscriptNodeParam.createChildNumber('outCamValue', 0)
+    opscriptNode.getParameter('user.outCamValue').setExpression('getParent().outputCam', True)
     NodegraphAPI.SetNodeComment(opscriptNode,"add the masterCam center,left and right to the cameraList ")
     opscriptNode.getParameter('CEL').setValue('/root/world',0)
     # set the script node
-    opscriptNode.getParameter('script.lua').setValue("local camList = Interface.GetAttr('globals.cameraList')"
-                                                     "\nlocal tableCamList = camList:getNearestSample(0)"
-                                                     "\ntable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCamera/stereoCameraCenterCamShape')"
-                                                     "\ntable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraLeft/stereoCameraLetfShape')"
-                                                     "\ntable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraRight/stereoCameraRightShape')"
+    opscriptNode.getParameter('script.lua').setValue("local camVal = Interface.GetOpArg('user.outCamValue'):getValue()"
+                                                     "\nlocal tableCamList = {}"
+                                                     "\nif camVal == 1 then"
+                                                     "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCamera/stereoCameraCenterCamShape')"
+                                                     "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraLeft/stereoCameraLeftShape')"
+                                                     "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraRight/stereoCameraRightShape')"
+                                                     "\nelse"
+                                                     "\n\tlocal camList = Interface.GetAttr('globals.cameraList')"
+                                                     "\n\ttableCamList = camList:getNearestSample(0)"
+                                                     "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCamera/stereoCameraCenterCamShape')"
+                                                     "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraLeft/stereoCameraLeftShape')"
+                                                     "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraRight/stereoCameraRightShape')"
+                                                     "\nend"
                                                      "\nInterface.SetAttr('globals.cameraList',StringAttribute(tableCamList))",0)
     #connect the opscriptnode to the merge node
-    mergeNode.getOutputPort('out').connect(opscriptNode.getInputPort('i0'))
+    switchMasterNode.getOutputPort('output').connect(opscriptNode.getInputPort('i0'))
     opscriptNodePos = (mergePos[0],mergePos[1]-100)
     NodegraphAPI.SetNodePosition(opscriptNode, opscriptNodePos)
 
