@@ -31,6 +31,67 @@ tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
 sg = sgw._sg
 sgA = SgApi(sgw=sgw, tk=tk, project=project)
 
+opNodeScript =  "local camVal = Interface.GetOpArg('user.outCamValue'):getValue()" \
+                "\nlocal camType = Interface.GetOpArg('user.outCamType'):getValue()"\
+                "\nlocal tableCamList = {}"\
+                "\nlocal camList = Interface.GetAttr('globals.cameraList')"\
+                "\ntableCamList = camList:getNearestSample(0)"\
+                "\nlocal newCamList = {}"\
+                "\nif camVal == 1 then"\
+                "\n\tif camType == 0 then"\
+                "\n\t\ttable.insert(newCamList,'/root/world/cam/MasterCam/stereoCamera/stereoCameraCenterCamShape')"\
+                "\n\t\ttable.insert(newCamList,'/root/world/cam/MasterCam/stereoCameraLeft/stereoCameraLeftShape')"\
+                "\n\t\ttable.insert(newCamList,'/root/world/cam/MasterCam/stereoCameraRight/stereoCameraRightShape')"\
+                "\n\telseif(camType == 1) then"\
+                "\n\t\ttable.insert(newCamList,'/root/world/cam/MasterCam/stereoCameraLeft/stereoCameraLeftShape')"\
+                "\n\telseif camType == 2 then"\
+                "\n\t\ttable.insert(newCamList,'/root/world/cam/MasterCam/stereoCamera/stereoCameraCenterCamShape')"\
+                "\n\telse"\
+                "\n\t\ttable.insert(newCamList,'/root/world/cam/MasterCam/stereoCameraRight/stereoCameraRightShape')"\
+                "\n\tend "\
+                "\nelse"\
+                "\n\tif camType == 0 then"\
+                "\n\t\tnewCamList = tableCamList"\
+                "\n\t\ttable.insert(newCamList,'/root/world/cam/MasterCam/stereoCamera/stereoCameraCenterCamShape')"\
+                "\n\t\ttable.insert(newCamList,'/root/world/cam/MasterCam/stereoCameraLeft/stereoCameraLeftShape')"\
+                "\n\t\ttable.insert(newCamList,'/root/world/cam/MasterCam/stereoCameraRight/stereoCameraRightShape')"\
+                "\n\telseif(camType == 1) then"\
+                "\n\t\tlocal count = 1"\
+                "\n\t\tfor i = 1,#tableCamList,1 do"\
+                "\n\t\t\tlocal cam = tableCamList[i]"\
+                "\n\t\t\tlocal center = cam:find('CameraLeftShape')"\
+                "\n\t\t\tif center ~= nil then"\
+                "\n\t\t\t\ttable.insert(newCamList,count,cam)"\
+                "\n\t\t\t\tcount = count +1"\
+                "\n\t\t\tend"\
+                "\n\t\tend"\
+                "\n\t\ttable.insert(newCamList,'/root/world/cam/MasterCam/stereoCameraLeft/stereoCameraLeftShape')"\
+                "\n\telseif(camType == 2) then"\
+                "\n\t\tlocal count = 1"\
+                "\n\t\tfor i = 1,#tableCamList,1 do"\
+                "\n\t\t\tlocal cam = tableCamList[i]"\
+                "\n\t\t\tlocal center = cam:find('CameraCenterCamShape')"\
+                "\n\t\t\tif center ~= nil then"\
+                "\n\t\t\t\ttable.insert(newCamList,count,cam)"\
+                "\n\t\t\t\tcount = count +1"\
+                "\n\t\t\tend"\
+                "\n\t\tend"\
+                "\n\t\ttable.insert(newCamList,'/root/world/cam/MasterCam/stereoCamera/stereoCameraCenterCamShape')"\
+                "\n\telse"\
+                "\n\t\tlocal count = 1"\
+                "\n\t\tfor i = 1,#tableCamList,1 do"\
+                "\n\t\t\tlocal cam = tableCamList[i]"\
+                "\n\t\t\tlocal center = cam:find('CameraRightShape')"\
+                "\n\t\t\tif center ~= nil then"\
+                "\n\t\t\t\t	table.insert(newCamList,count,cam)"\
+                "\n\t\t\t\t	count = count +1"\
+                "\n\t\t\tend"\
+                "\n\t\tend"\
+                "\n\t\ttable.insert(newCamList,'/root/world/cam/MasterCam/stereoCameraRight/stereoCameraRightShape')"\
+                "\n\t\tend"\
+                "\nend"\
+                "\nInterface.SetAttr('globals.cameraList',StringAttribute(newCamList))"
+
 
 imageFilterConfoLayout= {
         'filter_operator' : 'all',
@@ -204,9 +265,10 @@ def createCam(seq = 's0060',camDict = {}):
     group.setAttributes(groupNodeAttrDict)
     group.addOutputPort('out')
     # create parameter for the group node
-    celParam = group.getParameters().createChildNumber('outputCam', 0)
-    celParam.setHintString("{'options__order': ['All', 'masterCam'], 'help': 'choose if all the camera of the sequences will be in the SceneGraph or only the masterCam', 'widget': 'mapper', 'options': {'All': 0.0, 'masterCam': 1.0}}")
-
+    celParamOutCam = group.getParameters().createChildNumber('outputCam', 0)
+    celParamOutCam.setHintString("{'options__order': ['All', 'masterCam'], 'help': 'choose if all the camera of the sequences will be display in the SceneGraph or only the masterCam', 'widget': 'mapper', 'options': {'All': 0.0, 'masterCam': 1.0}}")
+    outTypeParam = group.getParameters().createChildNumber('outputType', 0)
+    outTypeParam.setHintString("{'options__order': ['stereo', 'left', 'center', 'right'], 'help': 'out cam type (i.e: stereo,Left,Center or Right)', 'widget': 'mapper', 'options': {'stereo': 0.0, 'right': 3.0, 'center': 2.0, 'left': 1.0}}")
     #create the merge node which assemble al the camera
     mergeNode = NodegraphAPI.CreateNode('Merge',group)
     NodegraphAPI.SetNodeComment(mergeNode,"merge all the sequence cameras and the masterCam together")
@@ -324,23 +386,35 @@ def createCam(seq = 's0060',camDict = {}):
     opscriptNodeParam = opscriptNode.getParameters().createChildGroup('user')
     opscriptNodeParam.createChildNumber('outCamValue', 0)
     opscriptNode.getParameter('user.outCamValue').setExpression('getParent().outputCam', True)
+    opscriptNodeParam.createChildNumber('outCamType', 0)
+    opscriptNode.getParameter('user.outCamType').setExpression('getParent().outputType', True)
     NodegraphAPI.SetNodeComment(opscriptNode,"add the masterCam center,left and right to the cameraList ")
     opscriptNode.getParameter('CEL').setValue('/root/world',0)
     # set the script node
-    opscriptNode.getParameter('script.lua').setValue("local camVal = Interface.GetOpArg('user.outCamValue'):getValue()"
-                                                     "\nlocal tableCamList = {}"
-                                                     "\nif camVal == 1 then"
-                                                     "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCamera/stereoCameraCenterCamShape')"
-                                                     "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraLeft/stereoCameraLeftShape')"
-                                                     "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraRight/stereoCameraRightShape')"
-                                                     "\nelse"
-                                                     "\n\tlocal camList = Interface.GetAttr('globals.cameraList')"
-                                                     "\n\ttableCamList = camList:getNearestSample(0)"
-                                                     "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCamera/stereoCameraCenterCamShape')"
-                                                     "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraLeft/stereoCameraLeftShape')"
-                                                     "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraRight/stereoCameraRightShape')"
-                                                     "\nend"
-                                                     "\nInterface.SetAttr('globals.cameraList',StringAttribute(tableCamList))",0)
+    # opscriptNode.getParameter('script.lua').setValue("local camVal = Interface.GetOpArg('user.outCamValue'):getValue()"
+    #                                                  "\nlocal camType = Interface.GetOpArg('user.outCamType'):getValue()"
+    #                                                  "\nlocal tableCamList = {}"
+    #                                                  "\nif camVal == 1 then"
+    #                                                  "\n\tif camType == 0 then"
+    #                                                  "\n\t\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCamera/stereoCameraCenterCamShape')"
+    #                                                  "\n\t\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraLeft/stereoCameraLeftShape')"
+    #                                                  "\n\t\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraRight/stereoCameraRightShape')"
+    #                                                  "\n\telseif(camType == 1) then"
+    #                                                  "\n\t\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraLeft/stereoCameraLeftShape')"
+    #                                                  "\n\telseif camType == 2 then"
+    #                                                  "\n\t\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCamera/stereoCameraCenterCamShape')"
+    #                                                  "\n\telse"
+    #                                                  "\n\t\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraRight/stereoCameraRightShape')"
+    #                                                  "\n\tend"
+    #                                                  "\nelse"
+    #                                                  "\n\tlocal camList = Interface.GetAttr('globals.cameraList')"
+    #                                                  "\n\ttableCamList = camList:getNearestSample(0)"
+    #                                                  "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCamera/stereoCameraCenterCamShape')"
+    #                                                  "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraLeft/stereoCameraLeftShape')"
+    #                                                  "\n\ttable.insert(tableCamList,'/root/world/cam/MasterCam/stereoCameraRight/stereoCameraRightShape')"
+    #                                                  "\nend"
+    #                                                  "\nInterface.SetAttr('globals.cameraList',StringAttribute(tableCamList))",0)
+    opscriptNode.getParameter('script.lua').setValue(opNodeScript,0)
     #connect the opscriptnode to the merge node
     switchMasterNode.getOutputPort('output').connect(opscriptNode.getInputPort('i0'))
     opscriptNodePos = (mergePos[0],mergePos[1]-100)
@@ -765,3 +839,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
