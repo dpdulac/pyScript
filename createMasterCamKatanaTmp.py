@@ -31,7 +31,7 @@ tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
 sg = sgw._sg
 sgA = SgApi(sgw=sgw, tk=tk, project=project)
 
-opNodeScript =  "local camVal = Interface.GetOpArg('user.outCamValue'):getValue()" \
+opNodeScript =  "local camVal = Interface.GetOpArg('user.outCamValue'):getValue()"\
                 "\nlocal camType = Interface.GetOpArg('user.outCamType'):getValue()"\
                 "\nlocal tableCamList = {}"\
                 "\nlocal camList = Interface.GetAttr('globals.cameraList')"\
@@ -420,20 +420,56 @@ def createCam(seq = 's0060',camDict = {}):
     opscriptNodePos = (mergePos[0],mergePos[1]-100)
     NodegraphAPI.SetNodePosition(opscriptNode, opscriptNodePos)
 
-    # create a prune node to switch off the stereo camera
-    pruneNode = NodegraphAPI.CreateNode('Prune',group)
-    pruneNode.setName('Prune_stereo_'+seq)
+    # create  prunes nodes to switch off non disired cameras
+    # prune for left cam
+    pruneNodeLeft = NodegraphAPI.CreateNode('Prune',group)
+    pruneNodeLeft.setName('leftCam_'+seq)
     # set the cel node to eliminate all camera but the left one
-    pruneNode.getParameter('cel').setValue("(( /root/world/cam/Cam_s*/stereoCameraRight  /root/world/cam/Cam_s*/stereoCameraLeft)) + "
-                                           "(( /root/world/cam/MasterCam/stereoCameraLeft  /root/world/cam/MasterCam/stereoCameraRight))",0)
+    pruneNodeLeft.getParameter('cel').setValue("((/root/world/cam/Cam_s*/stereoCameraRight /root/world/cam/Cam_s*/stereoCamera /root/world/cam/MasterCam/stereoCameraRight /root/world/cam/MasterCam/stereoCamera))",0)
     # connect the merge group to the prune node
-    opscriptNode.getOutputPort('out').connect(pruneNode.getInputPort('A'))
-    prunePos = (mergePos[0],mergePos[1]-200)
-    NodegraphAPI.SetNodePosition(pruneNode,prunePos)
+    opscriptNode.getOutputPort('out').connect(pruneNodeLeft.getInputPort('A'))
+    prunePos = (mergePos[0]-200,mergePos[1]-200)
+    NodegraphAPI.SetNodePosition(pruneNodeLeft,prunePos)
+    # prune for right cam
+    pruneNodeRight = NodegraphAPI.CreateNode('Prune', group)
+    pruneNodeRight.setName('rightCam_' + seq)
+    # set the cel node to eliminate all camera but the right ones
+    pruneNodeRight.getParameter('cel').setValue("((/root/world/cam/Cam_s*/stereoCameraLeft /root/world/cam/Cam_s*/stereoCamera /root/world/cam/MasterCam/stereoCameraLeft /root/world/cam/MasterCam/stereoCamera))",0)
+    # connect the merge group to the prune node
+    opscriptNode.getOutputPort('out').connect(pruneNodeRight.getInputPort('A'))
+    prunePos = (mergePos[0] + 200, mergePos[1] - 200)
+    NodegraphAPI.SetNodePosition(pruneNodeRight, prunePos)
+    # prune for center cam
+    pruneNodeCenter = NodegraphAPI.CreateNode('Prune', group)
+    pruneNodeCenter.setName('centerCam_' + seq)
+    # set the cel node to eliminate all camera but the center ones
+    pruneNodeCenter.getParameter('cel').setValue("((/root/world/cam/Cam_s*/stereoCameraRight /root/world/cam/Cam_s*/stereoCameraLeft /root/world/cam/MasterCam/stereoCameraLeft /root/world/cam/MasterCam/stereoCameraRight))",0)
+    # connect the merge group to the prune node
+    opscriptNode.getOutputPort('out').connect(pruneNodeCenter.getInputPort('A'))
+    prunePos = (mergePos[0], mergePos[1] - 200)
+    NodegraphAPI.SetNodePosition(pruneNodeCenter, prunePos)
 
-    #connect the merge to the out port of the group
+    # create the switch node for the prune camera
+    switchPrune = NodegraphAPI.CreateNode('Switch', group)
+    switchPrune.setName('switchPrune')
+    NodegraphAPI.SetNodeComment(switchPrune, 'swich to to prune the non needed camera')
+    switchPrune.getParameter('in').setExpression('getParent().outputType', True)
+    # connect the port
+    switchPrune.addInputPort('i0')
+    switchPrune.addInputPort('i1')
+    switchPrune.addInputPort('i2')
+    switchPrune.addInputPort('i3')
+    opscriptNode.getOutputPort('out').connect(switchPrune.getInputPort('i0'))
+    pruneNodeLeft.getOutputPort('out').connect(switchPrune.getInputPort('i1'))
+    pruneNodeCenter.getOutputPort('out').connect(switchPrune.getInputPort('i2'))
+    pruneNodeRight.getOutputPort('out').connect(switchPrune.getInputPort('i3'))
+    # position the switchPrune
+    switchPrunePos = (mergePos[0], mergePos[1] - 300)
+    NodegraphAPI.SetNodePosition(switchPrune, switchPrunePos)
+
+    #connect the switchprune to the out port of the group
     returnGroup = group.getReturnPort('out')
-    pruneNode.getOutputPort('out').connect(returnGroup)
+    switchPrune.getOutputPort('output').connect(returnGroup)
     #set the out time of the project to maxOutTime
     root.getParameter('outTime').setValue(camFrame-1,0)
     print maxOutTime,camFrame
