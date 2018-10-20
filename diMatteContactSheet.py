@@ -131,8 +131,6 @@ def createContact(res={},small = True):
         if not os.path.isdir(path):
             os.makedirs(path)
         masterBuf.write(path+'testdi.'+frameNbStr+'.jpg')
-        # clean the masterbuffer
-        masterBuf.reset(masterBufSpec)
 
 
 def main():
