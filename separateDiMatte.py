@@ -12,6 +12,7 @@
 from sgtkLib import tkutil, tkm
 import os, pprint, errno, argparse, sys, math,subprocess
 import OpenImageIO as oiio
+import OpenEXR,Imath
 
 _USER_ = os.environ['USER']
 _OUTPATH_ ='/s/prodanim/asterix2/_sandbox/' + _USER_ +"/contactSheet"
@@ -62,8 +63,8 @@ def extractLayer(res={},path = '/tmp'):
     shotPathLeft = shotPath+ '/left'
 
     # dictionary for the channels
-    channelDict = {'d0': (0, 1, 2, 3), 'd1': (4, 5, 6, 7), 'd2': (8, 9, 10, 11), 'd3': (12, 13, 14, 15), 'd4': (16, 17, 18, 19),
-                   'd5': (20, 21, 22, 23), 'd6': (24, 25, 26, 27)}
+    channelDict = {'d0': (0, 1, 2), 'd1': (4, 5, 6), 'd2': (8, 9, 10), 'd3': (12, 13, 14), 'd4': (16, 17, 18),
+                   'd5': (20, 21, 22), 'd6': (24, 25, 26)}
 
     for frameNb in range(cutIn, cutOut + 1):
         frameNbStr = str(frameNb).zfill(4)
@@ -72,30 +73,44 @@ def extractLayer(res={},path = '/tmp'):
         framePathNbRight = framePathRight.replace('%04d', frameNbStr)
         # open the left and right image
         frameInLeft = oiio.ImageBuf(framePathNbLeft)
+        frameInLeft.read()
+        if frameInLeft.has_error:
+            print 'donuts',frameInLeft.geterror()
         frameInRight = oiio.ImageBuf(framePathNbRight)
-        writeLayers(frameInLeft,frameNb,shotPathLeft,channelDict)
-        writeLayers(framePathNbRight, frameNb, shotPathRight, channelDict)
+        writeLayers(frameInLeft,frameNbStr,shotPathLeft,channelDict)
+        writeLayers(frameInRight, frameNbStr, shotPathRight, channelDict)
 
 def writeLayers(img = oiio.ImageBuf(),frameNb='0101',path='/tmp',channelDict = {}):
+    print 'writing layers for ' + path + ' frane number: ' + frameNb
     for key in sorted(channelDict.keys()):
         frameTmp = oiio.ImageBuf(img.spec())
         oiio.ImageBufAlgo.channels(frameTmp, img, channelDict[key])
         # create the path for the image and set it to be 8bit (suffisant for matte)
-        shotPathLayer = path + '/'+key+'/'+key+'.'+frameNb+'.tif'
+        shotPathLayer = path + '/'+key
+        imageName = '/'+key+'.'+frameNb+'.exr'
         frameTmp.set_write_format(oiio.UINT8)
         # if it's the primary set the path and the output to be exr half float
         if key == 'd0':
             frameTmp.set_write_format(oiio.HALF)
-            shotPathLayer = path + '/primary/primary.'+frameNb+'.exr'
+            #frameTmp.set_write_tiles(0,0)
+            shotPathLayer = path + '/primary'
+            imageName = '/primary.'+frameNb+'.exr'
         # create the output path if it doesn't exist
         if not os.path.isdir(shotPathLayer):
             os.makedirs(shotPathLayer)
-        print 'writing: '+ shotPathLayer
-        frameTmp.write(shotPathLayer)
+        frameTmp.write(shotPathLayer+imageName)
+
+def openExrInfo(file=''):
+    a = OpenEXR.InputFile(file).header()
+    a['bla'] = Imath.Box2f(Imath.point(75.0,75.0),Imath.point(100.0,100.0))
+    pprint.pprint(a)
+    print '\n'
 
 def main():
-    res = findShots(430,60)
-    extractLayer(res)
+    res = findShots(460,60)
+    extractLayer(res,'/s/prodanim/asterix2/_sandbox/duda/daVinci')
+    #openExrInfo('/s/prodanim/asterix2/_sandbox/duda/daVinci/s0010_p0020/left/primary/primary.0101.exr')
+    #openExrInfo('/s/prodanim/asterix2/sequences/s0010/s0010_p0020/compo_di/compo_di/publish/images/s0010_p0020-base-compo_di-v020/left/s0010_p0020-base-compo_di-left.0101.exr')
 
 if __name__ == '__main__':
     main()
