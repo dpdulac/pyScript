@@ -33,7 +33,7 @@ else:
     os.environ["KATANA_HOME"] = os.environ["PROD_ROOT"]+"/_sandbox/"+ _USER_
 
 #if in arnold-5 add my shaderpath
-pathArnoldPlugin = "/s/prodanim/asterix2/_sandbox/"+_USER_+"/oslShader"
+pathArnoldPlugin = os.environ["PROD_ROOT"]+"/_sandbox/"+_USER_+"/oslShader"
 if not os.path.isdir(pathArnoldPlugin):
     print "Creating: "+pathArnoldPlugin
     os.makedirs(pathArnoldPlugin)
