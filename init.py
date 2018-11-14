@@ -22,8 +22,16 @@ import os
 # user name
 _USER_ = os.environ['USER']
 
+#lightshader stuff
+os.environ['LIGHTSHADER'] = "/homes/"+_USER_+"/katanaResources/lightshaderResources"
+_LIGHTSHADER_=os.environ['LIGHTSHADER']
+os.environ['KAT_SHELVES']=_LIGHTSHADER_+"/katana_shelves"
+_KAT_SHELVES_ = os.environ['KAT_SHELVES']
+os.environ['MATLIB']=_LIGHTSHADER_+"/Library"
+
+
 #add path to KATANA_RESOURCES
-os.environ['KATANA_RESOURCES'] += os.pathsep + "/homes/"+_USER_+"/.katana/UIPlugins"+os.pathsep+"/homes/duda/katanaResources/lightshaderResources/Resources"
+os.environ['KATANA_RESOURCES'] += os.pathsep + "/homes/"+_USER_+"/.katana/UIPlugins"+os.pathsep+_LIGHTSHADER_+"/Resources"+os.pathsep+_KAT_SHELVES_
 #set KATANA_HOME
 try :
     os.environ["PROD_ROOT"]
@@ -65,6 +73,9 @@ else:
 #sys.path.append("/s/prodanim/asterix2/_sandbox/duda/Katana/Startup")
 sys.path.append("/homes/"+_USER_+"/.katana/UIPlugins")
 sys.path.append("/homes/"+_USER_+"/.katana/Script")
+sys.path.append(_LIGHTSHADER_)
+sys.path.append(_LIGHTSHADER_+"/Resources")
+sys.path.append(_KAT_SHELVES_)
 sys.path.append("/datas/pyScript")
 
 

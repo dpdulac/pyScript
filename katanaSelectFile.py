@@ -22,7 +22,6 @@ from PyQt4.QtCore import *
 from UI4.App import MainWindow, MainMenu, Tabs
 from Katana import  Callbacks, KatanaFile, NodegraphAPI
 
-
 class customMenu(QWidget):
     def __init__(self,parent = MainWindow.CurrentMainWindow()):
         super(customMenu, self).__init__(parent)
