@@ -53,6 +53,8 @@ else:
     if os.environ['ARNOLD_PLUGIN_PATH'].find("arnold-5.") > 0:
         print "using arnold-5"
         os.environ['ARNOLD_PLUGIN_PATH']+= os.pathsep + pathArnoldPlugin
+        os.environ[
+            'KATANA_RESOURCES'] += os.pathsep + "/homes/" + _USER_ + "/.katana/UIPlugins" + os.pathsep + _LIGHTSHADER_ + "/Resources" + os.pathsep + _KAT_SHELVES_
     else:
         print "using Arnold-4"
 

@@ -146,7 +146,7 @@ def findAllSequence(all = False):
                 res[seq] = {}
             res[seq]['description'] = v['description']
         else:
-            if int(seq[seq.find('s')+1:]) <9000:
+            if int(seq[:3]) < 800: #only take the first 3 characters
                 if not seq in res:
                     res[seq] = {}
                 if v['description'] != None:

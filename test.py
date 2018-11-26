@@ -426,7 +426,50 @@ tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
 sg = sgw._sg
 sgA = SgApi(sgw=sgw, tk=tk, project=project)
 
+def findAllSequence(all = False):
+    filters = [
+        ['project', 'is', {'type':'Project', 'id':project.id}],
+    ]
+    res = {}
+    seqShots =[]
+    #get all the name of the shots and masters from the sequence
+    for v in sg.find('Sequence',filters,['entity','code','description']):
+        seq = v['code']
+        if all:
+            if not seq in res:
+                res[seq] = {}
+            res[seq]['description'] = v['description']
+            print seq[:3]
+        else:
+            if int(seq[:3]) <800:
+                if not seq in res:
+                    res[seq] = {}
+                if v['description'] != None:
+                    res[seq]['description'] = v['description']
+                else:
+                    res[seq]['description'] = 'None'
+            else:
+                print 'donuts for: ' + seq
+    return res
 
+def findShotsInSequence(seq='s1300',dict=False):
+    filters = [
+        ['project', 'is', {'type':'Project', 'id':project.id}],
+        ['code','is',seq]
+    ]
+    res = {}
+    seqShots =[]
+    #get all the name of the shots and masters from the sequence
+    for v in sg.find('Sequence',filters,['entity','shots']):
+        if not 'Shots' in res:
+            tmp = v['shots']
+            for item in tmp:
+                seqShots.append(item['name'])
+            res['Shots'] = sorted(seqShots)
+    if dict:
+        return res
+    else:
+        return sorted(seqShots)
 
 def findShots( seq='s1300', shotList=[]):
     filters = [
@@ -486,8 +529,9 @@ def findCameraPath(seq='s1300'):
 
 def main():
 
-    a = findCameraPath('s0060')
-    pprint.pprint(a)
+    a = findAllSequence().keys()[0]
+    b = findShotsInSequence(a)
+    pprint.pprint(b)
 
 
 if __name__ == '__main__':
