@@ -69,7 +69,9 @@ try:
 except KeyError:
     os.environ['LUA_PATH'] = luaPath+"?.lua"
 else:
-    os.environ['LUA_PATH'] += os.pathsep + luaPath+"?.lua"
+    print 'donuts'
+    #os.environ['LUA_PATH'] = luaPath+"?.lua"+os.environ['LUA_PATH']
+    os.environ['LUA_PATH'] = '/s/apps/packages/mikrosAnim/katanaCore/1.8.0/kCore/lua/?.lua' +';'+luaPath + "?.lua"
 
 #append my script directory
 #sys.path.append("/s/prodanim/asterix2/_sandbox/duda/Katana/Startup")

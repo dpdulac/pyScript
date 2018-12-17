@@ -268,7 +268,7 @@ def convertImage(filename = '',fileOutName = '',format='tif'):
 def convertImageOIIO(filename = '',fileOutName = '',format='tif'):
     inFile = oiio.ImageBuf(filename)
     if not inFile.has_error :
-        oiio.ImageBufAlgo.colorconvert(inFile,inFile,'linear','Asterix2_Film')
+        oiio.ImageBufAlgo.colorconvert(inFile,inFile,'linear','SK_Film')
         if format != 'tif':
             inFile.set_write_format(oiio.UINT16)
         else:
