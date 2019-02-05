@@ -243,7 +243,7 @@ def convertImage(filename = '',fileOutName = '',format='tif'):
     """
     #"""
     # get the processor to transform from linear to Asterix2_Film space
-    processor = config.getProcessor('linear','Asterix2_Film')
+    processor = config.getProcessor('srgb8','acescg')
     #processor = config.getProcessor('linear','srgb8')
 
     #"""
@@ -268,7 +268,7 @@ def convertImage(filename = '',fileOutName = '',format='tif'):
 def convertImageOIIO(filename = '',fileOutName = '',format='tif'):
     inFile = oiio.ImageBuf(filename)
     if not inFile.has_error :
-        oiio.ImageBufAlgo.colorconvert(inFile,inFile,'linear','SK_Film')
+        oiio.ImageBufAlgo.colorconvert(inFile,inFile,'linear_srgb','acescg')
         if format != 'tif':
             inFile.set_write_format(oiio.UINT16)
         else:
