@@ -64,19 +64,15 @@ def buildExtractDispUI():
 
 
 def minMaxOIIO(filename = '', output = 'both'):
-    file = oiio.ImageInput.open(filename)
-    pixels = file.read_image(0,0,oiio.FLOAT)
-    spec = file.spec()
-    size = (spec.width,spec.height)
-    rgbf = Image.frombytes("F", size, pixels)
+    file = oiio.ImageBuf(filename)
+    stats = oiio.ImageBufAlgo.computePixelStats(file)
 
-    extrema = rgbf.getextrema()
     if output == 'min':
-        return extrema[0]
+        return stats.min
     elif output == 'max':
-        return extrema[1]
+        return stats.max
     else:
-        return extrema
+        return (stats.min,stats.max)
 
 
 def findDispHeight(inFile = '/s/prodanim/asterix2/_sandbox/duda/fileDispFromLua.txt'):
