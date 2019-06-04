@@ -68,9 +68,8 @@ opNodeScript = "--plane shape"\
     "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_DIFFUSE_REFLECT',IntAttribute{0})"\
     "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_SPECULAR_REFLECT',IntAttribute{0})"
 
-def createPlane(nodeName = 'planeFocus',location = '/root/world/cam/focus_plane' ):
-    root = NodegraphAPI.GetRootNode()
-    opscriptNode = NodegraphAPI.CreateNode('OpScript',root)
+def createPlane(nodeName = 'planeFocus',location = '/root/world/cam/focus_plane', rootNode = NodegraphAPI.GetRootNode() ):
+    opscriptNode = NodegraphAPI.CreateNode('OpScript',rootNode)
     opscriptNode.setName(nodeName)
     opscriptNode.getParameter('applyWhere').setValue('at specific location',0)
     opscriptNodeParam = opscriptNode.getParameters().createChildGroup('user')
@@ -79,10 +78,99 @@ def createPlane(nodeName = 'planeFocus',location = '/root/world/cam/focus_plane'
     #opscriptNode.getParameter('user.scale').setExpression('getParent().outputCam', True)
     opName = opscriptNodeParam.createChildString('nodeName','')
     opscriptNode.getParameter('user.nodeName').setExpression('self.getNode().getName()', True)
-    displayName = opscriptNodeParam.createChildString('displayName','focus_plane')
+    displayName = opscriptNodeParam.createChildString('displayName',nodeName)
     colorName = opscriptNodeParam.createChildNumberArray('displayColor',3)
     colorName.setHintString("{'widget': 'color'}")
     opscriptNode.getParameter('user.displayColor.i0').setValue(1.0,0.0)
     NodegraphAPI.SetNodeComment(opscriptNode,"create a plane ")
     opscriptNode.getParameter('location').setValue(location,0)
     opscriptNode.getParameter('script.lua').setValue(opNodeScript,0.0)
+    return opscriptNode
+
+def nodeToMouse(nodeToselect = ''):
+    # put the node under the mouse
+    currentSelection = NodegraphAPI.GetAllSelectedNodes()
+    for node in currentSelection:
+        NodegraphAPI.SetNodeSelected(node, False)
+    NodegraphAPI.SetNodeSelected(nodeToselect, True)
+    # Get list of selected nodes
+    nodeList = NodegraphAPI.GetAllSelectedNodes()
+    # Find Nodegraph tab and float nodes
+    nodegraphTab = UI4.App.Tabs.FindTopTab('Node Graph')
+    if nodegraphTab:
+        nodegraphTab.floatNodes(nodeList)
+
+def createFocusGroup(name='FocusGroup',parent = NodegraphAPI.GetRootNode()):
+    rootNode = parent
+    # create the groupNode
+    groupNode = NodegraphAPI.CreateNode('Group', rootNode)
+    groupNode.setName(name)
+    # add in and out port
+    groupNode.addInputPort('in')
+    groupNode.addOutputPort('out')
+    # add attribute to switch the display of group node to normal node
+    groupNodeAttrDict = {'ns_basicDisplay': 1, 'ns_iconName': ''}
+    groupNode.setAttributes(groupNodeAttrDict)
+
+    # # create the merge node
+    # mergePlanes = NodegraphAPI.CreateNode('Merge', groupNode)
+    # mergePlanes.setName('Merge_Planes')
+    # for i in range(0, 4):
+    #     mergePlanes.addInputPort('i' + str(i))
+    # sendGroup = groupNode.getSendPort('in')
+    # returnGroup = groupNode.getReturnPort('out')
+    # mergePlanes.getInputPort('i0').connect(sendGroup)
+    # mergePlanes.getOutputPort('out').connect(returnGroup)
+    # centralPos = (0,0)
+    #
+    # #create the planes nodes
+    # dictPlanes = {'nearFocusPlane':{'nodeName':'nearFocus', 'location':'/root/world/cam/near_focus_plane', 'color':[0.0,0.0,1.0], 'pos':(-200,-10), 'inputMerge':'i1'},
+    #               'focusPlane': {'nodeName': 'planeFocus', 'location': '/root/world/cam/focus_plane','color': [1.0, 0.0, 0.0], 'pos':(0,-10), 'inputMerge':'i2'},
+    #               'farFocusPlane': {'nodeName': 'farFocus', 'location': '/root/world/cam/far_focus_plane','color': [0.0, 1.0, 0.0], 'pos':(200,-10), 'inputMerge':'i3'}}
+    #
+    # for key in dictPlanes.keys():
+    #     plane = createPlane(nodeName = dictPlanes[key]['nodeName'],location = dictPlanes[key]['location'], rootNode = groupNode )
+    #     plane.getParameter('user.displayColor.i0').setValue(dictPlanes[key]['color'][0], 0)
+    #     plane.getParameter('user.displayColor.i1').setValue(dictPlanes[key]['color'][1], 0)
+    #     plane.getParameter('user.displayColor.i2').setValue(dictPlanes[key]['color'][2], 0)
+    #     NodegraphAPI.SetNodePosition(plane,dictPlanes[key]['pos'])
+    #     planeTransform = NodegraphAPI.CreateNode('Transform3D', parent=groupNode)
+    #     planeTransform.getParameter('path').setValue(dictPlanes[key]['location'],0)
+    #     planeTransform.getParameter('makeInteractive').setValue('Yes',0)
+    #     planeTransform.setName('Transform_'+dictPlanes[key]['nodeName'])
+    #     NodegraphAPI.SetNodePosition(planeTransform, (dictPlanes[key]['pos'][0],dictPlanes[key]['pos'][1]-150))
+    #     # connect the node
+    #     planeTransform.getInputPort('in').connect(plane.getOutputPort('out'))
+    #     mergePlanes.getInputPort(dictPlanes[key]['inputMerge']).connect(planeTransform.getOutputPort('out'))
+    #
+    # NodegraphAPI.SetNodePosition(mergePlanes, (0, -310))
+    sendGroup = groupNode.getSendPort('in')
+    returnGroup = groupNode.getReturnPort('out')
+    posX = 0.0
+    posY = 150.0
+    #create the planes nodes
+    dictPlanes = {'nearFocusPlane':{'nodeName':'nearFocus', 'location':'/root/world/cam/near_focus_plane', 'color':[0.0,0.0,1.0], 'pos':(-200,-10), 'inputMerge':'i1'},
+                  'focusPlane': {'nodeName': 'planeFocus', 'location': '/root/world/cam/focus_plane','color': [1.0, 0.0, 0.0], 'pos':(0,-10), 'inputMerge':'i2'},
+                  'farFocusPlane': {'nodeName': 'farFocus', 'location': '/root/world/cam/far_focus_plane','color': [0.0, 1.0, 0.0], 'pos':(200,-10), 'inputMerge':'i3'}}
+
+    for key in dictPlanes.keys():
+        posY -= 150.0
+        plane = createPlane(nodeName = dictPlanes[key]['nodeName'],location = dictPlanes[key]['location'], rootNode = groupNode )
+        plane.getParameter('user.displayColor.i0').setValue(dictPlanes[key]['color'][0], 0)
+        plane.getParameter('user.displayColor.i1').setValue(dictPlanes[key]['color'][1], 0)
+        plane.getParameter('user.displayColor.i2').setValue(dictPlanes[key]['color'][2], 0)
+        NodegraphAPI.SetNodePosition(plane,(posX,posY))
+        planeTransform = NodegraphAPI.CreateNode('Transform3D', parent=groupNode)
+        planeTransform.getParameter('path').setValue(dictPlanes[key]['location'],0)
+        planeTransform.getParameter('makeInteractive').setValue('Yes',0)
+        planeTransform.setName('Transform_'+dictPlanes[key]['nodeName'])
+        NodegraphAPI.SetNodePosition(planeTransform, (posX, posY-150))
+        # connect the node
+        plane.getInputPort('i0').connect(sendGroup)
+        planeTransform.getInputPort('in').connect(plane.getOutputPort('out'))
+        sendGroup = planeTransform.getOutputPort('out')
+    sendGroup.connect(returnGroup)
+    nodeToMouse(groupNode)
+
+if __name__ == '__main__':
+    main()
