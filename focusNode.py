@@ -144,17 +144,21 @@ def createFocusGroup(name='FocusGroup',parent = NodegraphAPI.GetRootNode()):
     #     mergePlanes.getInputPort(dictPlanes[key]['inputMerge']).connect(planeTransform.getOutputPort('out'))
     #
     # NodegraphAPI.SetNodePosition(mergePlanes, (0, -310))
+
+    # get the in and out port
     sendGroup = groupNode.getSendPort('in')
     returnGroup = groupNode.getReturnPort('out')
+
+    # start pos for the node
     posX = 0.0
-    posY = 150.0
+    posY = 100.0
     #create the planes nodes
     dictPlanes = {'nearFocusPlane':{'nodeName':'nearFocus', 'location':'/root/world/cam/near_focus_plane', 'color':[0.0,0.0,1.0], 'pos':(-200,-10), 'inputMerge':'i1'},
                   'focusPlane': {'nodeName': 'planeFocus', 'location': '/root/world/cam/focus_plane','color': [1.0, 0.0, 0.0], 'pos':(0,-10), 'inputMerge':'i2'},
                   'farFocusPlane': {'nodeName': 'farFocus', 'location': '/root/world/cam/far_focus_plane','color': [0.0, 1.0, 0.0], 'pos':(200,-10), 'inputMerge':'i3'}}
 
     for key in dictPlanes.keys():
-        posY -= 150.0
+        posY -= 100.0
         plane = createPlane(nodeName = dictPlanes[key]['nodeName'],location = dictPlanes[key]['location'], rootNode = groupNode )
         plane.getParameter('user.displayColor.i0').setValue(dictPlanes[key]['color'][0], 0)
         plane.getParameter('user.displayColor.i1').setValue(dictPlanes[key]['color'][1], 0)
@@ -164,7 +168,8 @@ def createFocusGroup(name='FocusGroup',parent = NodegraphAPI.GetRootNode()):
         planeTransform.getParameter('path').setValue(dictPlanes[key]['location'],0)
         planeTransform.getParameter('makeInteractive').setValue('Yes',0)
         planeTransform.setName('Transform_'+dictPlanes[key]['nodeName'])
-        NodegraphAPI.SetNodePosition(planeTransform, (posX, posY-150))
+        posY -= 100.0
+        NodegraphAPI.SetNodePosition(planeTransform, (posX, posY))
         # connect the node
         plane.getInputPort('i0').connect(sendGroup)
         planeTransform.getInputPort('in').connect(plane.getOutputPort('out'))
