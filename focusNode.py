@@ -13,11 +13,13 @@
 import os, pprint, errno, argparse, sys, math, operator
 from Katana import  NodegraphAPI,UI4
 
-opNodeScript = "--plane shape"\
-    "\npoints ={-0.5,-0.5,0,"\
-    "\n\t0.5,-0.5,0," \
-    "\n\t-0.5,0.5,0," \
-    "\n\t0.5,0.5,0}"\
+opNodeScript = "local scale = Interface.GetOpArg('user.scale'):getValue()"\
+    "\nlocal vPt = 0.5*scale"\
+    "\n--plane shape"\
+    "\npoints ={-vPt,-vPt,0,"\
+    "\n\tvPt,-vPt,0," \
+    "\n\t-vPt,vPt,0," \
+    "\n\tvPt,vPt,0}"\
     "\nvertexList = {2,3,1,0}"\
     "\nstartIndex = {0,4}"\
     "\n\n-- Set the location's type to 'polymesh'"\
@@ -37,8 +39,7 @@ opNodeScript = "--plane shape"\
     "\nlocal nodeName =Interface.GetOpArg('user.nodeName'):getValue()"\
     "\nInterface.SetAttr('attributeEditor.xform.exclusiveTo',StringAttribute{nodeName})"\
     "\n\n--set the bounds"\
-    "\nlocal scale = Interface.GetOpArg('user.scale'):getValue()"\
-    "\nlocal bounds = {-.5*scale, .5*scale, -.5*scale, .5*scale, -.5*scale,.5*scale }"\
+    "\nlocal bounds = {-vPt, vPt, -vPt, vPt, -vPt,vPt }"\
     "\nInterface.SetAttr('bound', DoubleAttribute( bounds))"\
     "\n\n-- set the color of the primitive "\
     "\nlocal color = Interface.GetOpArg('user.displayColor'):getNearestSample(0.0)"\
@@ -50,13 +51,13 @@ opNodeScript = "--plane shape"\
     "\nInterface.SetAttr('viewer.default.annotation.text', StringAttribute(message))"\
     "\nInterface.SetAttr('viewer.default.annotation.color', FloatAttribute(color))"\
     "\n\n-- set the xform"\
-    "\nlocal gbXform = GroupBuilder()"\
-    "\ngbXform:set('translate',DoubleAttribute{0.0,0.0,0.0})"\
-    "\ngbXform:set('rotateZ',DoubleAttribute{0.0,0.0,0.0,1.0})"\
-    "\ngbXform:set('rotateY',DoubleAttribute{0.0,0.0,1.0,0.0})"\
-    "\ngbXform:set('rotateX',DoubleAttribute{0.0,1.0,0.0,0.0})"\
-    "\ngbXform:set('scale',DoubleAttribute{scale,scale,scale})"\
-    "\nInterface.SetAttr('xform.interactive',gbXform:build())"\
+    "\n--local gbXform = GroupBuilder()"\
+    "\n--gbXform:set('translate',DoubleAttribute{0.0,0.0,0.0})"\
+    "\n--gbXform:set('rotateZ',DoubleAttribute{0.0,0.0,0.0,1.0})"\
+    "\n--gbXform:set('rotateY',DoubleAttribute{0.0,0.0,1.0,0.0})"\
+    "\n--gbXform:set('rotateX',DoubleAttribute{0.0,1.0,0.0,0.0})"\
+    "\n--gbXform:set('scale',DoubleAttribute{scale,scale,scale})"\
+    "\n--Interface.SetAttr('xform.interactive',gbXform:build())"\
     "\n\n--set the rendering state"\
     "\nInterface.SetAttr('arnoldStatements.receive_shadows',IntAttribute{0})"\
     "\nInterface.SetAttr('arnoldStatements.self_shadows',IntAttribute{0})"\
@@ -100,7 +101,7 @@ def nodeToMouse(nodeToselect = ''):
     if nodegraphTab:
         nodegraphTab.floatNodes(nodeList)
 
-def createFocusGroup(name='FocusGroup',parent = NodegraphAPI.GetRootNode()):
+def createFocusGroup(name='FocusGroup',parent = NodegraphAPI.GetRootNode(),geoPath = '/root//world/cam/DOF'):
     rootNode = parent
     # create the groupNode
     groupNode = NodegraphAPI.CreateNode('Group', rootNode)
@@ -112,38 +113,34 @@ def createFocusGroup(name='FocusGroup',parent = NodegraphAPI.GetRootNode()):
     groupNodeAttrDict = {'ns_basicDisplay': 1, 'ns_iconName': ''}
     groupNode.setAttributes(groupNodeAttrDict)
 
-    # # create the merge node
-    # mergePlanes = NodegraphAPI.CreateNode('Merge', groupNode)
-    # mergePlanes.setName('Merge_Planes')
-    # for i in range(0, 4):
-    #     mergePlanes.addInputPort('i' + str(i))
-    # sendGroup = groupNode.getSendPort('in')
-    # returnGroup = groupNode.getReturnPort('out')
-    # mergePlanes.getInputPort('i0').connect(sendGroup)
-    # mergePlanes.getOutputPort('out').connect(returnGroup)
-    # centralPos = (0,0)
-    #
-    # #create the planes nodes
-    # dictPlanes = {'nearFocusPlane':{'nodeName':'nearFocus', 'location':'/root/world/cam/near_focus_plane', 'color':[0.0,0.0,1.0], 'pos':(-200,-10), 'inputMerge':'i1'},
-    #               'focusPlane': {'nodeName': 'planeFocus', 'location': '/root/world/cam/focus_plane','color': [1.0, 0.0, 0.0], 'pos':(0,-10), 'inputMerge':'i2'},
-    #               'farFocusPlane': {'nodeName': 'farFocus', 'location': '/root/world/cam/far_focus_plane','color': [0.0, 1.0, 0.0], 'pos':(200,-10), 'inputMerge':'i3'}}
-    #
-    # for key in dictPlanes.keys():
-    #     plane = createPlane(nodeName = dictPlanes[key]['nodeName'],location = dictPlanes[key]['location'], rootNode = groupNode )
-    #     plane.getParameter('user.displayColor.i0').setValue(dictPlanes[key]['color'][0], 0)
-    #     plane.getParameter('user.displayColor.i1').setValue(dictPlanes[key]['color'][1], 0)
-    #     plane.getParameter('user.displayColor.i2').setValue(dictPlanes[key]['color'][2], 0)
-    #     NodegraphAPI.SetNodePosition(plane,dictPlanes[key]['pos'])
-    #     planeTransform = NodegraphAPI.CreateNode('Transform3D', parent=groupNode)
-    #     planeTransform.getParameter('path').setValue(dictPlanes[key]['location'],0)
-    #     planeTransform.getParameter('makeInteractive').setValue('Yes',0)
-    #     planeTransform.setName('Transform_'+dictPlanes[key]['nodeName'])
-    #     NodegraphAPI.SetNodePosition(planeTransform, (dictPlanes[key]['pos'][0],dictPlanes[key]['pos'][1]-150))
-    #     # connect the node
-    #     planeTransform.getInputPort('in').connect(plane.getOutputPort('out'))
-    #     mergePlanes.getInputPort(dictPlanes[key]['inputMerge']).connect(planeTransform.getOutputPort('out'))
-    #
-    # NodegraphAPI.SetNodePosition(mergePlanes, (0, -310))
+    #create the parameters for groupNode
+    fstopCameraMetadata = groupNode.getParameters().createChildNumber('fstop_camera_metadata',0)
+    fstopCameraMetadata.setHintString("{'widget': 'checkBox', 'help': 'use the fstop inside the camera metadata'}")
+    fstop = groupNode.getParameters().createChildNumber('fstop',64)
+    fstop.setHintString("{'widget': 'popup', 'conditionalVisOps': {'conditionalVisOp': 'equalTo', 'conditionalVisPath': '../use_fstop_metadata', 'conditionalVisValue': '0'}, 'options': ['1.0', '1.2', '1.4', '1.7', '2.0', '2.4', '2.8', '3.3', '4.0', '4.8', '5.6', '6.7', '8.0', '9.5', '11.0', '13.0', '16.0', '19.0', '22.0', '27.0', '32.0', '38.0', '45.0', '54.0', '64.0'], 'help': 'fstop increment in half stop'}")
+    fstop.setValue(64,0.0)
+    #focus distance group
+    fdistGroup = groupNode.getParameters().createChildGroup('focus_distance')
+    fdistGroup.setHintString("{'open': 'True'}")
+    methodParam = fdistGroup.createChildString('method','manual')
+    methodParam.setHintString("{'widget': 'mapper', 'options': {'manual': '2', 'target': '0', 'alembic': '1', 'metadata': '3'}, 'options__order': ['target', 'alembic', 'manual', 'metadata'], 'help': 'choose between target, manual or metadata'}")
+    methodParam.setValue('manual', 0.0)
+    targetTestingGroup = fdistGroup.createChildGroup('target_setting')
+    targetTestingGroup.setHintString("{'conditionalVisOps': {'conditionalVisOp': 'equalTo', 'conditionalVisPath': '../method', 'conditionalVisValue': '0'}, 'open': 'True'}")
+    targetConstraintParam = targetTestingGroup.createChildNumber('target_constraint', 0)
+    targetConstraintParam.setHintString("{'widget': 'checkBox', 'help': 'check to set an object as target constraint'}")
+    targetConstraintObjectParam = targetTestingGroup.createChildString('target_constraint_Object', '')
+    targetConstraintObjectParam.setHintString("{'widget': 'scenegraphLocation', 'conditionalVisOps': {'conditionalVisOp': 'equalTo', 'conditionalVisPath': '../target_constraint', 'conditionalVisValue': '1'}, 'help': 'target constraint object to calculate the focus distance'}")
+    alembicSettingGroup = fdistGroup.createChildGroup('alembic_setting')
+    alembicSettingGroup.setHintString("{'conditionalVisOps': {'conditionalVisOp': 'equalTo', 'conditionalVisPath': '../method', 'conditionalVisValue': '1'}, 'open': 'True'}")
+    alembicPathParam = alembicSettingGroup.createChildString('alembic_path', '')
+    alembicPathParam.setHintString("{'widget': 'fileInput', 'help': 'alembic object wich contains the focus distance'}")
+    alembicAttributeNameParam = alembicSettingGroup.createChildString('alembic_attr_name', '')
+    alembicAttributeNameParam.setHintString("{'help': 'attribute name of the alembic wich contain the focus distance\n(i.e: xform.translate)'}")
+    focusDistanceParam = fdistGroup.createChildNumber('focus_distance', 10)
+    focusDistanceParam.setHintString("{'conditionalVisOps': {'conditionalVisOp': 'equalTo', 'conditionalVisPath': '../method', 'conditionalVisValue': '2'}, 'help': 'manualy put the focus distance'}")
+    
+
 
     # get the in and out port
     sendGroup = groupNode.getSendPort('in')
@@ -153,10 +150,27 @@ def createFocusGroup(name='FocusGroup',parent = NodegraphAPI.GetRootNode()):
     posX = 0.0
     posY = 100.0
     #create the planes nodes
-    dictPlanes = {'nearFocusPlane':{'nodeName':'nearFocus', 'location':'/root/world/cam/near_focus_plane', 'color':[0.0,0.0,1.0], 'pos':(-200,-10), 'inputMerge':'i1'},
-                  'focusPlane': {'nodeName': 'planeFocus', 'location': '/root/world/cam/focus_plane','color': [1.0, 0.0, 0.0], 'pos':(0,-10), 'inputMerge':'i2'},
-                  'farFocusPlane': {'nodeName': 'farFocus', 'location': '/root/world/cam/far_focus_plane','color': [0.0, 1.0, 0.0], 'pos':(200,-10), 'inputMerge':'i3'}}
+    dictPlanes = {'nearFocusPlane':{'nodeName':'nearFocus', 'location':geoPath+'/near_focus_plane', 'color':[0.0,0.0,1.0], 'pos':(-200,-10), 'inputMerge':'i1'},
+                  'focusPlane': {'nodeName': 'planeFocus', 'location': geoPath+'/focus_plane','color': [1.0, 0.0, 0.0], 'pos':(0,-10), 'inputMerge':'i2'},
+                  'farFocusPlane': {'nodeName': 'farFocus', 'location': geoPath+'/far_focus_plane','color': [0.0, 1.0, 0.0], 'pos':(200,-10), 'inputMerge':'i3'}}
 
+    # for key in dictPlanes.keys():
+    #     posY -= 100.0
+    #     plane = createPlane(nodeName = dictPlanes[key]['nodeName'],location = dictPlanes[key]['location'], rootNode = groupNode )
+    #     plane.getParameter('user.displayColor.i0').setValue(dictPlanes[key]['color'][0], 0)
+    #     plane.getParameter('user.displayColor.i1').setValue(dictPlanes[key]['color'][1], 0)
+    #     plane.getParameter('user.displayColor.i2').setValue(dictPlanes[key]['color'][2], 0)
+    #     NodegraphAPI.SetNodePosition(plane,(posX,posY))
+    #     planeTransform = NodegraphAPI.CreateNode('Transform3D', parent=groupNode)
+    #     planeTransform.getParameter('path').setValue(dictPlanes[key]['location'],0)
+    #     planeTransform.getParameter('makeInteractive').setValue('Yes',0)
+    #     planeTransform.setName('Transform_'+dictPlanes[key]['nodeName'])
+    #     posY -= 100.0
+    #     NodegraphAPI.SetNodePosition(planeTransform, (posX, posY))
+    #     # connect the node
+    #     plane.getInputPort('i0').connect(sendGroup)
+    #     planeTransform.getInputPort('in').connect(plane.getOutputPort('out'))
+    #     sendGroup = planeTransform.getOutputPort('out')
     for key in dictPlanes.keys():
         posY -= 100.0
         plane = createPlane(nodeName = dictPlanes[key]['nodeName'],location = dictPlanes[key]['location'], rootNode = groupNode )
@@ -164,16 +178,9 @@ def createFocusGroup(name='FocusGroup',parent = NodegraphAPI.GetRootNode()):
         plane.getParameter('user.displayColor.i1').setValue(dictPlanes[key]['color'][1], 0)
         plane.getParameter('user.displayColor.i2').setValue(dictPlanes[key]['color'][2], 0)
         NodegraphAPI.SetNodePosition(plane,(posX,posY))
-        planeTransform = NodegraphAPI.CreateNode('Transform3D', parent=groupNode)
-        planeTransform.getParameter('path').setValue(dictPlanes[key]['location'],0)
-        planeTransform.getParameter('makeInteractive').setValue('Yes',0)
-        planeTransform.setName('Transform_'+dictPlanes[key]['nodeName'])
-        posY -= 100.0
-        NodegraphAPI.SetNodePosition(planeTransform, (posX, posY))
         # connect the node
         plane.getInputPort('i0').connect(sendGroup)
-        planeTransform.getInputPort('in').connect(plane.getOutputPort('out'))
-        sendGroup = planeTransform.getOutputPort('out')
+        sendGroup = plane.getOutputPort('out')
     sendGroup.connect(returnGroup)
     nodeToMouse(groupNode)
 
