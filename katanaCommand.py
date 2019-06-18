@@ -1145,6 +1145,10 @@ pprint.pprint(sg.schema_field_read('Camera'))
 pprint.pprint(sg.schema_field_read('Shot'))
 pprint.pprint(sg.schema_field_read('Asset'))
 
+#to disable node via script
+NodegraphAPI.GetNode('Alembic_In1').getParameters().createChildNumber('disable',1)
+
+
 #server license
 print os.environ['foundry_LICENSE'], os.environ['solidangle_LICENSE']
 4101@licserv01.mikros.int 5053@licserv01.mikros.int

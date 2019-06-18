@@ -13,31 +13,39 @@
 import os, pprint, errno, argparse, sys, math, operator
 from Katana import  NodegraphAPI,UI4
 
-opNodeScript = "local scale = Interface.GetOpArg('user.scale'):getValue()"\
+opNodeScriptTarget = "local scale = Interface.GetOpArg('user.scale'):getValue()"\
     "\nlocal vPt = 0.5*scale"\
     "\n--plane shape"\
-    "\npoints ={-vPt,-vPt,0,"\
-    "\n\tvPt,-vPt,0," \
-    "\n\t-vPt,vPt,0," \
-    "\n\tvPt,vPt,0}"\
-    "\nvertexList = {2,3,1,0}"\
-    "\nstartIndex = {0,4}"\
+    "\nlocal points ={ 0,-vPt,0,"\
+    "\n\t\t0,vPt,0," \
+    "\n\t\t0,0,-vPt," \
+    "\n\t\t0,0,vPt,"\
+    "\n\t\t-vPt,0,0,"\
+    "\n\t\tvPt,0,0}"\
+    "\nlocal numVertices = {2,2,2}"\
+    "\nlocal knots = 0"\
+    "\nlocal constantWitdth = 0.1"\
+    "\nlocal degree = 0"\
+    "\nlocal closed = 0"\
+    "\nlocal basis = 0"\
     "\n\n-- Set the location's type to 'polymesh'"\
-    "\nInterface.SetAttr('type', StringAttribute('polymesh'))"\
+    "\nInterface.SetAttr('type', StringAttribute('curves'))"\
     "\n\n-- Create the 'geometry' group attribute"\
     "\nlocal gb = GroupBuilder()"\
     "\n--point builder"\
     "\nlocal gbPoint  = GroupBuilder()"\
     "\ngbPoint:set('P', FloatAttribute(points, 3))"\
     "\ngb:set('point', gbPoint:build())"\
-    "\n\n--poly builder"\
-    "\nlocal gbPoly  = GroupBuilder()"\
-    "\ngbPoly:set('vertexList', IntAttribute(vertexList))"\
-    "\ngbPoly:set('startIndex', IntAttribute(startIndex))"\
-    "\ngb:set('poly', gbPoly:build())--build the geoetry Attr"\
+    "\n\n--curve builder"\
+    "\ngb:set('numVertices', IntAttribute(numVertices))"\
+    "\ngb:set('knots', FloatAttribute(knots))"\
+    "\ngb:set('constantWitdth',FloatAttribute(constantWitdth))"\
+    "\ngb:set('degree ',IntAttribute(degree))"\
+    "\ngb:set('closed',IntAttribute(closed))"\
+    "\ngb:set('basis',IntAttribute(basis))"\
     "\nInterface.SetAttr('geometry', gb:build())"\
-    "\nlocal nodeName =Interface.GetOpArg('user.nodeName'):getValue()"\
-    "\nInterface.SetAttr('attributeEditor.xform.exclusiveTo',StringAttribute{nodeName})"\
+    "\n--local nodeName =Interface.GetOpArg('user.nodeName'):getValue()"\
+    "\n--Interface.SetAttr('attributeEditor.xform.exclusiveTo',StringAttribute{nodeName})"\
     "\n\n--set the bounds"\
     "\nlocal bounds = {-vPt, vPt, -vPt, vPt, -vPt,vPt }"\
     "\nInterface.SetAttr('bound', DoubleAttribute( bounds))"\
@@ -69,10 +77,67 @@ opNodeScript = "local scale = Interface.GetOpArg('user.scale'):getValue()"\
     "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_DIFFUSE_REFLECT',IntAttribute{0})"\
     "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_SPECULAR_REFLECT',IntAttribute{0})"
 
-def createPlane(nodeName = 'planeFocus',location = '/root/world/cam/focus_plane', rootNode = NodegraphAPI.GetRootNode() ):
+opNodeScript = "local scale = Interface.GetOpArg('user.scale'):getValue()"\
+    "\nlocal vPt = 0.5*scale"\
+    "\n--plane shape"\
+    "\npoints ={-vPt,-vPt,0,"\
+    "\n\tvPt,-vPt,0," \
+    "\n\t-vPt,vPt,0," \
+    "\n\tvPt,vPt,0}"\
+    "\nvertexList = {2,3,1,0}"\
+    "\nstartIndex = {0,4}"\
+    "\n\n-- Set the location's type to 'polymesh'"\
+    "\nInterface.SetAttr('type', StringAttribute('polymesh'))"\
+    "\n\n-- Create the 'geometry' group attribute"\
+    "\nlocal gb = GroupBuilder()"\
+    "\n--point builder"\
+    "\nlocal gbPoint  = GroupBuilder()"\
+    "\ngbPoint:set('P', FloatAttribute(points, 3))"\
+    "\ngb:set('point', gbPoint:build())"\
+    "\n\n--poly builder"\
+    "\nlocal gbPoly  = GroupBuilder()"\
+    "\ngbPoly:set('vertexList', IntAttribute(vertexList))"\
+    "\ngbPoly:set('startIndex', IntAttribute(startIndex))"\
+    "\ngb:set('poly', gbPoly:build())--build the geoetry Attr"\
+    "\nInterface.SetAttr('geometry', gb:build())"\
+    "\n--local nodeName =Interface.GetOpArg('user.nodeName'):getValue()"\
+    "\n--Interface.SetAttr('attributeEditor.xform.exclusiveTo',StringAttribute{nodeName})"\
+    "\n\n--set the bounds"\
+    "\nlocal bounds = {-vPt, vPt, -vPt, vPt, -vPt,vPt }"\
+    "\nInterface.SetAttr('bound', DoubleAttribute( bounds))"\
+    "\n\n-- set the color of the primitive "\
+    "\nlocal color = Interface.GetOpArg('user.displayColor'):getNearestSample(0.0)"\
+    "\nInterface.SetAttr('viewer.default.drawOptions.color', FloatAttribute(color))"\
+    "\nInterface.SetAttr('viewer.default.drawOptions.fill',StringAttribute('wireframe'))"\
+    "\n\n--set the visibility to 0"\
+    "\nInterface.SetAttr('visible',IntAttribute(0))"\
+    "\nlocal message = Interface.GetOpArg('user.displayName'):getValue()"\
+    "\nInterface.SetAttr('viewer.default.annotation.text', StringAttribute(message))"\
+    "\nInterface.SetAttr('viewer.default.annotation.color', FloatAttribute(color))"\
+    "\n\n-- set the xform"\
+    "\n--local gbXform = GroupBuilder()"\
+    "\n--gbXform:set('translate',DoubleAttribute{0.0,0.0,0.0})"\
+    "\n--gbXform:set('rotateZ',DoubleAttribute{0.0,0.0,0.0,1.0})"\
+    "\n--gbXform:set('rotateY',DoubleAttribute{0.0,0.0,1.0,0.0})"\
+    "\n--gbXform:set('rotateX',DoubleAttribute{0.0,1.0,0.0,0.0})"\
+    "\n--gbXform:set('scale',DoubleAttribute{scale,scale,scale})"\
+    "\n--Interface.SetAttr('xform.interactive',gbXform:build())"\
+    "\n\n--set the rendering state"\
+    "\nInterface.SetAttr('arnoldStatements.receive_shadows',IntAttribute{0})"\
+    "\nInterface.SetAttr('arnoldStatements.self_shadows',IntAttribute{0})"\
+    "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_CAMERA',IntAttribute{0})"\
+    "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_SHADOW',IntAttribute{0})"\
+    "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_DIFFUSE_TRANSMIT',IntAttribute{0})"\
+    "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_SPECULAR_TRANSMIT',IntAttribute{0})"\
+    "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_VOLUME',IntAttribute{0})"\
+    "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_DIFFUSE_REFLECT',IntAttribute{0})"\
+    "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_SPECULAR_REFLECT',IntAttribute{0})"
+
+def createPlane(nodeName = 'planeFocus',location = '/root/world/cam/focus_plane', rootNode = NodegraphAPI.GetRootNode(),targetMode = False ):
     opscriptNode = NodegraphAPI.CreateNode('OpScript',rootNode)
     opscriptNode.setName(nodeName)
     opscriptNode.getParameter('applyWhere').setValue('at specific location',0)
+    opscriptNode.getParameters().createChildNumber('disable', 0)
     opscriptNodeParam = opscriptNode.getParameters().createChildGroup('user')
     scale = opscriptNodeParam.createChildNumber('scale', 1)
     scale.setHintString("{'slidercenter': '5.0', 'slider': 'True', 'slidermax': '10.0'}")
@@ -85,7 +150,10 @@ def createPlane(nodeName = 'planeFocus',location = '/root/world/cam/focus_plane'
     opscriptNode.getParameter('user.displayColor.i0').setValue(1.0,0.0)
     NodegraphAPI.SetNodeComment(opscriptNode,"create a plane ")
     opscriptNode.getParameter('location').setValue(location,0)
-    opscriptNode.getParameter('script.lua').setValue(opNodeScript,0.0)
+    if targetMode:
+        opscriptNode.getParameter('script.lua').setValue(opNodeScriptTarget, 0.0)
+    else :
+        opscriptNode.getParameter('script.lua').setValue(opNodeScript,0.0)
     return opscriptNode
 
 def nodeToMouse(nodeToselect = ''):
@@ -133,12 +201,23 @@ def createParam(groupNode = NodegraphAPI.GetRootNode()):
         "{'help': 'attribute name of the alembic wich contain the focus distance\n(i.e: xform.translate)'}")
     focusDistanceParam = fdistGroup.createChildNumber('focus_distance', 10)
     focusDistanceParam.setHintString(
+
         "{'conditionalVisOps': {'conditionalVisOp': 'equalTo', 'conditionalVisPath': '../method', 'conditionalVisValue': '2'}, 'help': 'manualy put the focus distance'}")
+    #advanced settings
+    advancedSettigsGroup = groupNode.getParameters().createChildGroup('advanced_settings')
+    advancedSettigsGroup.setHintString("{'help': 'edit advanced setting like name, color and path of the geometry plane representing the focus plane'}")
+    CoCParam = advancedSettigsGroup.createChildNumber('Coc', 0.013)
+    CoCParam.setHintString("{'widget': 'popup', 'options': ['0.013', '0.025', '0.035', '0.05'], 'help': 'Circle of confusion (https://improvephotography.com/53601/conquering-the-circle-of-confusion-for-photography/)'}")
+    CoCParam.setValue(0.013,0.0)
+    overrideFocalLengthParam = advancedSettigsGroup.createChildNumber('override_focal_length',0)
+    overrideFocalLengthParam.setHintString("{'widget': 'checkBox', 'helpAlert': 'warning', 'help': 'check to override the fov this will not change the fov of the camera but change the calculations of DOF'}")
+    focalLenghtParam = advancedSettigsGroup.createChildNumber('focal_length', 50)
+    focalLenghtParam.setHintString("{'conditionalVisOps': {'conditionalVisOp': 'equalTo', 'conditionalVisPath': '../override_focal_length', 'conditionalVisValue': '1'}, 'help': 'fov used for calculation of DOF'}")
     # arnold render 3D
-    render3DDOFParam = groupNode.getParameters().createChildNumber('render_3D_DOF', 0)
+    render3DDOFParam = advancedSettigsGroup.createChildNumber('render_3D_DOF', 0)
     render3DDOFParam.setHintString(
         "{'widget': 'boolean', 'help': 'If yes Arnold will render the DOF in 3D and the data will be pushed to the metadata of the primary pass if no only the data will be pushed to the metadata of the primary pass'}")
-    lensSettingGroup = groupNode.getParameters().createChildGroup('DOF_settings_3D')
+    lensSettingGroup = advancedSettigsGroup.createChildGroup('DOF_settings_3D')
     lensSettingGroup.setHintString(
         "{'conditionalVisOps': {'conditionalVisOp': 'equalTo', 'conditionalVisPath': '../render_3D_DOF', 'conditionalVisValue': '1'}, 'open': 'True'}")
     apertureBladeParam = lensSettingGroup.createChildNumber('aperture_blades', 0)
@@ -152,23 +231,14 @@ def createParam(groupNode = NodegraphAPI.GetRootNode()):
     apertureRotationParam.setHintString("{'slider': 'True', 'slidermax': '360.0'}")
     flatFieldFocusParam = lensSettingGroup.createChildNumber('flat_field_focus', 0)
     flatFieldFocusParam.setHintString("{'widget': 'boolean'}")
-    #advanced settings
-    advancedSettigsGroup = groupNode.getParameters().createChildGroup('advanced_settings')
-    advancedSettigsGroup.setHintString("{'help': 'edit advanced setting like name, color and path of the geometry plane representing the focus plane'}")
-    CoCParam = advancedSettigsGroup.createChildNumber('Coc', 0.013)
-    CoCParam.setHintString("{'widget': 'popup', 'options': ['0.013', '0.025', '0.035', '0.05'], 'help': 'Circle of confusion (https://improvephotography.com/53601/conquering-the-circle-of-confusion-for-photography/)'}")
-    CoCParam.setValue(0.013,0.0)
-    overrideFocalLengthParam = advancedSettigsGroup.createChildNumber('override_focal_length',0)
-    overrideFocalLengthParam.setHintString("{'widget': 'checkBox', 'helpAlert': 'warning', 'help': 'check to override the fov this will not change the fov of the camera but change the calculations of DOF'}")
-    focalLenghtParam = advancedSettigsGroup.createChildNumber('focal_length', 50)
-    focalLenghtParam.setHintString("{'conditionalVisOps': {'conditionalVisOp': 'equalTo', 'conditionalVisPath': '../override_focal_length', 'conditionalVisValue': '1'}, 'help': 'fov used for calculation of DOF'}")
-    #camera group in advanced settings
+    # camera group in advanced settings
     cameraPathGroup = advancedSettigsGroup.createChildGroup('camera_path')
     cameraPathGroup.setHintString("{'help': 'camera to use for calculate the DOF'}")
     changeCameraParam = cameraPathGroup.createChildNumber('change_camera', 0)
     changeCameraParam.setHintString("{'widget': 'checkBox', 'help': 'unlock the camera field to change camera'}")
-    cameraParam = cameraPathGroup.createChildString('camera','/root/world/cam/stereoCameraLeft/stereoCameraLeftShape')
-    cameraParam.setHintString("{'conditionalLockOps': {'conditionalLockValue': '0', 'conditionalLockOp': 'equalTo', 'conditionalLockPath': '../change_camera'}, 'widget': 'scenegraphLocation', 'help': 'camera path to use for DOF calculation'}")
+    cameraParam = cameraPathGroup.createChildString('camera', '/root/world/cam/stereoCameraLeft/stereoCameraLeftShape')
+    cameraParam.setHintString(
+        "{'conditionalLockOps': {'conditionalLockValue': '0', 'conditionalLockOp': 'equalTo', 'conditionalLockPath': '../change_camera'}, 'widget': 'scenegraphLocation', 'help': 'camera path to use for DOF calculation'}")
     #geometry group in advanced setting
     geometrySettingsGroup = advancedSettigsGroup.createChildGroup('geometry_settings')
     geometrySettingsGroup.setHintString("{'help': 'setting for name,color and path of the focus planes and target_focus'}")
@@ -244,24 +314,34 @@ def createFocusGroup(name='FocusGroup',parent = NodegraphAPI.GetRootNode(),geoPa
     sendGroup = groupNode.getSendPort('in')
     returnGroup = groupNode.getReturnPort('out')
 
+    #create the planes nodes
     # start pos for the node
     posX = 0.0
     posY = 100.0
-    #create the planes nodes
+    #expression to set the op script
     expressionBase = 'getParam(self.getNode().getParent().getName()+".advanced_settings.geometry_settings.'
-
-    dictPlanes = {'nearFocusPlane': {'nodeName': 'nearFocusPlane', 'location': geoPath + '/near_focus_plane','expressionName': expressionBase+'near_focus_plane_name")',
-                                     'expressionColor': expressionBase+'near_focus_plane_color")', 'pos': (-200, -10), 'inputMerge': 'i1'},
-                  'focusPlane': {'nodeName': 'focusPlane', 'location': geoPath + '/focus_plane', 'expressionName': expressionBase+'focus_plane_name")',
-                                 'expressionColor': expressionBase+'focus_plane_color")', 'pos': (0, -10), 'inputMerge': 'i2'},
-                  'farFocusPlane': {'nodeName': 'farFocusPlane', 'location': geoPath + '/far_focus_plane', 'expressionName': expressionBase+'far_focus_plane_name")',
-                                    'expressionColor': expressionBase+'far_focus_plane_color")', 'pos': (200, -10), 'inputMerge': 'i3'}}
+    expressionScale = expressionBase+'scale_focus_planes") if '+ expressionBase +'scale_plane_gang") else ' +expressionBase
+    #dictionary containing the data for the focus planes and target
+    dictPlanes = {'nearFocusPlane': {'nodeName': 'nearFocusPlane', 'location': geoPath + '/near_focus_plane','expressionName': expressionBase+'near_focus_plane_name")','expressionScale': expressionScale+'near_focus_plane_scale")',
+                                     'expressionColor': expressionBase+'near_focus_plane_color")', 'pos': (-200, -10), 'inputMerge': 'i1', 'targetMode': False},
+                  'focusPlane': {'nodeName': 'focusPlane', 'location': geoPath + '/focus_plane', 'expressionName': expressionBase+'focus_plane_name")', 'expressionScale': expressionScale+'focus_plane_scale")',
+                                 'expressionColor': expressionBase+'focus_plane_color")', 'pos': (0, -10), 'inputMerge': 'i2', 'targetMode': False},
+                  'farFocusPlane': {'nodeName': 'farFocusPlane', 'location': geoPath + '/far_focus_plane', 'expressionName': expressionBase+'far_focus_plane_name")', 'expressionScale': expressionScale+'far_focus_plane_scale")',
+                                    'expressionColor': expressionBase+'far_focus_plane_color")', 'pos': (200, -10), 'inputMerge': 'i3', 'targetMode': False},
+                  'focusTarget': {'nodeName': 'focusTarget', 'location': geoPath + '/focus_target','expressionName': expressionBase + 'target_name")','expressionScale': expressionBase + 'scale_target")',
+                                    'expressionColor': expressionBase + 'target_color")', 'pos': (200, -10),'inputMerge': 'i4', 'targetMode': True}}
 
     for key in dictPlanes.keys():
         posY -= 100.0
-        plane = createPlane(nodeName = dictPlanes[key]['nodeName'],location = dictPlanes[key]['location'], rootNode = groupNode )
+        #create the 3 planes
+        plane = createPlane(nodeName = dictPlanes[key]['nodeName'],location = dictPlanes[key]['location'], rootNode = groupNode,targetMode= dictPlanes[key]['targetMode'])
+        #set the expression
         plane.getParameter('user.displayColor').setExpression(dictPlanes[key]['expressionColor'],True)
         plane.getParameter('user.displayName').setExpression(dictPlanes[key]['expressionName'], True)
+        plane.getParameter('user.scale').setExpression(dictPlanes[key]['expressionScale'], True)
+        plane.getParameter('location').setExpression(expressionBase+'geometry_path")'+'+"/"+'+dictPlanes[key]['expressionName'], True)
+        if dictPlanes[key]['targetMode']:
+            plane.getParameter('disable').setExpression("0 if getParam(self.getNode().getParent().getName()+'.focus_distance.method') == '0' else 1", True)
         NodegraphAPI.SetNodePosition(plane,(posX,posY))
         # connect the node
         plane.getInputPort('i0').connect(sendGroup)
