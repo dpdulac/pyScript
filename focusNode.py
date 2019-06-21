@@ -133,6 +133,169 @@ opNodeScript = "local scale = Interface.GetOpArg('user.scale'):getValue()"\
     "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_DIFFUSE_REFLECT',IntAttribute{0})"\
     "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_SPECULAR_REFLECT',IntAttribute{0})"
 
+calculFocusPlane = "--- Convenience function to retrieve a global transform matrix for a given"\
+    "\n-- location path"\
+    "\nfunction getXFormMatrix(locationPath)"\
+    "\n\tlocal xformAttr = Interface.GetGlobalXFormGroup(locationPath)"\
+    "\n\tlocal matAttr = XFormUtils.CalcTransformMatrixAtTime(xformAttr, 0.0)" \
+    "\n\tlocal matData = matAttr:getNearestSample(0.0)"\
+    "\n\tlocal mat = Imath.M44d(matData)"\
+    "\n\treturn mat"\
+    "\nend"\
+    "\n\nfunction calcMatrix(distance, mat,aspectRatio,fov)"\
+    "\n\tlocal width = 2 * distance* math.tan(math.rad(fov)/2)"\
+    "\n\tlocal height = width/aspectRatio"\
+    "\n\tlocal scale = Imath.V3d(width,height,1)"\
+    "\n\tlocal trans = Imath.V3d(0.0,0.0,-distance)"\
+    "\n\tmat:translate(trans)"\
+    "\n\tmat:scale(scale)"\
+    "\n\treturn mat"\
+    "\nend"\
+    "\n\n--get the cam"\
+    "\nlocal camPath = Interface.GetOpArg('user.camPath'):getValue()"\
+    "\nlocal fov = Interface.GetAttr('geometry.fov',camPath):getValue()"\
+    "\nlocal filmAspectRatio = Interface.GetOpArg('user.filmAspectRatio'):getValue()"\
+    "\n\n--set the fStop for calculation"\
+    "\nlocal fStop = 0.0"\
+    "\nlocal fStopMetadata = tonumber(Interface.GetOpArg('user.fstopMetadata'):getValue())"\
+    "\nlocal fStopUser = Interface.GetOpArg('user.fstop'):getValue()"\
+    "\n-- set fStop to metadata if True else use user fStop"\
+    "\nif fStopMetadata == 1 then"\
+    "\n\tfStop = tonumber(Interface.GetAttr('info.abcCamera.fStop',camPath):getValue())"\
+    "\nelse"\
+    "\n\tfStop = fStopUser "\
+    "\nend"\
+    "\n\n--set the focalLength for calculation"\
+    "\nlocal fol = 0.0"\
+    "\nlocal overrideFocalLength = Interface.GetOpArg('user.overrideFocalLength'):getValue()"\
+    "\nlocal userFocalLength = (Interface.GetOpArg('user.userFocalLength'):getValue())/100.0"\
+    "\nif overrideFocalLength == 1 then"\
+    "\n\tfol = userFocalLength"\
+    "\nelse"\
+    "\n\t-- retrieve the value of fol in metadata if not exist calculate in function of fov"\
+    "\n\tfolValue = Interface.GetAttr('info.abcCamera.focalLength',camPath)"\
+    "\n\tif folValue ~= nil then"\
+    "\n\t\tfol = tonumber(folValue:getValue())/100.0"\
+    "\n\telse"\
+    "\n\t\tlocal hoA = Interface.GetAttr('info.abcCamera.horizontalAperture',camPath):getValue()*10"\
+    "\n\t\tfol = (hoA/(2*math.tan(math.rad(fov)/2)))/100.0"\
+    "\n\tend"\
+    "\nend"\
+    "\n\n--calculate the dist focus"\
+    "\n-- Retrieve the global transform for camera "\
+    "\nlocal CamXFormat = getXFormMatrix(camPath)"\
+    "\n-- get the method"\
+    "\nlocal method = tonumber(Interface.GetOpArg('user.method'):getValue())"\
+    "\nlocal nfpPath = Interface.GetOpArg('user.nearFocusPlane'):getValue()"\
+    "\nlocal focusPlanePath = Interface.GetOpArg('user.focusPlanePath'):getValue()"\
+    "\nlocal ffpPath = Interface.GetOpArg('user.farFocusPlane'):getValue()"\
+    "\nlocal targetPath = Interface.GetOpArg('user.focusTarget'):getValue()"\
+    "\nlocal dist = 10.0"\
+    "\nlocal inputLoc = Interface.GetInputLocationPath()"\
+    "\nif (inputLoc == focusPlanePath or inputLoc == nfpPath or inputLoc == ffpPath or inputLoc == targetPath or inputLoc == '/root') then"\
+    "\n\tif method == 0 then"\
+    "\n\t\tlocal targetXFormMat = Imath.M44d()"\
+    "\n\t\t--if target constraint is on"\
+    "\n\t\tif (Interface.GetOpArg('user.targetConstraint'):getValue() == 1 ) then"\
+    "\n\t\t\t-- get the path of the target object"\
+    "\n\t\t\tlocal targetConstraintObjectPath = Interface.GetOpArg('user.targetConstraintObject'):getValue()"\
+    "\n\t\t\ttargetXFormMat = getXFormMatrix(targetConstraintObjectPath)"\
+    "\n\t\t\t-- set the target pos to the target object"\
+    "\n\t\t\tInterface.SetAttr('xform.group0.matrix', DoubleAttribute(targetXFormMat:toTable(), 4))"\
+    "\n\t\telse"\
+    "\n\t\t\tlocal tmpMat = Imath.M44d()"\
+    "\n\t\t\tInterface.SetAttr('xform.group0.matrix', DoubleAttribute(tmpMat:toTable(), 4))"\
+    "\n\t\t\ttargetXFormMat = getXFormMatrix(targetPath)"\
+    "\n\t\tend"\
+    "\n\t\t-- Calculate the position for camera and target locations"\
+    "\n\t\tlocal targetPoint = Imath.V3d() * targetXFormMat"\
+    "\n\t\tlocal camPos = Imath.V3d() * CamXFormat"\
+    "\n\t\tlocal dir = camPos - targetPoint"\
+    "\n\t\tdist = Imath.V3d().length(dir)"\
+    "\n\n\telseif method == 1 then"\
+    "\n\t\tlocal alembicPath = Interface.GetOpArg('user.alembicPath'):getValue()"\
+    "\n\t\tlocal alembicAttr = Interface.GetOpArg('user.alembicAttr'):getValue()"\
+    "\n\t\tlocal alembicName = Interface.GetOpArg('user.alembicName'):getValue()"\
+    "\n\t\tif alembicAttr == ''  or alembicName == '' then "\
+    "\n\t\t\tdist = 20.0"\
+    "\n\t\telse"\
+    "\n\t\t\tlocal alembicObjName = alembicPath..'/'..Interface.GetPotentialChildren(alembicPath):getNearestSample(0)[1]"\
+    "\n\t\t\tdist = Interface.GetAttr(alembicAttr,alembicObjName):getValue()"\
+    "\n\t\tend"\
+    "\n\n\telseif method == 2 then"\
+    "\n\t\tdist = Interface.GetOpArg('user.focusDistance'):getValue()"\
+    "\n\telse"\
+    "\n\t\tdist = Interface.GetAttr('info.abcCamera.focusDistance',camPath):getValue()"\
+    "\n\tend"\
+    "\n\t--set the scaling and pos for the focus plane"\
+    "\n\tif inputLoc == focusPlanePath then"\
+    "\n\t\tlocal text = Interface.GetAttr('viewer.default.annotation.text'):getValue()"\
+    "\n\t\tlocal newText = text..' dist= '..tostring(dist)"\
+    "\n\t\tInterface.SetAttr('viewer.default.annotation.text',StringAttribute(newText))"\
+    "\n\t\tlocal matFplane = calcMatrix(dist, CamXFormat,filmAspectRatio,fov)"\
+    "\n\t\tInterface.SetAttr('xform.group0.matrix', DoubleAttribute(matFplane:toTable(), 16))"\
+    "\n\tend"\
+    "\n\n\t--calculate the close and far plane"\
+    "\n\tlocal coc = tonumber(Interface.GetOpArg('user.CoC'):getValue()) / 100.0"\
+    "\n\tlocal dof = 0.0"\
+    "\n\tlocal hyperfocal = math.pow(fol, 2) / (coc * fStop)"\
+    "\n\tlocal nfp = dist * hyperfocal / (hyperfocal + dist)"\
+    "\n\tlocal ffp = dist * hyperfocal / (hyperfocal - dist)"\
+    "\n\tif dist > hyperfocal then"\
+    "\n\t\tffp = 99999999999999999999.0"\
+    "\n\t\tdof = 99999999999999999999.0"\
+    "\n\telse "\
+    "\n\t\tdof = 2 * hyperfocal * math.pow(dist, 2) / (math.pow(hyperfocal, 2) - math.pow(dist, 2))"\
+    "\n\tend"\
+    "\n\n\t--set the near focus plane"\
+    "\n\tif inputLoc == nfpPath then"\
+    "\n\t--set the scaling"\
+    "\n\t\tlocal matnFplane = calcMatrix(nfp, CamXFormat,filmAspectRatio,fov)"\
+    "\n\t\tInterface.SetAttr('xform.group0.matrix', DoubleAttribute(matnFplane:toTable(), 16))"\
+    "\n\tend"\
+    "\n\n\t--set the far focus plane"\
+    "\n\tif inputLoc == ffpPath then"\
+    "\n\t\t--set the scaling and translate"\
+    "\n\t\tlocal matfFplane = calcMatrix(ffp, CamXFormat,filmAspectRatio,fov)"\
+    "\n\t\tInterface.SetAttr('xform.group0.matrix', DoubleAttribute(matfFplane:toTable(), 16))"\
+    "\n\tend"\
+    "\n\n\tif inputLoc == '/root' then"\
+    "\n\t\t--set the primary header exr with all the DOF values"\
+    "\n\t\tlocal path = 'renderSettings.outputs.primary.rendererSettings.exrheaders.DOF/' "\
+    "\n\t\tlocal render3D = Interface.GetOpArg('user.render3D'):getValue()"\
+    "\n\t\tInterface.SetAttr(path..'hyperfocal', FloatAttribute(hyperfocal))"\
+    "\n\t\tInterface.SetAttr(path..'near_focus_plane', FloatAttribute(nfp))"\
+    "\n\t\tInterface.SetAttr(path..'far_focus_plane', FloatAttribute(ffp))"\
+    "\n\t\tInterface.SetAttr(path..'depth_of_field', FloatAttribute(dof))"\
+    "\n\t\tInterface.SetAttr(path..'focus_distance', FloatAttribute(dist))"\
+    "\n\t\tInterface.SetAttr(path..'fStop', FloatAttribute(fStop))"\
+    "\n\t\tInterface.SetAttr(path..'focal', FloatAttribute(fol*100.0))"\
+    "\n\t\t-- if render DOF via arnold set the arnold camera and add the data to metadata"\
+    "\n\t\tif render3D == 1 then"\
+    "\n\t\t\tlocal apertureRatio = Interface.GetOpArg('user.apertureAspectRatio'):getValue()"\
+    "\n\t\t\tlocal apertureBlades = Interface.GetOpArg('user.apertureBlades'):getValue()"\
+    "\n\t\t\tlocal apertureCurvature = Interface.GetOpArg('user.apertureBladeCurvature'):getValue()"\
+    "\n\t\t\tlocal apertureRot = Interface.GetOpArg('user.apertureRotation'):getValue()"\
+    "\n\t\t\tlocal flatFieldFocus = Interface.GetOpArg('user.flatFieldFocus'):getValue()"\
+    "\n\t\t\tInterface.SetAttr(path..'aperture_blades', IntAttribute(apertureBlades))"\
+    "\n\t\t\tInterface.SetAttr(path..'aperture_ratio', FloatAttribute(apertureRatio))"\
+    "\n\t\t\tInterface.SetAttr(path..'aperture_curvature_blade', FloatAttribute(apertureCurvature))"\
+    "\n\t\t\tInterface.SetAttr(path..'aperture_rotation', FloatAttribute(apertureRot))"\
+    "\n\t\t\tInterface.SetAttr('arnoldGlobalStatements.focus_distance',FloatAttribute(dist))"\
+    "\n\t\t\tInterface.SetAttr('arnoldGlobalStatements.aperture_size',FloatAttribute(1/fStop))"\
+    "\n\t\t\tInterface.SetAttr('arnoldGlobalStatements.aperture_blades',IntAttribute(apertureBlades))"\
+    "\n\t\t\tInterface.SetAttr('arnoldGlobalStatements.aperture_aspect_ratio', FloatAttribute(apertureRatio))"\
+    "\n\t\t\tInterface.SetAttr('arnoldGlobalStatements.flat_field_focus',IntAttribute(flatFieldFocus))"\
+    "\n\t\t\tInterface.SetAttr('arnoldGlobalStatements.aperture_blade_curvature',FloatAttribute(apertureCurvature))"\
+    "\n\t\t\tInterface.SetAttr('arnoldGlobalStatements.aperture_rotation',FloatAttribute(apertureRot))"\
+    "\n\t\telse"\
+    "\n\t\t\t-- set the arnold aperture to 0 to make sure no DOF will be rendered"\
+    "\n\t\t\tInterface.SetAttr('arnoldGlobalStatements.aperture_size',FloatAttribute(0.0)) "\
+    "\n\t\tend"\
+    "\n\tend"\
+    "\nend"
+
+# create an opscript for a plane or the target node
 def createPlane(nodeName = 'planeFocus',location = '/root/world/cam/focus_plane', rootNode = NodegraphAPI.GetRootNode(),targetMode = False ):
     opscriptNode = NodegraphAPI.CreateNode('OpScript',rootNode)
     opscriptNode.setName(nodeName)
@@ -156,6 +319,7 @@ def createPlane(nodeName = 'planeFocus',location = '/root/world/cam/focus_plane'
         opscriptNode.getParameter('script.lua').setValue(opNodeScript,0.0)
     return opscriptNode
 
+# put a selected node under the mouse
 def nodeToMouse(nodeToselect = ''):
     # put the node under the mouse
     currentSelection = NodegraphAPI.GetAllSelectedNodes()
@@ -169,8 +333,9 @@ def nodeToMouse(nodeToselect = ''):
     if nodegraphTab:
         nodegraphTab.floatNodes(nodeList)
 
+# create parameter for the main group node
 def createParam(groupNode = NodegraphAPI.GetRootNode()):
-    fstopCameraMetadataParam = groupNode.getParameters().createChildNumber('fstop_camera_metadata', 0)
+    fstopCameraMetadataParam = groupNode.getParameters().createChildNumber('fstop_camera_metadata', 1)
     fstopCameraMetadataParam.setHintString("{'widget': 'checkBox', 'help': 'use the fstop inside the camera metadata'}")
     fstopParam = groupNode.getParameters().createChildNumber('fstop', 64)
     fstopParam.setHintString(
@@ -206,6 +371,8 @@ def createParam(groupNode = NodegraphAPI.GetRootNode()):
     #advanced settings
     advancedSettigsGroup = groupNode.getParameters().createChildGroup('advanced_settings')
     advancedSettigsGroup.setHintString("{'help': 'edit advanced setting like name, color and path of the geometry plane representing the focus plane'}")
+    filmAspectRatio = advancedSettigsGroup.createChildNumber('filmAspectRatio', 2)
+    filmAspectRatio.setHintString("{'help': 'film aspect ratio (i.e 2.35, 1.85...)'}")
     CoCParam = advancedSettigsGroup.createChildNumber('Coc', 0.013)
     CoCParam.setHintString("{'widget': 'popup', 'options': ['0.013', '0.025', '0.035', '0.05'], 'help': 'Circle of confusion (https://improvephotography.com/53601/conquering-the-circle-of-confusion-for-photography/)'}")
     CoCParam.setValue(0.013,0.0)
@@ -220,6 +387,7 @@ def createParam(groupNode = NodegraphAPI.GetRootNode()):
     lensSettingGroup = advancedSettigsGroup.createChildGroup('DOF_settings_3D')
     lensSettingGroup.setHintString(
         "{'conditionalVisOps': {'conditionalVisOp': 'equalTo', 'conditionalVisPath': '../render_3D_DOF', 'conditionalVisValue': '1'}, 'open': 'True'}")
+
     apertureBladeParam = lensSettingGroup.createChildNumber('aperture_blades', 0)
     apertureBladeParam.setHintString("{'int': 'True', 'max': '1.0', 'slidermax': '12.0', 'slider': 'True'}")
     apertureAspectRatioParam = lensSettingGroup.createChildNumber('aperture_aspect_ratio', 1)
@@ -272,14 +440,14 @@ def createParam(groupNode = NodegraphAPI.GetRootNode()):
     scalePlaneGangParam = geometrySettingsGroup.createChildNumber('scale_plane_gang', 0)
     scalePlaneGangParam.setHintString("{'widget': 'checkBox', 'help': 'if on scale all the plane uniformaly if off each plane can be scale independently'}")
     scalePlaneGangParam.setValue(1.0,0.0)
-    scalePlaneParam = geometrySettingsGroup.createChildNumber('scale_focus_planes',10)
+    scalePlaneParam = geometrySettingsGroup.createChildNumber('scale_focus_planes',1.0)
     scalePlaneParam.setHintString("{'slider': 'True', 'slidermax': '100.0', 'conditionalVisOps': {'conditionalVisOp': 'equalTo', 'conditionalVisPath': '../scale_plane_gang', 'conditionalVisValue': '1'}, 'help': 'scale all the planes uniformaly'}")
-    nearFocusPlaneScaleParam = geometrySettingsGroup.createChildNumber('near_focus_plane_scale',10)
+    nearFocusPlaneScaleParam = geometrySettingsGroup.createChildNumber('near_focus_plane_scale',1.0)
     nearFocusPlaneScaleParam.setHintString("{'slider': 'True', 'slidermax': '100.0', 'conditionalVisOps': {'conditionalVisOp': 'equalTo', 'conditionalVisPath': '../scale_plane_gang', 'conditionalVisValue': '0'}, 'help': 'scale the near focus plane'}")
-    focusPlaneScaleParam = geometrySettingsGroup.createChildNumber('focus_plane_scale', 10)
+    focusPlaneScaleParam = geometrySettingsGroup.createChildNumber('focus_plane_scale', 1.0)
     focusPlaneScaleParam.setHintString(
         "{'slider': 'True', 'slidermax': '100.0', 'conditionalVisOps': {'conditionalVisOp': 'equalTo', 'conditionalVisPath': '../scale_plane_gang', 'conditionalVisValue': '0'}, 'help': 'scale the focus plane'}")
-    farFocusPlaneScaleParam = geometrySettingsGroup.createChildNumber('far_focus_plane_scale', 10)
+    farFocusPlaneScaleParam = geometrySettingsGroup.createChildNumber('far_focus_plane_scale', 1.0)
     farFocusPlaneScaleParam.setHintString(
         "{'slider': 'True', 'slidermax': '100.0', 'conditionalVisOps': {'conditionalVisOp': 'equalTo', 'conditionalVisPath': '../scale_plane_gang', 'conditionalVisValue': '0'}, 'help': 'scale the far focus plane'}")
     # target geometry settings
@@ -293,10 +461,56 @@ def createParam(groupNode = NodegraphAPI.GetRootNode()):
     scaleTargetParam = geometrySettingsGroup.createChildNumber('scale_target', 10)
     scaleTargetParam.setHintString("{'slider': 'True', 'slidermax': '100.0', 'help': 'scale of target'}")
 
+def createOpScriptParam(opNode = NodegraphAPI.GetRootNode()):
+    userGroup = opNode.getParameters().createChildGroup('user')
+
+    paramDict = { 'camPath' : { 'format': 's', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.camera_path.camera')"},
+                  'method' : {'format': 's', 'exp': "getParam(self.getNode().getParent().getName()+'.focus_distance.method')"},
+                  'focusDistance':{'format': 'n', 'exp': "getParam(self.getNode().getParent().getName()+'.focus_distance.focus_distance')"},
+                  'fstopMetadata':{'format': 'n', 'exp': "getParam(self.getNode().getParent().getName()+'.fstop_camera_metadata')"},
+                  'fstop':{'format': 'n', 'exp': "getParam(self.getNode().getParent().getName()+'.fstop')"},
+                  'userFocalLength':{'format': 'n', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.focal_length')"},
+                  'overrideFocalLength':{'format': 'n', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.override_focal_length')"},
+                  'alembicFile':{'format': 's', 'exp': "getParam(self.getNode().getParent().getName()+'.focus_distance.alembic_setting.alembic_path')"},
+                  'focusTarget':{'format': 's', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.geometry_settings.geometry_path')+'/'+getParam(self.getNode().getParent().getName()+'.advanced_settings.geometry_settings.target_name')"},
+                  'focusTargetColor':{'format': 'a', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.geometry_settings.target_color')"},
+                  'focusPlanePath':{'format': 's', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.geometry_settings.geometry_path')+'/'+getParam(self.getNode().getParent().getName()+'.advanced_settings.geometry_settings.focus_plane_name')"},
+                  'CoC': {'format': 'n', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.Coc')"},
+                  'nearFocusPlane':{'format': 's', 'exp': 'getParam(self.getNode().getParent().getName()+".advanced_settings.geometry_settings.geometry_path")+"/"+getParam(self.getNode().getParent().getName()+".advanced_settings.geometry_settings.near_focus_plane_name")'},
+                  'farFocusPlane':{'format': 's', 'exp': 'getParam(self.getNode().getParent().getName()+".advanced_settings.geometry_settings.geometry_path")+"/"+getParam(self.getNode().getParent().getName()+".advanced_settings.geometry_settings.far_focus_plane_name")'},
+                  'targetConstraint':{'format': 'n', 'exp': 'getParam(self.getNode().getParent().getName()+".focus_distance.target_setting.target_constraint")'},
+                  'targetConstraintObject':{'format': 's', 'exp': "getParam(self.getNode().getParent().getName()+'.focus_distance.target_setting.target_constraint_Object') if getParam(self.getNode().getParent().getName()+'.focus_distance.target_setting.target_constraint_Object') != '' else getParam(self.getNode().getParent().getName()+'.advanced_settings.camera_path.camera')"},
+                  'alembicPath':{'format': 's', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.geometry_settings.geometry_path')+'/AlembicFocus'"},
+                  'alembicAttr':{'format': 's', 'exp': "getParam(self.getNode().getParent().getName()+'.focus_distance.alembic_setting.alembic_attr_name')"},
+                  'alembicName':{'format': 's', 'exp': "getParam(self.getNode().getParent().getName()+'.focus_distance.alembic_setting.alembic_path')"},
+                  'apertureBlades':{'format': 'n', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.DOF_settings_3D.aperture_blades')"},
+                  'apertureAspectRatio':{'format': 'n', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.DOF_settings_3D.aperture_aspect_ratio')"},
+                  'apertureBladeCurvature':{'format': 'n', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.DOF_settings_3D.aperture_blade_Curvature')"},
+                  'apertureRotation':{'format': 'n', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.DOF_settings_3D.aperture_rotation')"},
+                  'flatFieldFocus':{'format': 'n', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.DOF_settings_3D.flat_field_focus')"},
+                  'render3D':{'format': 'n', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.render_3D_DOF')"},
+                  'filmAspectRatio':{'format': 'n', 'exp': "getParam(self.getNode().getParent().getName()+'.advanced_settings.filmAspectRatio')"}}
+    for key in paramDict.keys():
+        paramName = key
+        paramFormat = paramDict[key]['format']
+        paramExp = paramDict[key]['exp']
+        paramCreated = ''
+        if paramFormat == 's':
+            paramCreated = userGroup.createChildString(paramName,'')
+        elif paramFormat == 'n':
+            paramCreated = userGroup.createChildNumber(paramName, 1.0)
+        else:
+            paramCreated = userGroup.createChildNumberArray(paramName, 3)
+        opNode.getParameter('user.'+paramName).setExpression(paramExp, True)
+
 
 
 def createFocusGroup(name='FocusGroup',parent = NodegraphAPI.GetRootNode(),geoPath = '/root//world/cam/DOF'):
-    rootNode = parent
+    currentSelection = NodegraphAPI.GetAllSelectedNodes()
+    if len(currentSelection) == 0:
+        rootNode = parent
+    else:
+        rootNode = NodegraphAPI.GetNode(currentSelection[0].getParent().getName())
     # create the groupNode
     groupNode = NodegraphAPI.CreateNode('Group', rootNode)
     groupNode.setName(name)
@@ -316,7 +530,7 @@ def createFocusGroup(name='FocusGroup',parent = NodegraphAPI.GetRootNode(),geoPa
 
     #create the planes nodes
     # start pos for the node
-    posX = 0.0
+    posX = -100.0
     posY = 100.0
     #expression to set the op script
     expressionBase = 'getParam(self.getNode().getParent().getName()+".advanced_settings.geometry_settings.'
@@ -346,6 +560,52 @@ def createFocusGroup(name='FocusGroup',parent = NodegraphAPI.GetRootNode(),geoPa
         # connect the node
         plane.getInputPort('i0').connect(sendGroup)
         sendGroup = plane.getOutputPort('out')
+
+    # transform node for focus target
+    transFormNode = NodegraphAPI.CreateNode('Transform3D',groupNode)
+    transFormNode.setName('TransformTarget')
+    transFormNode.getParameter('makeInteractive').setValue('Yes',0)
+    transFormNode.getParameters().createChildNumber('disable',0)
+    transFormNode.getParameter('disable').setExpression("0 if getParam(self.getNode().getParent().getName()+'.focus_distance.method') == '0' and getParam(self.getNode().getParent().getName()+'.focus_distance.target_setting.target_constraint') == 0 else 1", True)
+    transFormNode.getParameter('path').setExpression("getParam(self.getNode().getParent().getName()+'.advanced_settings.geometry_settings.geometry_path')+'/'+getParam(self.getNode().getParent().getName()+'.advanced_settings.geometry_settings.target_name')", True)
+    posY -= 100.0
+    NodegraphAPI.SetNodePosition(transFormNode, (posX, posY))
+    transFormNode.getInputPort('in').connect(sendGroup)
+    sendGroup = transFormNode.getOutputPort('out')
+
+    # create the alembic node
+    alembicNode = NodegraphAPI.CreateNode('Alembic_In', groupNode)
+    alembicNode.setName('AlembicTarget')
+    alembicNode.getParameters().createChildNumber('disable', 0)
+    alembicNode.getParameter('disable').setExpression("0 if getParam(self.getNode().getParent().getName()+'.focus_distance.method') == '1' and getParam(self.getNode().getParent().getName()+'.focus_distance.alembic_setting.alembic_path') != '' else 1", True)
+    alembicNode.getParameter('name').setExpression("getParam(self.getNode().getParent().getName()+'.advanced_settings.geometry_settings.geometry_path')+'/AlembicFocus'", True)
+    alembicNode.getParameter('abcAsset').setExpression("getParam(self.getNode().getParent().getName()+'.focus_distance.alembic_setting.alembic_path')", True)
+    posX = 100.0
+    NodegraphAPI.SetNodePosition(alembicNode, (posX, posY))
+
+    # create the mergeNode
+    mergeNode = NodegraphAPI.CreateNode('Merge', groupNode)
+    mergeNode.setName('MergeAlembic')
+    mergeNode.addInputPort('i0')
+    mergeNode.addInputPort('i1')
+    posX = 0.0
+    posY -= 100.0
+    NodegraphAPI.SetNodePosition(mergeNode, (posX, posY))
+    mergeNode.getInputPort('i0').connect(sendGroup)
+    mergeNode.getInputPort('i1').connect(alembicNode.getOutputPort('out'))
+    sendGroup = mergeNode.getOutputPort('out')
+
+    # create the opScript node which calculate the DOF and plane position
+    opScriptDOFNode = NodegraphAPI.CreateNode('OpScript', groupNode)
+    createOpScriptParam(opScriptDOFNode)
+    opScriptDOFNode.getParameter('CEL').setExpression("'( /' + getParam(self.getNode().getParent().getName()+'.advanced_settings.geometry_settings.geometry_path')+'//* + /root)'",True)
+    opScriptDOFNode.getParameter('script.lua').setValue(calculFocusPlane, 0.0)
+    posY -= 100.0
+    NodegraphAPI.SetNodePosition(opScriptDOFNode, (posX, posY))
+    opScriptDOFNode.getInputPort('i0').connect(sendGroup)
+    sendGroup = opScriptDOFNode.getOutputPort('out')
+
+
     sendGroup.connect(returnGroup)
     nodeToMouse(groupNode)
 
