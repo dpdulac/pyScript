@@ -13,6 +13,8 @@
 import os, pprint, errno, argparse, sys, math, operator
 from Katana import  NodegraphAPI,UI4
 
+version = 'duda 0.5.0'
+
 opNodeScriptTarget = "local scale = Interface.GetOpArg('user.scale'):getValue()"\
     "\nlocal vPt = 0.5*scale"\
     "\n--plane shape"\
@@ -133,8 +135,9 @@ opNodeScript = "local scale = Interface.GetOpArg('user.scale'):getValue()"\
     "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_DIFFUSE_REFLECT',IntAttribute{0})"\
     "\nInterface.SetAttr('arnoldStatements.visibility.AI_RAY_SPECULAR_REFLECT',IntAttribute{0})"
 
+#lua script for the opScript node which calculate the DOF
 calculFocusPlane = "--- Convenience function to retrieve a global transform matrix for a given"\
-    "\n-- location path"\
+    "\n--location path"\
     "\nfunction getXFormMatrix(locationPath)"\
     "\n\tlocal xformAttr = Interface.GetGlobalXFormGroup(locationPath)"\
     "\n\tlocal matAttr = XFormUtils.CalcTransformMatrixAtTime(xformAttr, 0.0)" \
@@ -460,6 +463,9 @@ def createParam(groupNode = NodegraphAPI.GetRootNode()):
     groupNode.getParameter('advanced_settings.geometry_settings.target_color.i2').setValue(0, 0.0)
     scaleTargetParam = geometrySettingsGroup.createChildNumber('scale_target', 10)
     scaleTargetParam.setHintString("{'slider': 'True', 'slidermax': '100.0', 'help': 'scale of target'}")
+    # version number
+    versionParam = groupNode.getParameters().createChildString('version', version)
+    versionParam.setHintString("{'readOnly': 'True'}")
 
 def createOpScriptParam(opNode = NodegraphAPI.GetRootNode()):
     userGroup = opNode.getParameters().createChildGroup('user')
@@ -608,6 +614,9 @@ def createFocusGroup(name='FocusGroup',parent = NodegraphAPI.GetRootNode(),geoPa
 
     sendGroup.connect(returnGroup)
     nodeToMouse(groupNode)
+
+def main():
+    createFocusGroup()
 
 if __name__ == '__main__':
     main()
