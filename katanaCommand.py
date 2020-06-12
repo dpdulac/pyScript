@@ -964,8 +964,118 @@ def setNodeColor( r =1.0, g = 1.0, b =1.0):
         NodegraphAPI.SetNodeShapeAttr( node,  "colorb", b )
         DrawingModule.SetCustomNodeColor( node, r, g, b)
 
+#################################change the hints on shader
+def changeParamName(node=NodegraphAPI.GetNode('root'), oldParamName='diffuse', newParamName='sheen'):
+    nodeAllParm = node.getParameter('parameters')
+    for i in nodeAllParm.getChildren():
+        paramPath = 'parameters.' + i.getName() + '.hints'
+        try:
+            value = node.getParameter(paramPath).getValue(0)
+        except:
+            print i.getName() + ' NO HINTS'
+        else:
+            node.getParameter(paramPath).setValue(value.replace(oldParamName, newParamName), 0)
+
+def builMaterialInterfaceControls(matNodeName='Standard', newParamName ='sheen'):
+    matControlDict = {'colorCorrect': {'name': 'L0_diffuse_MapSetting_colorCorrect_Controls'.replace('diffuse', newParamName),
+                                       'targetName': 'L0.DiffuseComponent.diffuse.MapSetting_diffuse.Color.colorCorrect'.replace('diffuse',newParamName),
+                                       'targetType': 'page',
+                                       'path': 'L0_diffuse_colorCorrect'.replace('diffuse', newParamName),
+                                       'value': '1'},
+                        'mapSetting': {'name': 'L0_diffuse_MapSetting_Controls'.replace('diffuse', newParamName),
+                                       'targetName': 'L0.DiffuseComponent.diffuse.MapSetting_diffuse'.replace('diffuse', newParamName),
+                                       'targetType': 'page',
+                                       'path': 'L0_diffuse_input_diffuse_Mode'.replace('diffuse', newParamName),
+                                       'value': '1'},
+                          'colorMap': {'name': 'L0_diffuse_ColorMap_Controls'.replace('diffuse', newParamName),
+                                       'targetName': 'L0_diffuse_ColorMap'.replace('diffuse', newParamName),
+                                       'targetType': 'parameter',
+                                       'path': 'L0_diffuse_input_diffuse_Mode'.replace('diffuse', newParamName),
+                                       'value': '1'},
+                             'color': {'name': 'L0_diffuse_Color_Controls'.replace('diffuse', newParamName),
+                                       'targetName': 'L0_diffuse_Color'.replace('diffuse', newParamName),
+                                       'targetType': 'parameter',
+                                       'path': 'L0_diffuse_input_diffuse_Mode'.replace('diffuse', newParamName),
+                                       'value': '0'}
+         }
+
+    matNode = NodegraphAPI.GetNode(matNodeName)
+    matNodeChildren = matNode.getChildren()
+    for node in matNodeChildren:
+    #groupStackNode = ''
+        if node.getType() == 'GroupStack':
+            for key in matControlDict.keys():
+                childNode = node.buildChildNode()
+                childNode.setName(matControlDict[key]['name'])
+                childNode.getParameter('targetType').setValue(matControlDict[key]['targetType'],0)
+                childNode.getParameter('targetName').setValue(matControlDict[key]['targetName'],0)
+                groupChild = childNode.getParameter('operators.ops').createChildGroup('ops1')
+                groupChild.createChildString('op','equalTo')
+                groupChild.createChildString('path',matControlDict[key]['path'])
+                groupChild.createChildString('value',matControlDict[key]['value'])
+
+
+def changeNodeNameAndParameters(oldParamName='diffuse', newParamName='sheen'):
+    node = NodegraphAPI.GetAllSelectedNodes()[0]
+    childNodes = node.getChildren()
+    for child in childNodes:
+        # child.checkDynamicParameters()
+        child.checkDynamicParameters()
+        changeParamName(child, oldParamName, newParamName)
+        checkNodeName(child, oldParamName, newParamName)
+    checkNodeName(node, oldParamName, newParamName)
+    nodeInputPorts = node.getInputPorts()
+    nodeOutputPorts = node.getOutputPorts()
+    for port in nodeInputPorts:
+        if port.getName().find(oldParamName) > 0:
+            port.addOrUpdateMetadata('label', port.getName().replace(oldParamName, newParamName))
+            node.renameInputPort(port.getName(), port.getName().replace(oldParamName, newParamName))
+
+def checkNodeName(node=NodegraphAPI.GetNode('root'), oldParamName='diffuse', newParamName='sheen'):
+    nodeName = node.getName().replace(oldParamName, newParamName)
+    if nodeName[-1].isdigit():
+        nodeName = nodeName[:-1]
+    node.setName(nodeName)
+    try:
+        node.getParameter('name').getValue(0)
+    except:
+        print 'no parameter name in this node'
+    else:
+        node.getParameter('name').setValue(nodeName,0)
+
+
+def changeNodeNameAndParameters(oldParamName='diffuse', newParamName='sheen'):
+    node = NodegraphAPI.GetAllSelectedNodes()[0]
+    childNodes = node.getChildren()
+    for child in childNodes:
+        # child.checkDynamicParameters()
+        child.checkDynamicParameters()
+        changeParamName(child, oldParamName, newParamName)
+        checkNodeName(child, oldParamName, newParamName)
+    checkNodeName(node, oldParamName, newParamName)
+    nodeInputPorts = node.getInputPorts()
+    nodeOutputPorts = node.getOutputPorts()
+    for port in nodeInputPorts:
+        if port.getName().find(oldParamName) > 0:
+            port.addOrUpdateMetadata('label', port.getName().replace(oldParamName, newParamName))
+            node.renameInputPort(port.getName(), port.getName().replace(oldParamName, newParamName))
+        else:
+            print 'NOOOOOOOO'
+    for port in nodeOutputPorts:
+        if port.getName().find(oldParamName) > 0:
+            port.addOrUpdateMetadata('label', port.getName().replace(oldParamName, newParamName))
+            node.renameOutputPort(port.getName(), port.getName().replace(oldParamName, newParamName))
+        else:
+            print 'NOOOOOOOO'
+
+
+changeNodeNameAndParameters(oldParamName='diffuse', newParamName='sheen')
+
+
+
 
 ##########################starting arnold 5
+
 rez env asterix2TkConfig katana-2.1 kToA-2.0 mimtoaShaders mikrosShaders mikAbcIn-rc.0.6.0  sceneGenerator-rc.0.5.0 setupInstancer asterix2Core katanatk katanaCore katanaTools katanaResources animCurveApply mikMetamorphose mikParentConstraint mikScaleConstraint multiLayerLookFileResolve multiplyDoubleAndSet projectRenderOutputDefine rectifyController setDress shallowHierarchyCopy shadingInit -- katana
 
 #######################################################################
