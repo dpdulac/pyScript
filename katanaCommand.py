@@ -965,6 +965,35 @@ def setNodeColor( r =1.0, g = 1.0, b =1.0):
         DrawingModule.SetCustomNodeColor( node, r, g, b)
 
 #################################change the hints on shader
+
+def changePortInOutName(node = NodegraphAPI.GetRootNode(),oldParamName='diffuse', newParamName='sheen'):
+    nodeInputPorts = node.getInputPorts()
+    nodeOutputPorts = node.getOutputPorts()
+    for port in nodeInputPorts:
+        if port.getName().find(oldParamName) >= 0:
+            port.addOrUpdateMetadata('label', port.getName().replace(oldParamName, newParamName))
+            node.renameInputPort(port.getName(), port.getName().replace(oldParamName, newParamName))
+        else:
+            print 'NOOOOOOOO'
+    for port in nodeOutputPorts:
+        if port.getName().find(oldParamName) >= 0:
+            port.addOrUpdateMetadata('label', port.getName().replace(oldParamName, newParamName))
+            node.renameOutputPort(port.getName(), port.getName().replace(oldParamName, newParamName))
+        else:
+            print 'NOOOOOOOO'
+
+def walkChildNode(node = NodegraphAPI.GetRootNode(),listChild=[]):
+    try:
+        node.getChildren()
+    except:
+        listChild.append(node)
+        print 'No child for: ', node.getName()
+    else:
+        listChild.append(node)
+        for child in node.getChildren():
+            walkChildNode(child,listChild)
+    return listChild
+
 def changeParamName(node=NodegraphAPI.GetNode('root'), oldParamName='diffuse', newParamName='sheen'):
     nodeAllParm = node.getParameter('parameters')
     for i in nodeAllParm.getChildren():
@@ -1015,6 +1044,14 @@ def builMaterialInterfaceControls(matNodeName='Standard', newParamName ='sheen')
                 groupChild.createChildString('value',matControlDict[key]['value'])
 
 
+def copyNode(node = NodegraphAPI.GetRootNode(),getParent = False):
+    xmlNode = NodegraphAPI.BuildNodesXmlIO([node])
+    if getParent:
+        return KatanaFile.Paste(xmlNode, node.getParent())[0]
+    else:
+        return KatanaFile.Paste(xmlNode, NodegraphAPI.GetRootNode())[0]
+
+
 def changeNodeNameAndParameters(oldParamName='diffuse', newParamName='sheen'):
     node = NodegraphAPI.GetAllSelectedNodes()[0]
     childNodes = node.getChildren()
@@ -1027,9 +1064,13 @@ def changeNodeNameAndParameters(oldParamName='diffuse', newParamName='sheen'):
     nodeInputPorts = node.getInputPorts()
     nodeOutputPorts = node.getOutputPorts()
     for port in nodeInputPorts:
-        if port.getName().find(oldParamName) > 0:
+        if port.getName().find(oldParamName) >= 0:
             port.addOrUpdateMetadata('label', port.getName().replace(oldParamName, newParamName))
             node.renameInputPort(port.getName(), port.getName().replace(oldParamName, newParamName))
+    for port in nodeOutputPorts:
+        if port.getName().find(oldParamName) >= 0:
+            port.addOrUpdateMetadata('label', port.getName().replace(oldParamName, newParamName))
+            node.renameOutputPort(port.getName(), port.getName().replace(oldParamName, newParamName))
 
 def checkNodeName(node=NodegraphAPI.GetNode('root'), oldParamName='diffuse', newParamName='sheen'):
     nodeName = node.getName().replace(oldParamName, newParamName)
@@ -1053,26 +1094,98 @@ def changeNodeNameAndParameters(oldParamName='diffuse', newParamName='sheen'):
         changeParamName(child, oldParamName, newParamName)
         checkNodeName(child, oldParamName, newParamName)
     checkNodeName(node, oldParamName, newParamName)
-    nodeInputPorts = node.getInputPorts()
-    nodeOutputPorts = node.getOutputPorts()
-    for port in nodeInputPorts:
-        if port.getName().find(oldParamName) > 0:
-            port.addOrUpdateMetadata('label', port.getName().replace(oldParamName, newParamName))
-            node.renameInputPort(port.getName(), port.getName().replace(oldParamName, newParamName))
-        else:
-            print 'NOOOOOOOO'
-    for port in nodeOutputPorts:
-        if port.getName().find(oldParamName) > 0:
-            port.addOrUpdateMetadata('label', port.getName().replace(oldParamName, newParamName))
-            node.renameOutputPort(port.getName(), port.getName().replace(oldParamName, newParamName))
-        else:
-            print 'NOOOOOOOO'
+    changePortInOutName(node, oldParamName, newParamName)
 
 
+def createNewLayer(oldParamName='L0', newParamName='L1'):
+    #change the layer name
+    startNode = NodegraphAPI.GetAllSelectedNodes()[0]
+    newNode = copyNode(startNode,True)
+    noList = []
+    childList = walkChildNode(newNode,noList)
+    for child in childList:
+        checkNodeName(child,oldParamName,newParamName)
+        if child.getType() == 'ShadingGroup':
+            changePortInOutName(child,oldParamName,newParamName)
+        elif child.getType() == 'ArnoldShadingNode':
+            changeParamName(child,oldParamName,newParamName)
+        else:
+            print 'Ah bon!!!'
+
+    #copy the interfaceControl
+    materialNode = startNode
+    run = True
+    while run:
+        if materialNode.getType() == 'NetworkMaterialCreate':
+            run = False
+        else :
+            materialNode = materialNode.getParent()
+
+    matNodeChildren = materialNode.getChildren()
+    for node in matNodeChildren:
+        #groupStackNode = ''
+            if node.getType() == 'GroupStack':
+                groupStackChild = node.getChildren()
+                for child in groupStackChild:
+                    if child.getName().find(oldParamName) >= 0:
+                        oldName = child.getName()
+                        newName = oldName.replace(oldParamName,newParamName)
+                        newNode = copyNode(child)
+                        newNode.setName(newName)
+                        targetName = newNode.getParameter('targetName').getValue(0).replace(oldParamName,newParamName)
+                        newNode.getParameter('targetName').setValue(targetName,0)
+                        node.buildChildNode(adoptNode=newNode)
+                        path = newNode.getParameter('operators.ops').getChildren()[0].getChild('path').getValue(0).replace(oldParamName,newParamName)
+                        newNode.getParameter('operators.ops').getChildren()[0].getChild('path').setValue(path,0)
+
+#change the name to another
 changeNodeNameAndParameters(oldParamName='diffuse', newParamName='sheen')
 
+#change the node and children node name
+node = NodegraphAPI.GetAllSelectedNodes()[0]
+childList = walkChildNode(node)
+for child in childList:
+    checkNodeName(child,'L0','L1')
+
+#misc function
+a = NodegraphAPI.GetAllSelectedNodes()[0]
+listPort =[]
+for i in a.getInputPorts():
+    if i.getName().find('displacementTangent') > 0:
+        listPort.append(i)
+for port in listPort:
+    newName = port.getName().replace('Displacement','SpecularReflection')
+    newName = newName.replace('displacementTangent','clearcoat.coatColor')
+    a.addInputPort(newName.replace('displacement','coat'))
+
+c = NodegraphAPI.GetNode('L0_coatTransparencyColor_ShadingGroup').getInputPort('L0_coatTransparencyColor_mikFile.Parameters.Color.clampMax.a')
+d = NodegraphAPI.GetNode('L0_ShadingGroup').getSendPort('L0_mikLayer.SpecularReflection.clearcoat.coatTransparency.Color.clampMax.a')
+c.connect(d)
+
+a = NodegraphAPI.GetNode('L0_ShadingGroup')
+x = NodegraphAPI.GetNode('L0_specularRotationUVs_ShadingGroup')
+listPort =[]
+for i in x.getInputPorts():
+    listPort.append(i)
+for i in a.getInputPorts():
+    if i.getName().find('L0_mikLayer.SpecularReflection.specular.specularColor') == 0:
+        endName = i.getName().rsplit('L0_mikLayer.SpecularReflection.specular.specularColor')[1]
+        for j in listPort:
+            if j.getName().rfind(endName)>0:
+                print j.getName() + ' IS CONNECTED TO: ' + i.getName()
+                sendPort = a.getSendPort(i.getName())
+                j.connect(sendPort)
 
 
+a = NodegraphAPI.GetNode('mikLayerMix_ShadingGroup')
+b = NodegraphAPI.GetNode('L0_ShadingGroup')
+c =[]
+c= b.getInputPorts()
+for i in c:
+    newname = i.getName().replace('L0_mikLayer','Layers.L0')
+    a.addInputPort(newName)
+    sendPort = a.getSendPort(newName)
+    i.connect(sendPort)
 
 ##########################starting arnold 5
 
@@ -1262,3 +1375,25 @@ NodegraphAPI.GetNode('Alembic_In1').getParameters().createChildNumber('disable',
 #server license
 print os.environ['foundry_LICENSE'], os.environ['solidangle_LICENSE']
 4101@licserv01.mikros.int 5053@licserv01.mikros.int
+
+
+###########################################display model in katana################################################
+def displayModel(node = NodegraphAPI.GetRootNode(),nameInNode = '_hiShape'):
+    sg = ScenegraphManager.getActiveScenegraph()
+    time = NodegraphAPI.GetCurrentTime()
+    producer = Nodes3DAPI.GetGeometryProducer( node, time)
+    allPath = recursiveFindPath(producer,listPath=[],nameInNode = nameInNode)
+    for item in allPath:
+        sg.addPinnedLocation(item)
+
+def recursiveFindPath(producer,listPath=[],nameInNode = '_hiShape'):
+    if producer is not None :
+        path = producer.getFullName()
+        if path.find(nameInNode ) >= 0:
+            listPath.append(path)
+        for child in producer.iterChildren():
+            recursiveFindPath(child,listPath,nameInNode )
+    else:
+        print('no producer for :' )
+    return listPath
+####################################################################################################################
