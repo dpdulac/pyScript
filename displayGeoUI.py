@@ -16,12 +16,15 @@
 __author__ = "duda"
 __copyright__ = "Copyright 2017, Mikros Animation"
 
+console_print('Pin down the BDD')
+
 import sys
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+import PyQt5.QtGui
+import PyQt5.QtWidgets as QtGui
+from PyQt5.QtCore import *
 from Katana import  NodegraphAPI,ScenegraphManager,Nodes3DAPI
 
-class fileEdit(QLineEdit):
+class fileEdit(QtGui.QLineEdit):
     def __init__(self):
         super(fileEdit, self).__init__()
 
@@ -51,40 +54,24 @@ class fileEdit(QLineEdit):
             filepath = data.text()
             self.setText(filepath)
 
-
-
-class displayGeoUI(QWidget):
-    def __init__(self):
-        super(displayGeoUI, self).__init__()
+class displayGeoUI(QtGui.QWidget):
+    def __init__(self,parent=None):
+        super(displayGeoUI, self).__init__(parent)
         self.initUI()
 
     def initUI(self):
-        self.menu_bar = QMenuBar()
-        self.help_menu = self.menu_bar.addMenu('Help')
+        self.mainGridLayout = QtGui.QGridLayout()
 
-        self.mainLayout = QVBoxLayout()
-        self.mainGridLayout = QGridLayout()
-
-        self.pathLabel = QLabel('path')
+        self.pathLabel = QtGui.QLabel('path')
         self.pathlineEdit = fileEdit()
-        self.pathlineEdit.setToolTip('enter/drop the path for object to be pinned (i.e /world/geo/location)')
-        self.pathButon = QPushButton('Display')
-        self.pathButon.setToolTip('apply the selection')
-        self.pathCheck = QCheckBox('clear pinned')
-        self.pathCheck.setChecked(True)
-        self.pathCheck.setToolTip('clear the pinned object in the scene before applying the selection')
-
+        self.pathButon = QtGui.QPushButton('Display')
 
         self.mainGridLayout.addWidget(self.pathLabel,0,0)
-        self.mainGridLayout.addWidget(self.pathlineEdit,0,1)
-        self.mainGridLayout.addWidget(self.pathCheck,1,0)
-        self.mainGridLayout.addWidget(self.pathButon,1,1)
-
-        self.mainLayout.addWidget(self.menu_bar)
-        self.mainLayout.addLayout(self.mainGridLayout)
+        self.mainGridLayout.addWidget(self.pathlineEdit,1,0)
+        self.mainGridLayout.addWidget(self.pathButon,2,0)
 
         self.pathButon.clicked.connect(self.displayIt)
-        self.setLayout(self.mainLayout)
+        self.setLayout(self.mainGridLayout)
 
     def WalkBoundAttrLocations(self,producer,listPath=[]):
         listWord = ['BDD:ALL']
@@ -100,9 +87,8 @@ class displayGeoUI(QWidget):
         return listPath
 
     def displayIt(self):
+        print str(self.pathlineEdit.text())
         sg = ScenegraphManager.getActiveScenegraph()
-        if self.pathCheck.isChecked():
-            sg.clearPinnedLocations()
         node = NodegraphAPI.GetNode( 'root' )
         time = NodegraphAPI.GetCurrentTime()
         producer = Nodes3DAPI.GetGeometryProducer( node, time)
@@ -116,15 +102,20 @@ ex =None
 def BuildisplayGeoUI():
 
     global ex
-    if ex is not None:
-        ex.close()
+    sg = ScenegraphManager.getActiveScenegraph()
+    sg.clearPinnedLocations()
+    # if ex is not None:
+    #     ex.close()
+    print('donuts')
+    parent = QtGui.QApplication.activeWindow()
     ex= displayGeoUI()
-    ex. setWindowFlags(Qt.WindowStaysOnTopHint)
+    ex.setWindowFlags(Qt.WindowStaysOnTopHint)
     ex.show()
 
+
 def main():
-    app = QApplication(sys.argv)
-    app.setStyle(QStyleFactory.create("plastique"))
+    app = QtGui.QApplication(sys.argv)
+    app.setStyle(QtGui.QStyleFactory.create("plastique"))
     BuildisplayGeoUI()
     app.exec_()
 
