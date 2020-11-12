@@ -82,11 +82,11 @@ class assUI(QWidget):
         self.mainLayout = QGridLayout()
         self.tw = QTreeWidget()
         self.tw.setHeaderLabels(['ass content...'])
-        self.fileButton = QPushButton('file')
-        self.fileLineEdit = QLineEdit()
+        self.fileButton = QPushButton('ass file')
+        self.fileQLineEdit = QLineEdit()
         self.fileQHBoxLayout = QHBoxLayout()
         self.fileQHBoxLayout.addWidget(self.fileButton)
-        self.fileQHBoxLayout.addWidget(self.fileLineEdit)
+        self.fileQHBoxLayout.addWidget(self.fileQLineEdit)
         result = extractDictFromAss("/s/prodanim/ta/_sandbox/duda/assFiles/tmp/newKitchen.ass")
 
         # extract the '/' from result
@@ -98,6 +98,9 @@ class assUI(QWidget):
 
         self.mainLayout.addLayout(self.fileQHBoxLayout,0,0)
         self.mainLayout.addWidget(self.tw,1,0)
+
+        self.fileButton.clicked.connect(self.findFile)
+        
         self.setLayout(self.mainLayout)
 
     def build_paths_tree(self,d, parent):
@@ -125,6 +128,12 @@ class assUI(QWidget):
                 parent.addChild(child)
             if isinstance(v, dict):
                 self.build_paths_tree(v, child)
+
+    def findFile(self):
+        """dialog to open file of type .ass"""
+        filename = QFileDialog.getOpenFileName(self, 'Open file', '/s/prodanim/ta',"Image files (*.ass)")
+        # fill fileQLineEdit with the string filename
+        self.fileQLineEdit.setText(filename)
 
 ex = None
 
