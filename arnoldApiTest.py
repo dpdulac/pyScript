@@ -70,6 +70,7 @@ def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/robo
     AiEnd()
     result = get_path_dict(pathList)
     result['/'] = result.pop('')
+    result.pop('root')
     return result
 
 class assUI(QWidget):
@@ -80,11 +81,16 @@ class assUI(QWidget):
     def initUI(self):
         self.mainLayout = QVBoxLayout()
         self.tw = QTreeWidget()
+        self.tw.setHeaderLabels(['ass content...'])
         result = extractDictFromAss("/s/prodanim/ta/_sandbox/duda/assFiles/tmp/newKitchen.ass")
-        #self.tw.setHeaderLabels(['bla','ble'])
-        self.a = QTreeWidgetItem(self.tw, '/')
-        self.build_paths_tree(result,self.a)
-        # self.b = QTreeWidgetItem(self.a,['blu','bly'])
+
+        # extract the '/' from result
+        result= result['/']
+
+        # create the top level
+        self.topLevel = QTreeWidgetItem(self.tw, '/')
+        self.build_paths_tree(result,self.topLevel)
+
         self.mainLayout.addWidget(self.tw)
         self.setLayout(self.mainLayout)
 
@@ -100,6 +106,14 @@ class assUI(QWidget):
             return
         for k, v in d.iteritems():
             child = QTreeWidgetItem(parent)
+            parentName = parent.text(0)
+            toolTipStr = parent.toolTip(0)
+            if parentName == '/':
+                #child.setText(0, '/'+k)
+                child.setToolTip(0,'/'+k)
+            else:
+                #child.setText(0,parentName+'/'+k)
+                child.setToolTip(0, toolTipStr+'/'+k)
             child.setText(0, k)
             if v:
                 parent.addChild(child)

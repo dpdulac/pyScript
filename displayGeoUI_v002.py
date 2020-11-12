@@ -129,7 +129,7 @@ class displayGeoUI(QtGui.QWidget):
             allPath = self.recursiveFindPath(producer, listPath=[], nameInNode=nameInNode)
         for item in allPath:
             sg.addPinnedLocation(item)
-            
+
 ex =None
 
 def BuildisplayGeoUI():
