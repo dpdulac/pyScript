@@ -79,9 +79,14 @@ class assUI(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.mainLayout = QVBoxLayout()
+        self.mainLayout = QGridLayout()
         self.tw = QTreeWidget()
         self.tw.setHeaderLabels(['ass content...'])
+        self.fileButton = QPushButton('file')
+        self.fileLineEdit = QLineEdit()
+        self.fileQHBoxLayout = QHBoxLayout()
+        self.fileQHBoxLayout.addWidget(self.fileButton)
+        self.fileQHBoxLayout.addWidget(self.fileLineEdit)
         result = extractDictFromAss("/s/prodanim/ta/_sandbox/duda/assFiles/tmp/newKitchen.ass")
 
         # extract the '/' from result
@@ -91,7 +96,8 @@ class assUI(QWidget):
         self.topLevel = QTreeWidgetItem(self.tw, '/')
         self.build_paths_tree(result,self.topLevel)
 
-        self.mainLayout.addWidget(self.tw)
+        self.mainLayout.addLayout(self.fileQHBoxLayout,0,0)
+        self.mainLayout.addWidget(self.tw,1,0)
         self.setLayout(self.mainLayout)
 
     def build_paths_tree(self,d, parent):
