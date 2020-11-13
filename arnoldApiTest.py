@@ -73,6 +73,76 @@ def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/robo
     result.pop('root')
     return result
 
+class myQtreeWidgetItem(QTreeWidgetItem):
+    def __init__(self,parent):
+        super(myQtreeWidgetItem, self).__init__(parent)
+
+    def contextMenuEvent(self, event):
+        contextMenu = QMenu(self)
+        newAct = contextMenu.addAction("New")
+        openAct = contextMenu.addAction("Open")
+        quitAct = contextMenu.addAction("Quit")
+        action = contextMenu.exec_(self.mapToGlobal(event.pos()))
+        if action == quitAct:
+            self.close()
+
+class MyTreeWidget(QTreeWidget):
+    def __init__(self, parent = None):
+        QTreeWidget.__init__(self, parent)
+        self.setDragEnabled(True)
+    # def mousePressEvent (self, event):
+    #     print("child clicked ! ")
+    #     if event.button() == Qt.RightButton:
+    #         print("right click !")
+    #     QTreeWidget.mousePressEvent(self, event)
+    # def contextMenuEvent(self, event):
+    #     contextMenu = QMenu(self)
+    #     newAct = contextMenu.addAction("New")
+    #     openAct = contextMenu.addAction("Open")
+    #     quitAct = contextMenu.addAction("Quit")
+    #     action = contextMenu.exec_(self.mapToGlobal(event.pos()))
+    #     if action == quitAct:
+    #         self.close()
+    def contextMenuEvent(self, event):
+        if event.reason() == event.Mouse:
+            pos = event.globalPos()
+            item = self.itemAt(event.pos())
+        else:
+            pos = None
+            selection = self.selectedItems()
+            if selection:
+                item = selection[0]
+            else:
+                item = self.currentItem()
+                if item is None:
+                    item = self.invisibleRootItem().child(0)
+            if item is not None:
+                parent = item.parent()
+                while parent is not None:
+                    parent.setExpanded(True)
+                    parent = parent.parent()
+                itemrect = self.visualItemRect(item)
+                portrect = self.viewport().rect()
+                if not portrect.contains(itemrect.topLeft()):
+                    self.scrollToItem(
+                        item, QTreeWidget.PositionAtCenter)
+                    itemrect = self.visualItemRect(item)
+                itemrect.setLeft(portrect.left())
+                itemrect.setWidth(portrect.width())
+                pos = self.mapToGlobal(itemrect.center())
+        if pos is not None:
+            menu = QMenu(self)
+            #menu.addAction(item.toolTip(0))
+            open = menu.addAction('Open')
+            open.triggered.connect(self.expandAll)
+            menu.addAction('donuts')
+            menu.popup(pos)
+        event.accept()
+
+    def expandAll(self):
+        self.expandAll()
+
+
 class assUI(QWidget):
     def __init__(self):
         super(assUI, self).__init__()
@@ -80,21 +150,24 @@ class assUI(QWidget):
 
     def initUI(self):
         self.mainLayout = QGridLayout()
-        self.tw = QTreeWidget()
+        self.tw = MyTreeWidget()
         self.tw.setHeaderLabels(['ass content...'])
+        self.tw.setDragEnabled(True)
         self.fileButton = QPushButton('ass file')
         self.fileQLineEdit = QLineEdit()
         self.fileQHBoxLayout = QHBoxLayout()
         self.fileQHBoxLayout.addWidget(self.fileButton)
         self.fileQHBoxLayout.addWidget(self.fileQLineEdit)
-        result = extractDictFromAss("/s/prodanim/ta/_sandbox/duda/assFiles/tmp/newKitchen.ass")
+        #result = extractDictFromAss("/s/prodanim/ta/_sandbox/duda/assFiles/tmp/newKitchen.ass")
 
         # extract the '/' from result
-        result= result['/']
+        #result= result['/']
 
         # create the top level
-        self.topLevel = QTreeWidgetItem(self.tw, '/')
-        self.build_paths_tree(result,self.topLevel)
+        self.topLevel = myQtreeWidgetItem(self.tw)
+        self.topLevel.setText(0,'/')
+
+        #self.build_paths_tree(result,self.topLevel)
 
         self.mainLayout.addLayout(self.fileQHBoxLayout,0,0)
         self.mainLayout.addWidget(self.tw,1,0)
@@ -114,7 +187,7 @@ class assUI(QWidget):
         if not d:
             return
         for k, v in d.iteritems():
-            child = QTreeWidgetItem(parent)
+            child = myQtreeWidgetItem(parent)
             parentName = parent.text(0)
             toolTipStr = parent.toolTip(0)
             if parentName == '/':
@@ -134,6 +207,9 @@ class assUI(QWidget):
         filename = QFileDialog.getOpenFileName(self, 'Open file', '/s/prodanim/ta',"Image files (*.ass)")
         # fill fileQLineEdit with the string filename
         self.fileQLineEdit.setText(filename)
+        result = extractDictFromAss(str(filename))
+        result = result['/']
+        self.build_paths_tree(result, self.topLevel)
 
 ex = None
 
