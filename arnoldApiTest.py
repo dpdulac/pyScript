@@ -106,7 +106,7 @@ class MyTreeWidget(QTreeWidget):
     def contextMenuEvent(self, event):
         if event.reason() == event.Mouse:
             pos = event.globalPos()
-            item = self.itemAt(event.pos())
+            self.item = self.itemAt(event.pos())
         else:
             pos = None
             selection = self.selectedItems()
@@ -133,14 +133,44 @@ class MyTreeWidget(QTreeWidget):
         if pos is not None:
             menu = QMenu(self)
             #menu.addAction(item.toolTip(0))
-            open = menu.addAction('Open')
-            open.triggered.connect(self.expandAll)
-            menu.addAction('donuts')
+            openBranch = menu.addAction('Open Branch')
+            openBranch.setToolTip('bla')
+            openBranch.triggered.connect(self.expandBranch)
+            collapseBranch = menu.addAction('Collapse Branch')
+            collapseBranch.triggered.connect(self.collapseBranch)
             menu.popup(pos)
         event.accept()
 
-    def expandAll(self,q):
-        print q
+    def expandBranch(self):
+        #self.expandItem(self.item)
+        #self.item.setExpanded(True)
+        self.RecursiveChildItem(self.item,True)
+        # nbChild = self.item.childCount ()
+        # for nb in range(0,nbChild):
+        #     child = self.item.child(nb)
+        #     child.setExpanded(True)
+
+    def collapseBranch(self):
+        #self.expandItem(self.item)
+        #self.item.setExpanded(True)
+        self.RecursiveChildItem(self.item,False)
+
+    def RecursiveChildItem(self,item,openBranch = True):
+        try:
+            item.childCount() > 0
+        except:
+            print 'no child'
+        else:
+            if openBranch:
+                item.setExpanded(True)
+            else:
+                item.setExpanded(False)
+            nbChild = item.childCount()
+            for nb in range(0,nbChild):
+                child = item.child(nb)
+                #self.item = child
+                self.RecursiveChildItem(child,openBranch)
+
 
 
 class assUI(QWidget):
