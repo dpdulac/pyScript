@@ -131,26 +131,40 @@ class MyTreeWidget(QTreeWidget):
                 itemrect.setWidth(portrect.width())
                 pos = self.mapToGlobal(itemrect.center())
         if pos is not None:
-            menu = QMenu(self)
+            self.menu = QMenu(self)
             #menu.addAction(item.toolTip(0))
-            openAll = menu.addAction('Open All')
+            self.menu.addSeparator()
+            openAll = self.menu.addAction('Open All')
             openAll.triggered.connect(self.openAll)
-            openBranch = menu.addAction('Open Branch')
+            collapseAll = self.menu.addAction('CollapseAll')
+            self.menu.addSeparator()
+            collapseAll.triggered.connect(self.collapseAllBranch)
+            openBranch = self.menu.addAction('Open Branch')
             openBranch.setToolTip('bla')
             openBranch.triggered.connect(self.expandBranch)
-            collapseBranch = menu.addAction('Collapse Branch')
+            collapseBranch = self.menu.addAction('Collapse Branch')
             collapseBranch.triggered.connect(self.collapseBranch)
-            menu.popup(pos)
+            self.menu.addSeparator()
+            copyPath = self.menu.addAction('copy path')
+            copyPath.triggered.connect(self.copyPath)
+            self.menu.popup(pos)
         event.accept()
 
     def openAll(self):
         self.expandAll()
+
+    def collapseAllBranch(self):
+        self.collapseAll()
 
     def expandBranch(self):
         self.RecursiveChildItem(self.item,True)
 
     def collapseBranch(self):
         self.RecursiveChildItem(self.item,False)
+
+    def copyPath(self):
+        text = self.item.toolTip(0)
+        QApplication.clipboard().setText(text)
 
     def RecursiveChildItem(self,item,openBranch = True):
         try:
