@@ -111,22 +111,22 @@ class MyTreeWidget(QTreeWidget):
             pos = None
             selection = self.selectedItems()
             if selection:
-                item = selection[0]
+                self.item = selection[0]
             else:
-                item = self.currentItem()
-                if item is None:
-                    item = self.invisibleRootItem().child(0)
-            if item is not None:
-                parent = item.parent()
+                self.item = self.currentItem()
+                if self.item is None:
+                    self.item = self.invisibleRootItem().child(0)
+            if self.item is not None:
+                parent = self.item.parent()
                 while parent is not None:
                     parent.setExpanded(True)
                     parent = parent.parent()
-                itemrect = self.visualItemRect(item)
+                itemrect = self.visualItemRect(self.item)
                 portrect = self.viewport().rect()
                 if not portrect.contains(itemrect.topLeft()):
                     self.scrollToItem(
-                        item, QTreeWidget.PositionAtCenter)
-                    itemrect = self.visualItemRect(item)
+                        self.item, QTreeWidget.PositionAtCenter)
+                    itemrect = self.visualItemRect(self.item)
                 itemrect.setLeft(portrect.left())
                 itemrect.setWidth(portrect.width())
                 pos = self.mapToGlobal(itemrect.center())
@@ -142,17 +142,9 @@ class MyTreeWidget(QTreeWidget):
         event.accept()
 
     def expandBranch(self):
-        #self.expandItem(self.item)
-        #self.item.setExpanded(True)
         self.RecursiveChildItem(self.item,True)
-        # nbChild = self.item.childCount ()
-        # for nb in range(0,nbChild):
-        #     child = self.item.child(nb)
-        #     child.setExpanded(True)
 
     def collapseBranch(self):
-        #self.expandItem(self.item)
-        #self.item.setExpanded(True)
         self.RecursiveChildItem(self.item,False)
 
     def RecursiveChildItem(self,item,openBranch = True):
@@ -168,7 +160,6 @@ class MyTreeWidget(QTreeWidget):
             nbChild = item.childCount()
             for nb in range(0,nbChild):
                 child = item.child(nb)
-                #self.item = child
                 self.RecursiveChildItem(child,openBranch)
 
 
