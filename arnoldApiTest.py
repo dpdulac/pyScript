@@ -139,8 +139,8 @@ class MyTreeWidget(QTreeWidget):
             menu.popup(pos)
         event.accept()
 
-    def expandAll(self):
-        self.expandAll()
+    def expandAll(self,q):
+        print q
 
 
 class assUI(QWidget):
