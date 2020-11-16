@@ -133,6 +133,8 @@ class MyTreeWidget(QTreeWidget):
         if pos is not None:
             menu = QMenu(self)
             #menu.addAction(item.toolTip(0))
+            openAll = menu.addAction('Open All')
+            openAll.triggered.connect(self.openAll)
             openBranch = menu.addAction('Open Branch')
             openBranch.setToolTip('bla')
             openBranch.triggered.connect(self.expandBranch)
@@ -140,6 +142,9 @@ class MyTreeWidget(QTreeWidget):
             collapseBranch.triggered.connect(self.collapseBranch)
             menu.popup(pos)
         event.accept()
+
+    def openAll(self):
+        self.expandAll()
 
     def expandBranch(self):
         self.RecursiveChildItem(self.item,True)
