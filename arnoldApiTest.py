@@ -42,7 +42,7 @@ def get_path_dict(paths):
             marcher[parts[-1]] = parts[-1]
     return default_to_regular(new_path_dict)
 
-def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/default_look.ass"):
+def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/light.ass"):
 
     """
     output a dictionary of the node in the .ass file
@@ -54,7 +54,7 @@ def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/defa
     AiMsgSetConsoleFlags(AI_LOG_NONE)
     AiASSLoad(assPath, AI_NODE_ALL)
 
-    iter = AiUniverseGetNodeIterator(AI_NODE_SHAPE);
+    iter = AiUniverseGetNodeIterator(AI_NODE_ALL);
     while not AiNodeIteratorFinished(iter):
         node = AiNodeIteratorGetNext(iter)
         name = AiNodeGetStr(node, "name")
@@ -69,40 +69,19 @@ def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/defa
     AiNodeIteratorDestroy(iter)
     AiEnd()
     result = get_path_dict(pathList)
-    result['/'] = result.pop('')
+    if '' in result.keys():
+        result['/'] = result.pop('')
+    # else:
+    #     result['/'] = result
     result.pop('root')
     return result
 
-class myQtreeWidgetItem(QTreeWidgetItem):
-    def __init__(self,parent):
-        super(myQtreeWidgetItem, self).__init__(parent)
-
-    def contextMenuEvent(self, event):
-        contextMenu = QMenu(self)
-        newAct = contextMenu.addAction("New")
-        openAct = contextMenu.addAction("Open")
-        quitAct = contextMenu.addAction("Quit")
-        action = contextMenu.exec_(self.mapToGlobal(event.pos()))
-        if action == quitAct:
-            self.close()
 
 class MyTreeWidget(QTreeWidget):
     def __init__(self, parent = None):
         QTreeWidget.__init__(self, parent)
         self.setDragEnabled(True)
-    # def mousePressEvent (self, event):
-    #     print("child clicked ! ")
-    #     if event.button() == Qt.RightButton:
-    #         print("right click !")
-    #     QTreeWidget.mousePressEvent(self, event)
-    # def contextMenuEvent(self, event):
-    #     contextMenu = QMenu(self)
-    #     newAct = contextMenu.addAction("New")
-    #     openAct = contextMenu.addAction("Open")
-    #     quitAct = contextMenu.addAction("Quit")
-    #     action = contextMenu.exec_(self.mapToGlobal(event.pos()))
-    #     if action == quitAct:
-    #         self.close()
+
     def contextMenuEvent(self, event):
         if event.reason() == event.Mouse:
             pos = event.globalPos()
@@ -192,21 +171,72 @@ class assUI(QWidget):
         self.mainLayout = QGridLayout()
         self.tw = MyTreeWidget()
         self.tw.setHeaderLabels(['ass content...'])
-        self.tw.setDragEnabled(True)
+        #self.tw.setDragEnabled(True)
         self.fileButton = QPushButton('ass file')
         self.fileQLineEdit = QLineEdit()
         self.fileQHBoxLayout = QHBoxLayout()
         self.fileQHBoxLayout.addWidget(self.fileButton)
         self.fileQHBoxLayout.addWidget(self.fileQLineEdit)
 
+        self.allNodeCheckBox = QCheckBox('All')
+        self.allNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/world.png'))
+        self.allNodeCheckBox.setObjectName('allNode')
+        self.allNodeCheckBox.setAutoExclusive(True)
+        self.allNodeCheckBox.setChecked(True)
+        self.shapeNodeCheckBox = QCheckBox('Shape')
+        self.shapeNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/shape.png'))
+        self.shapeNodeCheckBox.setObjectName('shapeNode')
+        self.shapeNodeCheckBox.setAutoExclusive(True)
+        self.cameraNodeCheckBox= QCheckBox('Camera')
+        self.cameraNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/camera.png'))
+        self.cameraNodeCheckBox.setObjectName('cameraNode')
+        self.cameraNodeCheckBox.setAutoExclusive(True)
+        self.lightNodeCheckBox = QCheckBox('Light')
+        self.lightNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/light.png'))
+        self.lightNodeCheckBox.setObjectName('lightNode')
+        self.lightNodeCheckBox.setAutoExclusive(True)
+        self.shaderNodeCheckBox = QCheckBox('Shader')
+        self.shaderNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/shader.png'))
+        self.shaderNodeCheckBox.setObjectName('shaderNode')
+        self.shaderNodeCheckBox.setAutoExclusive(True)
+        self.filterNodeCheckBox = QCheckBox('Filter')
+        self.filterNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/filter.png'))
+        self.filterNodeCheckBox.setObjectName('filterNode')
+        self.filterNodeCheckBox.setAutoExclusive(True)
+        self.driverNodeCheckBox = QCheckBox('Driver')
+        self.driverNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/driver.png'))
+        self.driverNodeCheckBox.setObjectName('driverNode')
+        self.driverNodeCheckBox.setAutoExclusive(True)
+        self.optionNodeCheckBox = QCheckBox('Option')
+        self.optionNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/option.png'))
+        self.optionNodeCheckBox.setObjectName('optionNode')
+        self.optionNodeCheckBox.setAutoExclusive(True)
+        self.overrideNodeCheckBox = QCheckBox('Override')
+        self.overrideNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/override.png'))
+        self.overrideNodeCheckBox.setObjectName('overrideNode')
+        self.overrideNodeCheckBox.setAutoExclusive(True)
+
+        self.nodeBoxLayout = QHBoxLayout()
+        self.nodeBoxLayout.addWidget(self.allNodeCheckBox)
+        self.nodeBoxLayout.addWidget(self.shapeNodeCheckBox)
+        self.nodeBoxLayout.addWidget(self.cameraNodeCheckBox)
+        self.nodeBoxLayout.addWidget(self.lightNodeCheckBox)
+        self.nodeBoxLayout.addWidget(self.shaderNodeCheckBox)
+        self.nodeBoxLayout.addWidget(self.driverNodeCheckBox)
+        self.nodeBoxLayout.addWidget(self.filterNodeCheckBox)
+        self.nodeBoxLayout.addWidget(self.optionNodeCheckBox)
+        self.nodeBoxLayout.addWidget(self.overrideNodeCheckBox)
+
+
         # create the top level
-        self.topLevel = myQtreeWidgetItem(self.tw)
+        self.topLevel = QTreeWidgetItem(self.tw)
         self.topLevel.setText(0,'/')
 
         #self.build_paths_tree(result,self.topLevel)
 
         self.mainLayout.addLayout(self.fileQHBoxLayout,0,0)
-        self.mainLayout.addWidget(self.tw,1,0)
+        self.mainLayout.addLayout(self.nodeBoxLayout, 1, 0)
+        self.mainLayout.addWidget(self.tw,2,0)
 
         self.fileButton.clicked.connect(self.findFile)
         
@@ -223,7 +253,7 @@ class assUI(QWidget):
         if not d:
             return
         for k, v in d.iteritems():
-            child = myQtreeWidgetItem(parent)
+            child = QTreeWidgetItem(parent)
             parentName = parent.text(0)
             toolTipStr = parent.toolTip(0)
             if parentName == '/':
