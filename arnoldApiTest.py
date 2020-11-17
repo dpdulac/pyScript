@@ -42,7 +42,7 @@ def get_path_dict(paths):
             marcher[parts[-1]] = parts[-1]
     return default_to_regular(new_path_dict)
 
-def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/robotC.ass"):
+def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/default_look.ass"):
 
     """
     output a dictionary of the node in the .ass file
@@ -198,10 +198,6 @@ class assUI(QWidget):
         self.fileQHBoxLayout = QHBoxLayout()
         self.fileQHBoxLayout.addWidget(self.fileButton)
         self.fileQHBoxLayout.addWidget(self.fileQLineEdit)
-        #result = extractDictFromAss("/s/prodanim/ta/_sandbox/duda/assFiles/tmp/newKitchen.ass")
-
-        # extract the '/' from result
-        #result= result['/']
 
         # create the top level
         self.topLevel = myQtreeWidgetItem(self.tw)
