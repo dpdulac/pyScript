@@ -42,7 +42,7 @@ def get_path_dict(paths):
             marcher[parts[-1]] = parts[-1]
     return default_to_regular(new_path_dict)
 
-def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/light.ass"):
+def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/light.ass", nodeType = AI_NODE_ALL ):
 
     """
     output a dictionary of the node in the .ass file
@@ -54,7 +54,7 @@ def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/ligh
     AiMsgSetConsoleFlags(AI_LOG_NONE)
     AiASSLoad(assPath, AI_NODE_ALL)
 
-    iter = AiUniverseGetNodeIterator(AI_NODE_ALL);
+    iter = AiUniverseGetNodeIterator(nodeType);
     while not AiNodeIteratorFinished(iter):
         node = AiNodeIteratorGetNext(iter)
         name = AiNodeGetStr(node, "name")
@@ -73,7 +73,8 @@ def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/ligh
         result['/'] = result.pop('')
     # else:
     #     result['/'] = result
-    result.pop('root')
+    if 'root' in result.keys():
+        result.pop('root')
     return result
 
 
@@ -165,6 +166,23 @@ class MyTreeWidget(QTreeWidget):
 class assUI(QWidget):
     def __init__(self):
         super(assUI, self).__init__()
+        self.dictNodeTypeSorted = {
+            0: {'All': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/world.png', 'nodeType': AI_NODE_ALL}},
+            1: {'Shape': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/shape.png', 'nodeType': AI_NODE_SHAPE}},
+            2: {'Camera': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/camera.png', 'nodeType': AI_NODE_CAMERA}},
+            3: {'Light': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/light.png', 'nodeType': AI_NODE_LIGHT}},
+            4: {'Shader': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/shader.png', 'nodeType': AI_NODE_SHADER}},
+            5: {'Filter': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/filter.png', 'nodeType': AI_NODE_FILTER}},
+            6: {'Driver': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/driver.png', 'nodeType': AI_NODE_DRIVER}},
+            7: {'Option': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/option.png', 'nodeType': AI_NODE_OPTIONS}},
+            8: {'Override': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/override.png',
+                             'nodeType': AI_NODE_OVERRIDE}},
+            9: {'ColorManager': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/colormanager.png',
+                                 'nodeType': AI_NODE_COLOR_MANAGER}}}
+        self.dictNodeType = {}
+        for key in self.dictNodeTypeSorted.keys():
+            keyName = self.dictNodeTypeSorted[key].keys()[0]
+            self.dictNodeType[keyName] = self.dictNodeTypeSorted[key][keyName]
         self.initUI()
 
     def initUI(self):
@@ -177,6 +195,8 @@ class assUI(QWidget):
         self.fileQHBoxLayout = QHBoxLayout()
         self.fileQHBoxLayout.addWidget(self.fileButton)
         self.fileQHBoxLayout.addWidget(self.fileQLineEdit)
+
+
 
         self.allNodeCheckBox = QCheckBox('All')
         self.allNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/world.png'))
@@ -215,8 +235,22 @@ class assUI(QWidget):
         self.overrideNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/override.png'))
         self.overrideNodeCheckBox.setObjectName('overrideNode')
         self.overrideNodeCheckBox.setAutoExclusive(True)
+        self.colorNodeCheckBox = QCheckBox('ColorManager')
+        self.colorNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/colormanager.png'))
+        self.colorNodeCheckBox.setObjectName('colorNode')
+        self.colorNodeCheckBox.setAutoExclusive(True)
+        self.nodeComboBox = QComboBox()
+        for node in sorted(self.dictNodeTypeSorted.keys()):
+            nodeName = self.dictNodeTypeSorted[node].keys()[0]
+            self.nodeComboBox.addItem(nodeName)
+            self.nodeComboBox.setItemIcon(node, QIcon(self.dictNodeTypeSorted[node][nodeName]['imagePath']))
+        # self.nodeComboBox.addItems((['All', 'shapeNode']))
+        # self.nodeComboBox.setItemIcon(0,QIcon('/s/prodanim/ta/_sandbox/duda/tmp/world.png'))
 
-        self.nodeBoxLayout = QHBoxLayout()
+        self.nodeGroupBox = QGroupBox('ass part to view')
+        self.nodeGroupBox.setDisabled(True)
+        self.nodeBoxLayout = QHBoxLayout(self.nodeGroupBox )
+        self.nodeBoxLayout.addWidget(self.nodeComboBox)
         self.nodeBoxLayout.addWidget(self.allNodeCheckBox)
         self.nodeBoxLayout.addWidget(self.shapeNodeCheckBox)
         self.nodeBoxLayout.addWidget(self.cameraNodeCheckBox)
@@ -225,6 +259,7 @@ class assUI(QWidget):
         self.nodeBoxLayout.addWidget(self.driverNodeCheckBox)
         self.nodeBoxLayout.addWidget(self.filterNodeCheckBox)
         self.nodeBoxLayout.addWidget(self.optionNodeCheckBox)
+        self.nodeBoxLayout.addWidget(self.colorNodeCheckBox)
         self.nodeBoxLayout.addWidget(self.overrideNodeCheckBox)
 
 
@@ -235,12 +270,50 @@ class assUI(QWidget):
         #self.build_paths_tree(result,self.topLevel)
 
         self.mainLayout.addLayout(self.fileQHBoxLayout,0,0)
-        self.mainLayout.addLayout(self.nodeBoxLayout, 1, 0)
+        self.mainLayout.addWidget(self.nodeGroupBox,1,0)
+        #self.mainLayout.addLayout(self.nodeBoxLayout, 1, 0)
         self.mainLayout.addWidget(self.tw,2,0)
 
         self.fileButton.clicked.connect(self.findFile)
+        self.shapeNodeCheckBox.clicked.connect(self.setTreeView)
+        self.allNodeCheckBox.clicked.connect(self.setTreeView)
+        self.nodeComboBox.currentIndexChanged.connect(self.filter)
         
         self.setLayout(self.mainLayout)
+
+    def filter(self):
+        currentText = str(self.nodeComboBox.currentText())
+        self.tw.clear()
+        self.topLevel = QTreeWidgetItem(self.tw)
+        self.topLevel.setText(0, '/')
+        self.nodeType = AI_NODE_ALL
+        text = str(self.fileQLineEdit.text())
+        result = extractDictFromAss(text, self.dictNodeType[currentText]['nodeType'])
+        print result
+        if len(result.keys()) > 0:
+            result = result['/']
+            self.build_paths_tree(result, self.topLevel)
+        else:
+            self.tw.clear()
+            tmp = QTreeWidgetItem(self.tw)
+            tmp.setText(0,'no ' + currentText + ' in this ass')
+            tmp.setTextColor(0,QColor(255, 0, 0))
+        
+        #self.build_paths_tree(result, self.topLevel)
+
+    def setTreeView(self):
+        #if self.sender().isChecked():
+        self.tw.clear()
+        self.topLevel = QTreeWidgetItem(self.tw)
+        self.topLevel.setText(0, '/')
+        self.nodeType = AI_NODE_ALL
+        text = str(self.fileQLineEdit.text())
+        if self.sender().objectName() == 'shapeNode':
+            self.nodeType = AI_NODE_SHAPE
+        result = extractDictFromAss(text,self.nodeType)
+        result = result['/']
+        self.build_paths_tree(result, self.topLevel)
+
 
     def build_paths_tree(self,d, parent):
         """Builds the directory path using Qt's TreeWidget items.
@@ -271,6 +344,10 @@ class assUI(QWidget):
     def findFile(self):
         """dialog to open file of type .ass"""
         filename = QFileDialog.getOpenFileName(self, 'Open file', '/s/prodanim/ta',"Image files (*.ass)")
+        self.tw.clear()
+        self.topLevel = QTreeWidgetItem(self.tw)
+        self.topLevel.setText(0, '/')
+        self.nodeGroupBox.setDisabled(False)
         # fill fileQLineEdit with the string filename
         self.fileQLineEdit.setText(filename)
         result = extractDictFromAss(str(filename))
