@@ -71,7 +71,7 @@ def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/ligh
     result = get_path_dict(pathList)
     if '' in result.keys():
         result['/'] = result.pop('')
-    # else:
+    # else:1
     #     result['/'] = result
     if 'root' in result.keys():
         result.pop('root')
@@ -167,7 +167,7 @@ class assUI(QWidget):
     def __init__(self):
         super(assUI, self).__init__()
         self.dictNodeTypeSorted = {
-            0: {'All': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/world.png', 'nodeType': AI_NODE_ALL}},
+            0: {'All': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/all.png', 'nodeType': AI_NODE_ALL}},
             1: {'Shape': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/shape.png', 'nodeType': AI_NODE_SHAPE}},
             2: {'Camera': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/camera.png', 'nodeType': AI_NODE_CAMERA}},
             3: {'Light': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/light.png', 'nodeType': AI_NODE_LIGHT}},
@@ -178,11 +178,15 @@ class assUI(QWidget):
             8: {'Override': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/override.png',
                              'nodeType': AI_NODE_OVERRIDE}},
             9: {'ColorManager': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/colormanager.png',
-                                 'nodeType': AI_NODE_COLOR_MANAGER}}}
+                                 'nodeType': AI_NODE_COLOR_MANAGER}},
+            10:{'Operator': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/operator.png',
+                                 'nodeType': AI_NODE_OPERATOR}}}
         self.dictNodeType = {}
         for key in self.dictNodeTypeSorted.keys():
             keyName = self.dictNodeTypeSorted[key].keys()[0]
             self.dictNodeType[keyName] = self.dictNodeTypeSorted[key][keyName]
+
+            self.assName = ''
         self.initUI()
 
     def initUI(self):
@@ -192,91 +196,29 @@ class assUI(QWidget):
         #self.tw.setDragEnabled(True)
         self.fileButton = QPushButton('ass file')
         self.fileQLineEdit = QLineEdit()
-        self.fileQHBoxLayout = QHBoxLayout()
-        self.fileQHBoxLayout.addWidget(self.fileButton)
-        self.fileQHBoxLayout.addWidget(self.fileQLineEdit)
-
-
-
-        self.allNodeCheckBox = QCheckBox('All')
-        self.allNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/world.png'))
-        self.allNodeCheckBox.setObjectName('allNode')
-        self.allNodeCheckBox.setAutoExclusive(True)
-        self.allNodeCheckBox.setChecked(True)
-        self.shapeNodeCheckBox = QCheckBox('Shape')
-        self.shapeNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/shape.png'))
-        self.shapeNodeCheckBox.setObjectName('shapeNode')
-        self.shapeNodeCheckBox.setAutoExclusive(True)
-        self.cameraNodeCheckBox= QCheckBox('Camera')
-        self.cameraNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/camera.png'))
-        self.cameraNodeCheckBox.setObjectName('cameraNode')
-        self.cameraNodeCheckBox.setAutoExclusive(True)
-        self.lightNodeCheckBox = QCheckBox('Light')
-        self.lightNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/light.png'))
-        self.lightNodeCheckBox.setObjectName('lightNode')
-        self.lightNodeCheckBox.setAutoExclusive(True)
-        self.shaderNodeCheckBox = QCheckBox('Shader')
-        self.shaderNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/shader.png'))
-        self.shaderNodeCheckBox.setObjectName('shaderNode')
-        self.shaderNodeCheckBox.setAutoExclusive(True)
-        self.filterNodeCheckBox = QCheckBox('Filter')
-        self.filterNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/filter.png'))
-        self.filterNodeCheckBox.setObjectName('filterNode')
-        self.filterNodeCheckBox.setAutoExclusive(True)
-        self.driverNodeCheckBox = QCheckBox('Driver')
-        self.driverNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/driver.png'))
-        self.driverNodeCheckBox.setObjectName('driverNode')
-        self.driverNodeCheckBox.setAutoExclusive(True)
-        self.optionNodeCheckBox = QCheckBox('Option')
-        self.optionNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/option.png'))
-        self.optionNodeCheckBox.setObjectName('optionNode')
-        self.optionNodeCheckBox.setAutoExclusive(True)
-        self.overrideNodeCheckBox = QCheckBox('Override')
-        self.overrideNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/override.png'))
-        self.overrideNodeCheckBox.setObjectName('overrideNode')
-        self.overrideNodeCheckBox.setAutoExclusive(True)
-        self.colorNodeCheckBox = QCheckBox('ColorManager')
-        self.colorNodeCheckBox.setIcon(QIcon('/s/prodanim/ta/_sandbox/duda/tmp/colormanager.png'))
-        self.colorNodeCheckBox.setObjectName('colorNode')
-        self.colorNodeCheckBox.setAutoExclusive(True)
         self.nodeComboBox = QComboBox()
         for node in sorted(self.dictNodeTypeSorted.keys()):
             nodeName = self.dictNodeTypeSorted[node].keys()[0]
             self.nodeComboBox.addItem(nodeName)
             self.nodeComboBox.setItemIcon(node, QIcon(self.dictNodeTypeSorted[node][nodeName]['imagePath']))
-        # self.nodeComboBox.addItems((['All', 'shapeNode']))
-        # self.nodeComboBox.setItemIcon(0,QIcon('/s/prodanim/ta/_sandbox/duda/tmp/world.png'))
+        self.nodeComboBox.setDisabled(True)
 
-        self.nodeGroupBox = QGroupBox('ass part to view')
-        self.nodeGroupBox.setDisabled(True)
-        self.nodeBoxLayout = QHBoxLayout(self.nodeGroupBox )
-        self.nodeBoxLayout.addWidget(self.nodeComboBox)
-        self.nodeBoxLayout.addWidget(self.allNodeCheckBox)
-        self.nodeBoxLayout.addWidget(self.shapeNodeCheckBox)
-        self.nodeBoxLayout.addWidget(self.cameraNodeCheckBox)
-        self.nodeBoxLayout.addWidget(self.lightNodeCheckBox)
-        self.nodeBoxLayout.addWidget(self.shaderNodeCheckBox)
-        self.nodeBoxLayout.addWidget(self.driverNodeCheckBox)
-        self.nodeBoxLayout.addWidget(self.filterNodeCheckBox)
-        self.nodeBoxLayout.addWidget(self.optionNodeCheckBox)
-        self.nodeBoxLayout.addWidget(self.colorNodeCheckBox)
-        self.nodeBoxLayout.addWidget(self.overrideNodeCheckBox)
+        self.fileQHBoxLayout = QHBoxLayout()
+        self.fileQHBoxLayout.addWidget(self.fileButton)
+        self.fileQHBoxLayout.addWidget(self.fileQLineEdit)
+        self.fileQHBoxLayout.addWidget(self.nodeComboBox)
 
 
         # create the top level
-        self.topLevel = QTreeWidgetItem(self.tw)
-        self.topLevel.setText(0,'/')
+        # self.topLevel = QTreeWidgetItem(self.tw)
+        # self.topLevel.setText(0,'/')
+        # self.topLevel.setIcon(0,QIcon('/s/prodanim/ta/_sandbox/duda/tmp/file.png'))
 
-        #self.build_paths_tree(result,self.topLevel)
 
         self.mainLayout.addLayout(self.fileQHBoxLayout,0,0)
-        self.mainLayout.addWidget(self.nodeGroupBox,1,0)
-        #self.mainLayout.addLayout(self.nodeBoxLayout, 1, 0)
-        self.mainLayout.addWidget(self.tw,2,0)
+        self.mainLayout.addWidget(self.tw,1,0)
 
         self.fileButton.clicked.connect(self.findFile)
-        self.shapeNodeCheckBox.clicked.connect(self.setTreeView)
-        self.allNodeCheckBox.clicked.connect(self.setTreeView)
         self.nodeComboBox.currentIndexChanged.connect(self.filter)
         
         self.setLayout(self.mainLayout)
@@ -285,34 +227,23 @@ class assUI(QWidget):
         currentText = str(self.nodeComboBox.currentText())
         self.tw.clear()
         self.topLevel = QTreeWidgetItem(self.tw)
-        self.topLevel.setText(0, '/')
+        self.topLevel.setText(0, self.assName)
+        self.topLevel.setTextColor(0, QColor(180, 180, 0))
+        self.topLevel.setIcon(0, QIcon('/s/prodanim/ta/_sandbox/duda/tmp/file.png'))
+        self.tw.expandItem(self.topLevel)
         self.nodeType = AI_NODE_ALL
         text = str(self.fileQLineEdit.text())
         result = extractDictFromAss(text, self.dictNodeType[currentText]['nodeType'])
-        print result
+        #print result
         if len(result.keys()) > 0:
-            result = result['/']
+            #result = result['/']
             self.build_paths_tree(result, self.topLevel)
         else:
             self.tw.clear()
             tmp = QTreeWidgetItem(self.tw)
             tmp.setText(0,'no ' + currentText + ' in this ass')
             tmp.setTextColor(0,QColor(255, 0, 0))
-        
-        #self.build_paths_tree(result, self.topLevel)
 
-    def setTreeView(self):
-        #if self.sender().isChecked():
-        self.tw.clear()
-        self.topLevel = QTreeWidgetItem(self.tw)
-        self.topLevel.setText(0, '/')
-        self.nodeType = AI_NODE_ALL
-        text = str(self.fileQLineEdit.text())
-        if self.sender().objectName() == 'shapeNode':
-            self.nodeType = AI_NODE_SHAPE
-        result = extractDictFromAss(text,self.nodeType)
-        result = result['/']
-        self.build_paths_tree(result, self.topLevel)
 
 
     def build_paths_tree(self,d, parent):
@@ -343,16 +274,21 @@ class assUI(QWidget):
 
     def findFile(self):
         """dialog to open file of type .ass"""
-        filename = QFileDialog.getOpenFileName(self, 'Open file', '/s/prodanim/ta',"Image files (*.ass)")
+        filename = str(QFileDialog.getOpenFileName(self, 'Open file', '/s/prodanim/ta',"Image files (*.ass)"))
+        self.assName = filename[filename.rfind('/')+1:]
         self.tw.clear()
         self.topLevel = QTreeWidgetItem(self.tw)
-        self.topLevel.setText(0, '/')
-        self.nodeGroupBox.setDisabled(False)
+        self.topLevel.setText(0, self.assName)
+        self.topLevel.setTextColor(0, QColor(180, 180, 0))
+        self.topLevel.setIcon(0, QIcon('/s/prodanim/ta/_sandbox/duda/tmp/file.png'))
+        self.tw.expandItem(self.topLevel)
         # fill fileQLineEdit with the string filename
         self.fileQLineEdit.setText(filename)
         result = extractDictFromAss(str(filename))
-        result = result['/']
+        #result = result['/']
         self.build_paths_tree(result, self.topLevel)
+        self.nodeComboBox.setCurrentIndex(0)
+        self.nodeComboBox.setDisabled(False)
 
 ex = None
 
