@@ -61,10 +61,6 @@ def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/ligh
         AiMsgInfo(name)
         AiMsgInfo( node )
         pathList.append(name)
-        # if AiNodeIs(node, "polymesh"):
-        #     name = AiNodeGetStr(node, "name")
-        #     AiMsgInfo(name)
-        #     pathList.append(name)
 
     AiNodeIteratorDestroy(iter)
     AiEnd()
