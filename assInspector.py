@@ -221,6 +221,7 @@ class assUI(QtWidgets.QWidget):
 
         self.setLayout(self.mainLayout)
 
+
     def filter(self):
         currentText = str(self.nodeComboBox.currentText())
         self.tw.clear()
@@ -257,12 +258,13 @@ class assUI(QtWidgets.QWidget):
             self.child = QtWidgets.QTreeWidgetItem(parent)
             parentName = parent.text(0)
             toolTipStr = parent.toolTip(0)
-            if parentName == '/':
-                # child.setText(0, '/'+k)
-                self.child.setToolTip(0, '/' + k)
+            if parentName == self.assName:
+                self.child.setToolTip(0, k)
             else:
-                # child.setText(0,parentName+'/'+k)
-                self.child.setToolTip(0, toolTipStr + '/' + k)
+                if parentName == '/':
+                    self.child.setToolTip(0, '/' + k)
+                else:
+                    self.child.setToolTip(0, toolTipStr + '/' + k)
             self.child.setText(0, k)
             if v:
                 parent.addChild(self.child)
