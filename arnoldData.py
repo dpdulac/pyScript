@@ -18,7 +18,7 @@ def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/full
     output a dictionary of the node in the .ass file
     """
     pathList =[]
-
+    vv = ''
     AiBegin()
 
     AiMsgSetConsoleFlags(AI_LOG_ALL)
@@ -28,14 +28,40 @@ def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/full
     while not AiNodeIteratorFinished(iter):
         node = AiNodeIteratorGetNext(iter)
         name = AiNodeGetStr(node, "name")
-        data = AiNodeGetFlt(node, 'motion_end')
+        print name
+        data = AiNodeGetArray(node, 'matrix')
+        entry = AiNodeGetNodeEntry(node)
+        # bla =AiNodeEntryGetType(entry)
+        # if bla == AI_NODE_LIGHT:
+        #     vv = 'good'
+        # else:
+        #     vv = 'bad'
+        entry = AiNodeLookUpByName('/obj/arnold_light1')
+        vv = AiNodeGetName(entry)
+        AiParamValueMap()
         AiMsgInfo(name)
-        AiMsgInfo( data)
+        #AiMsgInfo( data)
         pathList.append(name)
+        print '\n\n'
+        # entry = AiNodeGetNodeEntry(node)
+        # iterParam = AiNodeEntryGetParamIterator(entry)
+        # while not AiParamIteratorFinished(iterParam):
+        #     pentry = AiParamIteratorGetNext(iterParam)
+        #     paramName = AiParamGetName(pentry)
+        #     para = AiNodeEntryLookUpParameter(entry, paramName)
+        #     print paramName, AiParamGetTypeName(AiParamGetType(para))
+        #
+        # AiParamIteratorDestroy(iterParam)
+        iterUser = AiNodeGetUserParamIterator(node)
+        while not AiUserParamIteratorFinished(iterUser):
+            upentry = AiUserParamIteratorGetNext(iterUser)
+            print 'bb',AiUserParamGetName(upentry)
+        AiUserParamIteratorDestroy(iterUser)
+        print '\n\n'
 
     AiNodeIteratorDestroy(iter)
     AiEnd()
-    return data
+    return vv
 
 
 print extractDictFromAss()

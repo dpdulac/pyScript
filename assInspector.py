@@ -20,6 +20,8 @@ from PyQt5.QtCore import *
 #from PyQt4.QtCore import *
 
 
+IMAGE_PATH = '/s/prodanim/ta/_sandbox/duda/tmp/'
+
 def nested_dict():
     """
     Creates a default dictionary where each value is an other default dictionary.
@@ -65,7 +67,22 @@ def extractDictFromAss(assPath="/s/prodanim/ta/_sandbox/duda/assFiles/tmp/light.
         name = AiNodeGetStr(node, "name")
         AiMsgInfo(name)
         AiMsgInfo(node)
-        pathList.append(name)
+        #pathList.append(name)
+        entry = AiNodeGetNodeEntry(node)
+        nodeTypeName = AiNodeEntryGetTypeName(entry)
+        pathList.append(name+'__'+nodeTypeName)
+        # print AiNodeEntryGetType(entry),AI_NODE_LIGHT
+        # print '\n\n'
+        # iterParam = AiNodeEntryGetParamIterator(entry)
+        # while not AiParamIteratorFinished(iterParam):
+        #     pentry = AiParamIteratorGetNext(iterParam)
+        #     paramName = AiParamGetName(pentry)
+        #     para= AiNodeEntryLookUpParameter(entry,paramName)
+        #     print paramName,AiParamGetTypeName(AiParamGetType(para))
+        #
+        # AiParamIteratorDestroy(iterParam)
+        # print '\n\n'
+
 
     AiNodeIteratorDestroy(iter)
     AiEnd()
@@ -74,8 +91,8 @@ def extractDictFromAss(assPath="/s/prodanim/ta/_sandbox/duda/assFiles/tmp/light.
         result['/'] = result.pop('')
     # else:1
     #     result['/'] = result
-    if 'root' in result.keys():
-        result.pop('root')
+    if 'root__shape' in result.keys():
+        result.pop('root__shape')
     return result
 
 
@@ -83,6 +100,12 @@ class MyTreeWidget(QtWidgets.QTreeWidget):
     def __init__(self, parent=None):
         QtWidgets.QTreeWidget.__init__(self, parent)
         self.setDragEnabled(True)
+        self.setAttribute(Qt.WA_StyledBackground, True)
+        self.setStyleSheet("QTreeWidget{background-color: rgba(180,180,180,255);},QTreeWidget::QToolTip{ background-color: yellow; }")
+        # self.setStyleSheet(" QToolTip{ background-color: yellow }")
+        # self.pal = QtGui.QPalette()
+        # self.pal.setColor(QtGui.QPalette.Foreground, QtGui.QColor('#348ceb'))
+        # self.setPalette(self.pal)
 
     def contextMenuEvent(self, event):
         if event.reason() == event.Mouse:
@@ -131,6 +154,12 @@ class MyTreeWidget(QtWidgets.QTreeWidget):
             self.menu.popup(pos)
         event.accept()
 
+    def dragMoveEvent( self, event ):
+        data = event.mimeData()
+        urls = data.urls()
+        if data.hasText():
+            event.acceptProposedAction()
+
     def openAll(self):
         self.expandAll()
 
@@ -164,36 +193,46 @@ class MyTreeWidget(QtWidgets.QTreeWidget):
 
 
 class assUI(QtWidgets.QWidget):
-    def __init__(self):
-        super(assUI, self).__init__()
+    def __init__(self,parent=None):
+        super(assUI, self).__init__(parent)
+        # dictionary with sorting number for menu to be consistant
         self.dictNodeTypeSorted = {
-            0: {'All': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/all.png', 'nodeType': AI_NODE_ALL}},
-            1: {'Shape': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/shape.png', 'nodeType': AI_NODE_SHAPE}},
-            2: {'Camera': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/camera.png', 'nodeType': AI_NODE_CAMERA}},
-            3: {'Light': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/light.png', 'nodeType': AI_NODE_LIGHT}},
-            4: {'Shader': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/shader.png', 'nodeType': AI_NODE_SHADER}},
-            5: {'Filter': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/filter.png', 'nodeType': AI_NODE_FILTER}},
-            6: {'Driver': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/driver.png', 'nodeType': AI_NODE_DRIVER}},
-            7: {'Option': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/option.png', 'nodeType': AI_NODE_OPTIONS}},
-            8: {'Override': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/override.png',
-                             'nodeType': AI_NODE_OVERRIDE}},
-            9: {'ColorManager': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/colormanager.png',
-                                 'nodeType': AI_NODE_COLOR_MANAGER}},
-            10: {'Operator': {'imagePath': '/s/prodanim/ta/_sandbox/duda/tmp/operator.png',
-                              'nodeType': AI_NODE_OPERATOR}}}
+            0: {'All': {'imagePath': IMAGE_PATH+'all.png', 'nodeType': AI_NODE_ALL}},
+            1: {'Shape': {'imagePath': IMAGE_PATH+'shape.png', 'nodeType': AI_NODE_SHAPE}},
+            2: {'Camera': {'imagePath': IMAGE_PATH+'camera.png', 'nodeType': AI_NODE_CAMERA}},
+            3: {'Light': {'imagePath': IMAGE_PATH+'light.png', 'nodeType': AI_NODE_LIGHT}},
+            4: {'Shader': {'imagePath': IMAGE_PATH+'shader.png', 'nodeType': AI_NODE_SHADER}},
+            5: {'Filter': {'imagePath': IMAGE_PATH+'filter.png', 'nodeType': AI_NODE_FILTER}},
+            6: {'Driver': {'imagePath': IMAGE_PATH+'driver.png', 'nodeType': AI_NODE_DRIVER}},
+            7: {'Options': {'imagePath': IMAGE_PATH+'option.png', 'nodeType': AI_NODE_OPTIONS}},
+            8: {'Override': {'imagePath': IMAGE_PATH+'override.png','nodeType': AI_NODE_OVERRIDE}},
+            9: {'Color_manager': {'imagePath': IMAGE_PATH+'colormanager.png','nodeType': AI_NODE_COLOR_MANAGER}},
+            10: {'Operator': {'imagePath': IMAGE_PATH+'operator.png','nodeType': AI_NODE_OPERATOR}}}
         self.dictNodeType = {}
+
+        # dictionary without ordering number
         for key in self.dictNodeTypeSorted.keys():
             keyName = self.dictNodeTypeSorted[key].keys()[0]
             self.dictNodeType[keyName] = self.dictNodeTypeSorted[key][keyName]
+        # add a key Transform which is not part of the Arnold API
+        self.dictNodeType['Transform'] = {'imagePath': IMAGE_PATH+'transform.png'}
 
-            self.assName = ''
+        self.assName = ''
+        self.topLevel = QtWidgets.QTreeWidgetItem()
         self.initUI()
 
     def initUI(self):
+        self.resize(600,300)
+        self.setWindowTitle('assInspector')
+        # self.setAttribute(Qt.WA_StyledBackground, True)
+        # self.setStyleSheet('background-color: rgba(128,128,128,255)')
+
         self.mainLayout = QtWidgets.QGridLayout()
+
         self.tw = MyTreeWidget()
         self.tw.setHeaderLabels(['ass content...'])
-        # self.tw.setDragEnabled(True)
+
+
         self.fileButton = QtWidgets.QPushButton('ass file')
         self.fileQLineEdit = QtWidgets.QLineEdit()
         self.nodeComboBox = QtWidgets.QComboBox()
@@ -227,12 +266,13 @@ class assUI(QtWidgets.QWidget):
         self.tw.clear()
         self.topLevel = QtWidgets.QTreeWidgetItem(self.tw)
         self.topLevel.setText(0, self.assName)
-        self.topLevel.setForeground(0,QtGui.QBrush(QtGui.QColor(180, 180, 0)))
+        self.topLevel.setForeground(0,QtGui.QBrush(QtGui.QColor(255, 180, 0)))
         #self.topLevel.setTextColor(0, QtWidgets.QColor(180, 180, 0))
         self.topLevel.setIcon(0, QtGui.QIcon('/s/prodanim/ta/_sandbox/duda/tmp/file.png'))
         self.tw.expandItem(self.topLevel)
         self.nodeType = AI_NODE_ALL
         text = str(self.fileQLineEdit.text())
+        QtWidgets.QApplication.setOverrideCursor(Qt.WaitCursor)
         result = extractDictFromAss(text, self.dictNodeType[currentText]['nodeType'])
         # print result
         if len(result.keys()) > 0:
@@ -242,7 +282,8 @@ class assUI(QtWidgets.QWidget):
             self.tw.clear()
             tmp = QtWidgets.QTreeWidgetItem(self.tw)
             tmp.setText(0, 'no ' + currentText + ' in this ass')
-            #tmp.setTextColor(0, QtWidgets.QColor(255, 0, 0))
+            tmp.setForeground(0,QtGui.QBrush(QtGui.QColor(255, 0, 0)))
+        QtWidgets.QApplication.restoreOverrideCursor()
 
     def build_paths_tree(self, d, parent):
         """Builds the directory path using Qt's TreeWidget items.
@@ -255,17 +296,26 @@ class assUI(QtWidgets.QWidget):
         if not d:
             return
         for k, v in d.iteritems():
+            pathName = ''
+            nodeType = ''
+            if k.find('__') > 0:
+                pathName = k[:k.find('__')]
+                nodeType = k[k.find('__')+2:].capitalize()
+            else:
+                pathName = k
+                nodeType = 'Transform'
             self.child = QtWidgets.QTreeWidgetItem(parent)
             parentName = parent.text(0)
             toolTipStr = parent.toolTip(0)
             if parentName == self.assName:
-                self.child.setToolTip(0, k)
+                self.child.setToolTip(0, pathName)
             else:
                 if parentName == '/':
-                    self.child.setToolTip(0, '/' + k)
+                    self.child.setToolTip(0, '/' + pathName)
                 else:
-                    self.child.setToolTip(0, toolTipStr + '/' + k)
-            self.child.setText(0, k)
+                    self.child.setToolTip(0, toolTipStr + '/' + pathName)
+            self.child.setText(0, pathName)
+            self.child.setIcon(0,QtGui.QIcon(self.dictNodeType[nodeType]['imagePath']))
             if v:
                 parent.addChild(self.child)
             if isinstance(v, dict):
@@ -279,16 +329,21 @@ class assUI(QtWidgets.QWidget):
         self.tw.clear()
         self.topLevel = QtWidgets.QTreeWidgetItem(self.tw)
         self.topLevel.setText(0, self.assName)
-        self.topLevel.setForeground(0, QtGui.QBrush(QtGui.QColor(180, 180, 0)))
-        self.topLevel.setIcon(0, QtGui.QIcon('/s/prodanim/ta/_sandbox/duda/tmp/file.png'))
+        self.topLevel.setForeground(0, QtGui.QBrush(QtGui.QColor(255, 180, 0)))
+        #self.topLevel.setIcon(0, QtGui.QIcon(IMAGE_PATH+'file.png'))
         self.tw.expandItem(self.topLevel)
         # fill fileQLineEdit with the string filename
         self.fileQLineEdit.setText(filename)
+        QtWidgets.QApplication.setOverrideCursor(Qt.WaitCursor)
         result = extractDictFromAss(str(filename))
         # result = result['/']
         self.build_paths_tree(result, self.topLevel)
+        QtWidgets.QApplication.restoreOverrideCursor()
         self.nodeComboBox.setCurrentIndex(0)
         self.nodeComboBox.setDisabled(False)
+
+
+
 
 
 ex = None
@@ -298,12 +353,13 @@ def BuildShotUI():
     global ex
     if ex is not None:
         ex.close()
-    ex = assUI()
+    parent = QtWidgets.QApplication.activeWindow()
+    ex = assUI(parent)
     ex.show()
 
 
 def main():
-    # result = extractDictFromAss()
+    # result = extractDictFromAss("/s/prodanim/ta/_sandbox/duda/assFiles/tmp/light.ass")
     # pprint.pprint(result)
     app = QtWidgets.QApplication(sys.argv)
     #app.setStyle(QtWidgets.QStyleFactory.create("plastique"))
