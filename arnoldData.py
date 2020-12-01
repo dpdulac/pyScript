@@ -12,7 +12,7 @@
 """
 from arnold import *
 
-def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/fullScene.ass", nodeType = AI_NODE_LIGHT ):
+def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/light.ass", nodeType = AI_NODE_LIGHT ):
 
     """
     output a dictionary of the node in the .ass file
@@ -36,27 +36,50 @@ def extractDictFromAss(assPath = "/s/prodanim/ta/_sandbox/duda/assFiles/tmp/full
         #     vv = 'good'
         # else:
         #     vv = 'bad'
-        entry = AiNodeLookUpByName('/obj/arnold_light1')
-        vv = AiNodeGetName(entry)
-        AiParamValueMap()
-        AiMsgInfo(name)
+        # entry = AiNodeLookUpByName('/obj/arnold_light1')
+        # vv = AiNodeGetName(entry)
+        # AiParamValueMap()
+        # AiMsgInfo(name)
         #AiMsgInfo( data)
         pathList.append(name)
         print '\n\n'
-        # entry = AiNodeGetNodeEntry(node)
-        # iterParam = AiNodeEntryGetParamIterator(entry)
-        # while not AiParamIteratorFinished(iterParam):
-        #     pentry = AiParamIteratorGetNext(iterParam)
-        #     paramName = AiParamGetName(pentry)
-        #     para = AiNodeEntryLookUpParameter(entry, paramName)
-        #     print paramName, AiParamGetTypeName(AiParamGetType(para))
-        #
-        # AiParamIteratorDestroy(iterParam)
-        iterUser = AiNodeGetUserParamIterator(node)
-        while not AiUserParamIteratorFinished(iterUser):
-            upentry = AiUserParamIteratorGetNext(iterUser)
-            print 'bb',AiUserParamGetName(upentry)
-        AiUserParamIteratorDestroy(iterUser)
+
+        # iterParam = AiNodeGetUserParamIterator(node)
+        # print AiUserParamIteratorFinished(iterParam)
+        # while not AiUserParamIteratorFinished(iterParam):
+        #     pentry = AiUserParamIteratorGetNext(iterParam)
+        #     print 'haha', AiUserParamGetName(pentry)
+        # AiUserParamIteratorDestroy(iterParam)
+
+        entry = AiNodeGetNodeEntry(node)
+        iterParam = AiNodeEntryGetParamIterator(entry)
+        while not AiParamIteratorFinished(iterParam):
+            pentry = AiParamIteratorGetNext(iterParam)
+            paramName = AiParamGetName(pentry)
+            if AiParamGetTypeName(AiParamGetType(pentry)) == 'ARRAY':
+                array = AiNodeGetArray(node,paramName )
+                type = AiArrayGetType(array)
+                atom =''
+                if type == AI_TYPE_MATRIX:
+                    myMtx ='\n'
+                    for i in range(4):
+                        for j in range(4):
+                            myMtx += str((AiArrayGetMtx(array,0)[i][j]))
+                            if j <= 2:
+                                myMtx += ' '
+                            else:
+                                myMtx += '\n'
+                    atom = myMtx
+                    print AiParamGetDefault(pentry)
+                elif type == AI_TYPE_NODE:
+                    atom = AiArrayGetNumElements(array)
+
+            #print paramName, AiNodeGetArray(node,paramName )
+            # para = AiNodeEntryLookUpParameter(entry, paramName)
+                print paramName, atom
+
+        AiParamIteratorDestroy(iterParam)
+
         print '\n\n'
 
     AiNodeIteratorDestroy(iter)

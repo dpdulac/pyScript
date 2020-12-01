@@ -12,8 +12,9 @@
 
 
 import os, sys, argparse
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 import oiioContactSheet as pg
 import tmpRes as testData
 
