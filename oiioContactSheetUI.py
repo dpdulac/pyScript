@@ -39,7 +39,7 @@ class shotUI(QWidget):
 
         self.sequenceComboBox = QComboBox()
         #self.sequenceComboBox.addItems(pg.findAllSequence())
-        self.sequenceComboBox.addItems(testData._TMPSEQ_)
+        self.sequenceComboBox.addItems(pg.findAllSequence())
         self.sequenceComboBox.setToolTip('sequence for contactSheet')
         self.taskComboBox = QComboBox()
         self.taskComboBox.addItems(pg._TASKLIST_)
@@ -69,15 +69,15 @@ class shotUI(QWidget):
         self.firstHBoxlayout.addWidget(self.sequenceComboBox)
         self.firstHBoxlayout.addWidget(self.taskComboBox)
         self.firstHBoxlayout.addWidget(self.buttonAdd)
-        # self.firstHBoxlayout.addWidget(self.taskCheckBox)
+        #self.firstHBoxlayout.addWidget(self.taskCheckBox)
         # self.versionCheckBox = QCheckBox("version")
         # self.versionCheckBox.setChecked(True)
         # self.statusCheckBox = QCheckBox("show status")
         # self.statusCheckBox.setChecked(True)
         # self.artistCheckBox = QCheckBox("artist")
         # self.artistCheckBox.setChecked(True)
-        self.displatInRV = QCheckBox("RV")
-        self.displatInRV.setChecked(True)
+        # self.displatInRV = QCheckBox("RV")
+        # self.displatInRV.setChecked(True)
         # self.secondHBoxlayout = QHBoxLayout()
         # self.secondHBoxlayout.addWidget(self.versionCheckBox)
         # self.secondHBoxlayout.addWidget(self.artistCheckBox)
@@ -87,9 +87,9 @@ class shotUI(QWidget):
         self.gridLayoutExecute.addWidget(self.sequenceComboBox,0,0)
         self.gridLayoutExecute.addWidget(self.taskComboBox, 0, 1)
         self.gridLayoutExecute.addWidget(self.buttonAdd, 0, 2)
-        # self.gridLayoutExecute.addLayout(self.secondHBoxlayout, 0, 1)
+        #self.gridLayoutExecute.addLayout(self.secondHBoxlayout, 0, 1)
         self.gridLayoutExecute.addWidget(self.buttonExecute,1,2)
-        self.gridLayoutExecute.addWidget(self.displatInRV,1,1)
+        #self.gridLayoutExecute.addWidget(self.displatInRV,1,1)
 
         self.mainLayout.addWidget(self.scroll)
         self.mainLayout.addLayout(self.gridLayoutExecute)
@@ -134,12 +134,13 @@ class shotUI(QWidget):
             res[key]['cutOrder'] = self.cutMidCheckBox.isChecked()
             res[key]['showLabel'] = self.cutInCheckBox.isChecked()
             res[key]['showTask'] = self.taskCheckBox.isChecked()
-            res[key]['nbShots'] = len(findShotsInSequence(res[key]['seq']))
+            res[key]['nbShots'] = len(pg.findShotsInSequence(res[key]['seq']))
             imageList.append(res[key]['fileOut'])
         #createNukeFile(res)
         #command = 'rez env asterix2Nuke -- nuke -t createContactSheet.py "'+ str(res)+'"'
-        command = 'nuke -t /s/prodanim/asterix2/_source_global/Software/Nuke/scripts/createContactSheet.py "' + str(res) + '"'
-        os.system(command)
+        # command = 'nuke -t /s/prodanim/asterix2/_source_global/Software/Nuke/scripts/createContactSheet.py "' + str(res) + '"'
+        # os.system(command)
+        print res
 
         if self.displatInRV.isChecked():
             print 'opening RV'
@@ -170,11 +171,14 @@ class findFileUI(QWidget):
         self.sequenceName = self.master.sequenceComboBox.currentText()
         self.task = self.master.taskComboBox.currentText()
 
+        # main QGroupBox
         self.fileGroup = QGroupBox(self.sequenceName+' ' +self.task)
         self.fileGroup.setCheckable(True)
         self.fileGroup.setChecked(True)
         self.fileGroup.setFlat(False)
+        #Layout for the Qgroup
         self.wipQvboxLayout = QVBoxLayout(self.fileGroup)
+        # widget with Qgrid Layout
         self.wid = QWidget()
         self.mainFileGridLayout = QGridLayout()
         self.wid.setLayout(self.mainFileGridLayout)
@@ -187,7 +191,7 @@ class findFileUI(QWidget):
         self.qwidgetList.append(self.seqInCombobox)
         if len(self.master.allShots)==0:
             #self.listOfShots = pg.findAllSequence()
-            self.listOfShots = testData._TMPSEQ_
+            self.listOfShots = pg.findAllSequence()
             self.seqInCombobox.addItems(self.listOfShots)
             self.master.allSeqName=[str(self.seqInCombobox.itemText(i)) for i in range(self.seqInCombobox.count())]
         else:
@@ -207,6 +211,7 @@ class findFileUI(QWidget):
         self.fileInGridLayout.addWidget(self.taskInCombobox,3,0)
 
         self.fileOutGridLayout = QGridLayout()
+        self.fileOutNameGridLayout = QGridLayout()
         self.fileOutButton = QPushButton('path')
         self.fileOutButton.setToolTip('choose directory for output image')
         self.fileOutPathLabel = QLabel('out path')
@@ -226,13 +231,73 @@ class findFileUI(QWidget):
         self.fileOutGridLayout.addWidget(self.fileOutButton,1,0)
         self.fileOutGridLayout.addWidget(self.fileOutPathLabel,0,1)
         self.fileOutGridLayout.addWidget(self.contactOutPathLineEdit,1,1)
-        self.fileOutGridLayout.addWidget(self.fileOutNameLabel,0,2)
-        self.fileOutGridLayout.addWidget(self.fileOutNameLineEdit,1,2)
-        self.fileOutGridLayout.addWidget(self.fileOutTypeLabel,0,3)
-        self.fileOutGridLayout.addWidget(self.fileOutTypComboBox,1,3)
+        # self.fileOutGridLayout.addWidget(self.fileOutNameLabel,0,2)
+        # self.fileOutGridLayout.addWidget(self.fileOutNameLineEdit,1,2)
+        # self.fileOutGridLayout.addWidget(self.fileOutTypeLabel,0,3)
+        # self.fileOutGridLayout.addWidget(self.fileOutTypComboBox,1,3)
+        self.fileOutNameGridLayout.addWidget(self.fileOutNameLabel,0,0)
+        self.fileOutNameGridLayout.addWidget(self.fileOutNameLineEdit,1,0)
+        self.fileOutNameGridLayout.addWidget(self.fileOutTypeLabel,0,1)
+        self.fileOutNameGridLayout.addWidget(self.fileOutTypComboBox,1,1)
+
+        self.checkGroup = QGroupBox('Options')
+        self.checkGroup.setCheckable(True)
+        self.checkGroup.setChecked(False)
+        self.checkGroup.setFlat(True)
+        self.checkGroup.setFixedHeight(15)
+        self.checkGroup.setFixedWidth(60)
+        self.widCheckLayout = QVBoxLayout(self.checkGroup)
+        self.widCheck = QWidget()
+        self.checkBoxLayout = QGridLayout()
+        self.widCheck.setLayout(self.checkBoxLayout)
+        self.widCheckLayout.addWidget(self.widCheck)
+        self.widCheck.setVisible(False)
+        self.cutInCheckBox = QCheckBox("cutIn")
+        self.cutInCheckBox.setChecked(False)
+        self.cutInCheckBox.setAutoExclusive(True)
+        self.cutInCheckBox.setToolTip('use in frame of cut as contactSheet frame')
+        self.cutMidCheckBox = QCheckBox("cutMid")
+        self.cutMidCheckBox.setChecked(True)
+        self.cutMidCheckBox.setAutoExclusive(True)
+        self.cutMidCheckBox.setToolTip('use mid frame of cut as contactSheet frame')
+        self.cutOutCheckBox = QCheckBox("cutOut")
+        self.cutOutCheckBox.setChecked(False)
+        self.cutOutCheckBox.setAutoExclusive(True)
+        self.cutOutCheckBox.setToolTip('use out frame of cut as contactSheet frame')
+        self.frameInterstCheckBox = QCheckBox('fInterest')
+        self.frameInterstCheckBox.setChecked(False)
+        self.frameInterstCheckBox.setAutoExclusive(True)
+        self.frameInterstCheckBox.setToolTip('use frame of interest as contactSheet frame')
+        self.displayTaskCheckBox = QCheckBox("displayTask")
+        self.displayTaskCheckBox.setChecked(True)
+        self.displayTaskCheckBox.setToolTip('display the task on contactsheet')
+        self.versionCheckBox = QCheckBox("version")
+        self.versionCheckBox.setChecked(True)
+        self.versionCheckBox.setToolTip('display the version on contactsheet')
+        self.statusCheckBox = QCheckBox("show status")
+        self.statusCheckBox.setChecked(True)
+        self.statusCheckBox.setToolTip('display the status on contactsheet')
+        self.artistCheckBox = QCheckBox("artist")
+        self.artistCheckBox.setChecked(True)
+        self.artistCheckBox.setToolTip('display the artist name on contactsheet')
+        self.displatInRV = QCheckBox("RV")
+        self.displatInRV.setChecked(True)
+        self.displatInRV.setToolTip('display the contactsheet in arnold')
+        self.checkBoxLayout.addWidget(self.cutInCheckBox,0,0)
+        self.checkBoxLayout.addWidget(self.cutMidCheckBox, 0, 1)
+        self.checkBoxLayout.addWidget(self.cutOutCheckBox, 0, 2)
+        self.checkBoxLayout.addWidget(self.frameInterstCheckBox,0,3)
+        self.checkBoxLayout.addWidget(self.displayTaskCheckBox,1,0)
+        self.checkBoxLayout.addWidget(self.versionCheckBox , 1, 1)
+        self.checkBoxLayout.addWidget(self.statusCheckBox, 1, 2)
+        self.checkBoxLayout.addWidget(self.artistCheckBox, 2, 0)
+        self.checkBoxLayout.addWidget(self.displatInRV, 2, 1)
+
 
         self.mainFileGridLayout.addLayout(self.fileInGridLayout,0,0)
+        self.mainFileGridLayout.addWidget(self.checkGroup, 0, 1)
         self.mainFileGridLayout.addLayout(self.fileOutGridLayout,1,0)
+        self.mainFileGridLayout.addLayout(self.fileOutNameGridLayout,1,1)
         if self.dodelete:
             self.deleteButton = QPushButton('delete')
             self.mainFileGridLayout.addWidget(self.deleteButton,2,1)
@@ -243,12 +308,22 @@ class findFileUI(QWidget):
         self.taskInCombobox.currentIndexChanged.connect(self.taskComboChanged)
         self.fileOutButton.clicked.connect(self.findDir)
         self.fileGroup.toggled.connect(self.test)
+        self.checkGroup.toggled.connect(self.displayOption)
 
         self.seqComboChanged()
         self.mainQvboxLayout.addWidget(self.fileGroup)
         self.mainQvboxLayout.addStretch(1)
         self.setLayout(self.mainQvboxLayout)
 
+    def displayOption(self):
+        if not self.checkGroup.isChecked():
+            self.widCheck.setVisible(False)
+            self.checkGroup.setFixedWidth(60)
+            self.checkGroup.setFixedHeight(18)
+        else:
+            self.widCheck.setVisible(True)
+            self.checkGroup.setFixedWidth(400)
+            self.checkGroup.setFixedHeight(150)
 
     def test(self):
         if not self.fileGroup.isChecked():
@@ -301,8 +376,17 @@ class findFileUI(QWidget):
         outDir = str(self.contactOutPathLineEdit.text())
         fileType = str(self.fileOutTypComboBox.currentText())
         dictKey = str(self.fileGroup.title())
+        artist = self.artistCheckBox.isChecked()
+        status = self.statusCheckBox.isChecked()
+        version = self.versionCheckBox.isChecked()
+        name = self.cutOutCheckBox.isChecked()
+        cutOrder = self.cutMidCheckBox.isChecked()
+        showLabel = self.cutInCheckBox.isChecked()
+        showTask = self.taskCheckBox.isChecked()
+        nbShots = len(pg.findShotsInSequence(seq))
         res = {}
-        res[dictKey]={'task': task, 'seq': seq, 'fileOut': fileOut, 'fileType': fileType, 'outDir': outDir}
+        res[dictKey]={'task': task, 'seq': seq, 'fileOut': fileOut, 'fileType': fileType, 'outDir': outDir,
+                      'artist':artist, 'status':status, 'version':version }
         return res
 
     def returnCheck(self):

@@ -171,9 +171,9 @@ def findShots(taskname='compo_comp', seq='p00300', shotList=[]):
     return res
 
 def findAllSequence(all = False):
-    from sgtkLib import tkutil, tkm
-    tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
-    sg = sgw._sg
+    # from sgtkLib import tkutil, tkm
+    # tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
+    # sg = sgw._sg
 
     filters = [
         ['project', 'is', {'type':'Project', 'id':project.id}],
