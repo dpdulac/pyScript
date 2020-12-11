@@ -29,6 +29,7 @@ class convertWindow(QMainWindow):
     def __init__(self,parent=None):
         super(convertWindow,self).__init__(parent)
         self.colorSpaceIcon = QIcon('/s/prodanim/ta/_sandbox/duda/tmp/colormanager.png')
+        self.xSize = 800
         self.InitUI()
 
     def InitUI(self):
@@ -157,10 +158,16 @@ class convertWindow(QMainWindow):
         self.fileOutComboBox = QComboBox()
         self.fileOutComboBox.addItems(__FILE_FORMAT__)
         self.fileOutComboBox.setToolTip(('output format'))
+        self.fileOutNameLineEdit = QLineEdit()
+        self.fileOutNameLineEdit.setToolTip('name for output image(s)')
+        self.fileOutNameLineEdit.setFixedSize(130,25)
+        self.fileOutNameLabel = QLabel('output name')
         self.fileOutLayout.addWidget(self.fileOutPushbutton,1,0)
         self.fileOutLayout.addWidget(self.fileOutLineEdit,1,1)
-        self.fileOutLayout.addWidget(self.fileOutComboBox,1,2)
-        self.fileOutLayout.addWidget(self.fileOutFormatLabel,0,2)
+        self.fileOutLayout.addWidget(self.fileOutNameLineEdit,1,2)
+        self.fileOutLayout.addWidget(self.fileOutComboBox,1,3)
+        self.fileOutLayout.addWidget(self.fileOutFormatLabel,0,3)
+        self.fileOutLayout.addWidget(self.fileOutNameLabel, 0,2)
 
         self.fileMainGridLayout.addLayout(self.fileTypeLayout,0,0)
         self.fileMainGridLayout.addLayout(self.fileInLayout,1,0)
@@ -177,7 +184,7 @@ class convertWindow(QMainWindow):
 
         self.setCentralWidget(self.centralWidget)
 
-        self.setFixedSize(700,255)
+        self.setFixedSize(self.xSize,255)
 
         #self.colorSpaceGroupBox.toggled.connect(self.enableColorSpacesChoice)
         self.colorSpaceCheckBox.toggled.connect(self.displayColorSpace)
@@ -202,10 +209,10 @@ class convertWindow(QMainWindow):
 
     def displayColorSpace(self,s):
         if s:
-            self.setFixedSize(700, 350)
+            self.setFixedSize(self.xSize, 350)
             self.colorSpaceGroupBox.setVisible(True)
         else:
-            self.setFixedSize(700, 255)
+            self.setFixedSize(self.xSize, 255)
             self.colorSpaceGroupBox.setVisible(False)
 
     def setAllImages(self,s):
@@ -236,26 +243,6 @@ class convertWindow(QMainWindow):
             self.fileInInputLineEdit.setVisible(False)
             self.fileInAllCheckbox.setVisible(False)
 
-        # elif self.fileTypeCombo.currentText() == __FILE_TYPE__[4]:
-        #     self.fileInPadSpinBox.setEnabled(False)
-        #     self.fileInInFrame.setEnabled(True)
-        #     self.fileInOutFrame.setEnabled(False)
-        #     self.fileInPadLabel.setEnabled(False)
-        #     self.fileInInFrameLabel.setEnabled(True)
-        #     self.fileInOutFrameLabel.setEnabled(False)
-        # else:
-        #     self.fileInLayout.removeWidget(self.fileInPadLabel)
-        #     self.fileInLayout.removeWidget(self.fileInPadSpinBox)
-        #     self.fileInLayout.removeWidget(self.fileInInFrameLabel)
-        #     self.fileInLayout.removeWidget(self.fileInInFrame)
-        #     self.fileInLayout.removeWidget(self.fileInOutFrameLabel)
-        #     self.fileInLayout.removeWidget(self.fileInOutFrame)
-        #     self.fileInPadLabel.setVisible(False)
-        #     self.fileInPadSpinBox.setVisible(False)
-        #     self.fileInInFrameLabel.setVisible(False)
-        #     self.fileInInFrame.setVisible(False)
-        #     self.fileInOutFrameLabel.setVisible(False)
-        #     self.fileInOutFrame.setVisible(False)
 
     def getColorSpace(self,colorSpace='acescg'):
         #indexNb =0
@@ -269,7 +256,7 @@ class convertWindow(QMainWindow):
 
     def enableColorSpacesChoice(self,s):
         if s :
-            self.setFixedSize(700,350)
+            self.setFixedSize(self.xSize,350)
             self.inColorSpaceComboBox.setEnabled(True)
             self.outColorSpaceComboBox.setEnabled(True)
         else:
@@ -287,9 +274,12 @@ class convertWindow(QMainWindow):
         filename=''
         if self.fileTypeCombo.currentText() == __FILE_TYPE__[0]:
             filename = QFileDialog.getOpenFileName(self, 'Open file', '/s/prodanim/ta',"Image files ( *.exr *.jpg *.png *.tif)")
+            self.fileInLineEdit.setText(filename[0])
+            print(filename[0])
         # fill fileQLineEdit with the string filename
         #self.fileInLineEdit.setText(filename)
-        print str(filename[0])
+        else:
+            print str(filename[0])
 
 ex = None
 
