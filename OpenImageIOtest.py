@@ -239,7 +239,17 @@ def convertExr(filename = '/s/prodanim/asterix2/_sandbox/duda/paintOver/s0180/p0
     masterBuf.write('/s/prodanim/asterix2/_sandbox/duda/paintOver/s0180/p0100/test.jpg')
 
 def main():
-    convertExr()
+    #convertExr()
+    buf = oiio.ImageBuf('/s/prodanim/ta/_sandbox/duda/render/granMaHouseInt/GranMaIntHouse.mov')
+    print buf.nsubimages
+    # spec = a.spec()
+    # for i in range(len(spec.extra_attribs)):
+    #     print spec.extra_attribs[i].name
+    # b = a.spec().extra_attribs
+    # for i in b:
+    #     print a.spec().extra_attribs[i].name
+    buf.clear()
+
 
 if __name__ == '__main__':
     main()

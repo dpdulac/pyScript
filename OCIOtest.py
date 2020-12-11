@@ -151,6 +151,7 @@ class convertWindow(QMainWindow):
         self.fileOutLayout = QGridLayout()
         self.fileOutPushbutton = QPushButton('file out')
         self.fileOutPushbutton.setToolTip('dialog box for in file')
+        self.fileOutPathLabel = QLabel('out directory')
         self.fileOutLineEdit = QLineEdit()
         self.fileOutLineEdit.setMinimumSize(300, 25)
         self.fileOutLineEdit.setToolTip('image to convert too')
@@ -166,6 +167,7 @@ class convertWindow(QMainWindow):
         self.fileOutLayout.addWidget(self.fileOutLineEdit,1,1)
         self.fileOutLayout.addWidget(self.fileOutNameLineEdit,1,2)
         self.fileOutLayout.addWidget(self.fileOutComboBox,1,3)
+        self.fileOutLayout.addWidget(self.fileOutPathLabel, 0, 1)
         self.fileOutLayout.addWidget(self.fileOutFormatLabel,0,3)
         self.fileOutLayout.addWidget(self.fileOutNameLabel, 0,2)
 
@@ -190,6 +192,7 @@ class convertWindow(QMainWindow):
         self.colorSpaceCheckBox.toggled.connect(self.displayColorSpace)
         self.fileInAllCheckbox.toggled.connect(self.setAllImages)
         self.fileInPushbutton.clicked.connect(self.findFile)
+        self.fileOutPushbutton.clicked.connect(self.findDirectory)
         self.fileTypeCombo.currentTextChanged.connect(self.fileTypeChanged)
         self.choiceSpaceComboBox.currentTextChanged.connect(self.convertionChoice)
 
@@ -269,13 +272,23 @@ class convertWindow(QMainWindow):
         colorSpaces = [cs.getName() for cs in config.getColorSpaces()]
         return colorSpaces
 
+    def findDirectory(self):
+        dirName = QFileDialog.getExistingDirectory(self,'Open directory','/s/prodanim/ta')
+        self.fileOutLineEdit.setText(dirName)
+
     def findFile(self):
         """dialog to open file of type .mov"""
         filename=''
         if self.fileTypeCombo.currentText() == __FILE_TYPE__[0]:
             filename = QFileDialog.getOpenFileName(self, 'Open file', '/s/prodanim/ta',"Image files ( *.exr *.jpg *.png *.tif)")
-            self.fileInLineEdit.setText(filename[0])
-            print(filename[0])
+            filename = str(filename[0])
+            self.fileInLineEdit.setText(filename)
+            nameframe = filename[filename.rfind('/')+1:filename.rfind('.')]
+            # if nameframe.rfind('.') != -1:
+            #     nameframe = nameframe[:nameframe.rfind('.')]
+            nameLength = len(nameframe)
+            self.fileOutNameLineEdit.setFixedSize(nameLength*7,25)
+            self.fileOutNameLineEdit.setText(nameframe)
         # fill fileQLineEdit with the string filename
         #self.fileInLineEdit.setText(filename)
         else:
