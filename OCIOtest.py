@@ -29,7 +29,8 @@ class convertWindow(QMainWindow):
     def __init__(self,parent=None):
         super(convertWindow,self).__init__(parent)
         self.colorSpaceIcon = QIcon('/s/prodanim/ta/_sandbox/duda/tmp/colormanager.png')
-        self.xSize = 800
+        self.xSize = 1000
+        self.ySize = 270
         self.InitUI()
 
     def InitUI(self):
@@ -112,19 +113,9 @@ class convertWindow(QMainWindow):
         self.fileInLineEdit.setToolTip('image to convert from')
         self.fileInPadLabel = QLabel('padding')
         self.fileInPadLabel.setEnabled(True)
-        self.fileInPadSpinBox = QSpinBox()
-        self.fileInPadSpinBox.setToolTip("number of frame to use as padding")
-        self.fileInPadSpinBox.setEnabled(True)
-        self.fileInInFrameLabel = QLabel('cut in')
-        self.fileInInFrameLabel.setEnabled(True)
-        self.fileInInFrame = QSpinBox()
-        self.fileInInFrame.setToolTip('in frame nb to convert')
-        self.fileInInFrame.setEnabled(True)
-        self.fileInOutFrameLabel = QLabel('cut out')
-        self.fileInOutFrameLabel.setEnabled(True)
-        self.fileInOutFrame = QSpinBox()
-        self.fileInOutFrame.setToolTip('out frame nb to convert')
-        self.fileInOutFrame.setEnabled(True)
+        self.fileInPadLineEdit = QLineEdit()
+        self.fileInPadLineEdit.setToolTip("number of frame to use as padding")
+        self.fileInPadLineEdit.setFixedSize(25,25)
         self.fileInInputFrameLabel = QLabel('frames')
         self.fileInInputLineEdit = QLineEdit()
         self.fileInInputLineEdit.setFixedSize(100,25)
@@ -138,15 +129,14 @@ class convertWindow(QMainWindow):
         self.fileInLayout.addWidget(self.fileInInputFrameLabel, 0, 2)
         self.fileInLayout.addWidget(self.fileInInputLineEdit, 1, 2)
         self.fileInLayout.addWidget(self.fileInAllCheckbox, 1, 4)
+        self.fileInLayout.addWidget(self.fileInPadLabel, 0, 5)
+        self.fileInLayout.addWidget(self.fileInPadLineEdit, 1, 5)
         self.fileInInputFrameLabel.setVisible(False)
         self.fileInInputLineEdit.setVisible(False)
         self.fileInAllCheckbox.setVisible(False)
-        #self.fileInLayout.addWidget(self.fileInPadLabel,0,2)
-        #self.fileInLayout.addWidget(self.fileInPadSpinBox,1,2)
-        # self.fileInLayout.addWidget(self.fileInInFrameLabel,0,3)
-        # self.fileInLayout.addWidget(self.fileInInFrame,1,3)
-        # self.fileInLayout.addWidget(self.fileInOutFrameLabel,0,4)
-        # self.fileInLayout.addWidget(self.fileInOutFrame,1,4)
+        self.fileInPadLabel.setVisible(False)
+        self.fileInPadLineEdit.setVisible(False)
+
         #out
         self.fileOutLayout = QGridLayout()
         self.fileOutPushbutton = QPushButton('file out')
@@ -186,7 +176,7 @@ class convertWindow(QMainWindow):
 
         self.setCentralWidget(self.centralWidget)
 
-        self.setFixedSize(self.xSize,255)
+        self.setFixedSize(self.xSize,self.ySize)
 
         #self.colorSpaceGroupBox.toggled.connect(self.enableColorSpacesChoice)
         self.colorSpaceCheckBox.toggled.connect(self.displayColorSpace)
@@ -215,7 +205,7 @@ class convertWindow(QMainWindow):
             self.setFixedSize(self.xSize, 350)
             self.colorSpaceGroupBox.setVisible(True)
         else:
-            self.setFixedSize(self.xSize, 255)
+            self.setFixedSize(self.xSize, self.ySize)
             self.colorSpaceGroupBox.setVisible(False)
 
     def setAllImages(self,s):
@@ -228,23 +218,42 @@ class convertWindow(QMainWindow):
 
     def fileTypeChanged(self):
         if self.fileTypeCombo.currentText() != __FILE_TYPE__[0]:
+            #reset the lineEdit
+            self.fileInLineEdit.setText('')
+            self.fileOutLineEdit.setText('')
+            self.fileOutNameLineEdit.setText('')
+            self.fileInPadLineEdit.setText('')
             # change the size of combobox
             self.fileTypeCombo.setFixedSize(150, 25)
             # uncheck the all checkbox
             self.fileInAllCheckbox.setChecked(False)
             # reset the frame text
             self.fileInInputLineEdit.setText('')
+            # reset the padding to invisible
+            self.fileInPadLabel.setVisible(False)
+            self.fileInPadLineEdit.setVisible(False)
             # set the line edit to be visible
             self.fileInInputFrameLabel.setVisible(True)
             self.fileInInputLineEdit.setVisible(True)
             self.fileInAllCheckbox.setVisible(True)
+            if self.fileTypeCombo.currentText() == __FILE_TYPE__[1]:
+                self.fileInPadLabel.setVisible(True)
+                self.fileInPadLineEdit.setVisible(True)
         else:
+            # reset the lineEdit
+            self.fileInLineEdit.setText('')
+            self.fileOutLineEdit.setText('')
+            self.fileOutNameLineEdit.setText('')
+            self.fileInPadLineEdit.setText('')
+            # change the size of combobox
             self.fileTypeCombo.setFixedSize(105, 25)
             self.fileInInputLineEdit.setText('')
             self.fileInAllCheckbox.setChecked(False)
             self.fileInInputFrameLabel.setVisible(False)
             self.fileInInputLineEdit.setVisible(False)
             self.fileInAllCheckbox.setVisible(False)
+            self.fileInPadLabel.setVisible(False)
+            self.fileInPadLineEdit.setVisible(False)
 
 
     def getColorSpace(self,colorSpace='acescg'):
@@ -252,7 +261,7 @@ class convertWindow(QMainWindow):
         try:
             indexNb = self.colorSpacesNames.index(colorSpace)
         except:
-            return 0
+            return None
         else:
             return indexNb
 
@@ -289,6 +298,41 @@ class convertWindow(QMainWindow):
             nameLength = len(nameframe)
             self.fileOutNameLineEdit.setFixedSize(nameLength*7,25)
             self.fileOutNameLineEdit.setText(nameframe)
+        # else if the typy is sequence
+        elif self.fileTypeCombo.currentText() == __FILE_TYPE__[1]:
+            filename = QFileDialog.getOpenFileName(self, 'Open file', '/s/prodanim/ta',
+                                                   "Image files ( *.exr *.jpg *.png *.tif)")
+            filename = str(filename[0])
+            # get the path
+            path = filename[:filename.rfind('/')]
+            # extract the image name
+            imageName = filename[filename.rfind('/')+1:filename.rfind('.')]
+            while imageName.rfind('.') != -1:
+                imageName = imageName[:imageName.rfind('.')]
+            # get all the file
+            listAllFiles = [ f for f in os.listdir(path) if os.path.isfile(path+'/'+f)]
+            listFile = []
+            for i in range(len(listAllFiles)):
+                if listAllFiles[i].rfind(imageName) > -1:
+                    listFile.append(listAllFiles[i])
+            # sort the file in croissant order
+            if len(listFile) > 1:
+                listFile.sort(key=lambda f: int(filter(str.isdigit, f)))
+                startFrame = int(filter(str.isdigit, listFile[0]))
+                endFrame = int(filter(str.isdigit, listFile[-1]))
+                self.fileInInputLineEdit.setText(str(startFrame)+'-'+str(endFrame))
+            # extract the padding number
+            pad = filename[filename.find('.')+1:filename.rfind('.')]
+            if pad == '':
+                pad = '0'
+                self.fileInPadLineEdit.setText(pad)
+            try:
+                pad.isdigit()
+            except:
+                print('not good')
+            else:
+                self.fileInPadLineEdit.setText(str(len(pad)))
+            print imageName, pad, listFile
         # fill fileQLineEdit with the string filename
         #self.fileInLineEdit.setText(filename)
         else:
@@ -316,3 +360,4 @@ def main():
 if __name__ == '__main__':
     main()
     "oiiotool -a test.mov --colorconvert:subimages=all srgb8 acescg --sisplit -o:all=1 test%04d.exr"
+    'print a.sort(key=lambda f: int(filter(str.isdigit, f)))'
