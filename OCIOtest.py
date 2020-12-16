@@ -19,11 +19,14 @@ from PyQt5.QtWidgets import QMainWindow, QWidget, QGridLayout, QComboBox, QAppli
 
 __FILE_FORMAT__ = ['jpg', 'png', 'exr', 'tif']
 __FILE_TYPE__ = ['single frame','from sequences','movie (*.mov, *.qt)']
-__CONVERTION_LIST__={'srgb8--->Acescg':'convert from srgb8 images to Acescg \n(i.e:jpg/png/tif/mov/qt to exr/tif)',
-                     'srgb8--->linearSrgb':'convert from srgb8 images to linearSrgb \n(i.e:jpg/png/tif/mov/qt to exr/tif)',
-                     'Acescg--->linearSrgb':'convert from Acescg images to linearSrgb \n(i.e: exr/tif to exr/tif)',
-                     'linearSrgb--->Acescg':'convert from linearSrgb images to Acescg \n(i.e: exr/tif to exr/tif)',
+__CONVERTION_LIST__={'srgb8--->acescg':'convert from srgb8 images to Acescg \n(i.e:jpg/png/tif/mov/qt to exr/tif)',
+                     'srgb8--->linear_srgb':'convert from srgb8 images to linearSrgb \n(i.e:jpg/png/tif/mov/qt to exr/tif)',
+                     'acescg--->linear_srgb':'convert from Acescg images to linearSrgb \n(i.e: exr/tif to exr/tif)',
+                     'acescg--->srgb8':'convert from Acescg images to srgb8 \n(i.e:exr/tif to jpg/png/tif/mov/qt )',
+                     'linear_srgb--->acescg':'convert from linearSrgb images to Acescg \n(i.e: exr/tif to exr/tif)',
                      'custom':'choose between format'}
+
+__OIIOTOOL__ = 'rez env pyoiio -- oiiotool -v '
 
 
 class convertWindow(QMainWindow):
@@ -83,8 +86,11 @@ class convertWindow(QMainWindow):
         self.choiceSpaceComboBox.addItems(__CONVERTION_LIST__.keys())
         self.choiceSpaceComboBox.setToolTip(__CONVERTION_LIST__[str(self.choiceSpaceComboBox.currentText())])
         self.choiceSpaceComboBox.setFixedSize(170,25)
+        self.useOutSpaceName = QCheckBox('out space to name')
+        self.useOutSpaceName.setToolTip('add the output color space to the name (useful for rv)')
+        self.useOutSpaceName.setChecked(False)
         self.widgetSpace= QWidget()
-        self.colorSpaceLayout.addWidget(self.choiceSpaceLabel)
+        self.colorSpaceLayout.addWidget(self.choiceSpaceLabel,0,0)
         self.colorSpaceLayout.addWidget(self.inLabel,0,1)
         self.colorSpaceLayout.addWidget(self.outLabel,0,2)
         self.colorSpaceLayout.addWidget(self.choiceSpaceComboBox, 1, 0)
@@ -92,6 +98,7 @@ class convertWindow(QMainWindow):
         self.colorSpaceLayout.addWidget(self.outColorSpaceComboBox,1,2)
         self.colorSpaceLayout.addWidget(self.widgetSpace,1,3)
         self.colorSpaceLayout.addWidget(self.widgetSpace, 1, 4)
+        self.colorSpaceLayout.addWidget(self.useOutSpaceName,1,5)
         self.inLabel.setVisible(False)
         self.outLabel.setVisible(False)
         self.inColorSpaceComboBox.setVisible(False)
@@ -133,7 +140,7 @@ class convertWindow(QMainWindow):
         self.fileInInputFrameLabel = QLabel('frames')
         self.fileInInputLineEdit = QLineEdit()
         self.fileInInputLineEdit.setFixedSize(100,25)
-        self.validator = QRegExpValidator(QRegExp("[0-9,-]*"))
+        self.validator = QRegExpValidator(QRegExp("[0-9,-x]*"))
         self.fileInInputLineEdit.setValidator(self.validator)
         self.fileInInputLineEdit.setToolTip('frame to extract separated with a "," or "-"i.e: 20,30,40-50....')
         self.fileInAllCheckbox = QCheckBox('all')
@@ -216,6 +223,7 @@ class convertWindow(QMainWindow):
         self.fileTypeCombo.currentTextChanged.connect(self.fileTypeChanged)
         self.choiceSpaceComboBox.currentTextChanged.connect(self.convertionChoice)
         self.fileOutPadCheck.toggled.connect(self.showOutPadding)
+        self.convertButton.clicked.connect(self.convertImages)
 
     def showOutPadding(self,s):
         if s:
@@ -241,9 +249,11 @@ class convertWindow(QMainWindow):
         if s:
             self.setFixedSize(self.xSize, self.ySize+80)
             self.colorSpaceGroupBox.setVisible(True)
+            self.useOutSpaceName.setChecked(True)
         else:
             self.setFixedSize(self.xSize, self.ySize)
             self.colorSpaceGroupBox.setVisible(False)
+            self.useOutSpaceName.setChecked(False)
 
     def setAllImages(self,s):
         if s:
@@ -281,6 +291,7 @@ class convertWindow(QMainWindow):
             if self.fileTypeCombo.currentText() == __FILE_TYPE__[1]:
                 self.fileInPadLabel.setVisible(True)
                 self.fileInPadLineEdit.setVisible(True)
+                self.fileOutPadCheck.setVisible(False)
         else:
             # reset the lineEdit
             self.fileInLineEdit.setText('')
@@ -321,6 +332,7 @@ class convertWindow(QMainWindow):
         else:
             self.inColorSpaceComboBox.setEnabled(False)
             self.outColorSpaceComboBox.setEnabled(False)
+            self.useOutSpaceName.setChecked(False)
             self.centralWidget.setFixedHeight(250)
 
     def findColorSpacesNames(self):
@@ -375,7 +387,7 @@ class convertWindow(QMainWindow):
             listAllFiles = [ f for f in os.listdir(path) if os.path.isfile(path+'/'+f)]
             listFile = []
             for i in range(len(listAllFiles)):
-                if listAllFiles[i].rfind(imageName) > -1:
+                if listAllFiles[i].rfind(imageName) == 0:
                     listFile.append(listAllFiles[i])
             # sort the file in croissant order
             if len(listFile) > 1:
@@ -393,11 +405,11 @@ class convertWindow(QMainWindow):
             if pad == '' or len(pad) == 1:
                 pad = '1'
                 self.fileInPadLineEdit.setText(pad)
-                self.fileInLineEdit.setText(filename)
+                self.fileInLineEdit.setText(path+'/'+imageName)
             else:
                 pad.isdigit()
                 self.fileInPadLineEdit.setText(str(len(pad)))
-                self.fileInLineEdit.setText(path+imageName)
+                self.fileInLineEdit.setText(path+'/'+imageName)
             self.fileOutNameLineEdit.setFixedSize(len(imageName) * 8, 25)
             self.fileOutNameLineEdit.setText(imageName)
             self.fileOutLineEdit.setText(path+'/')
@@ -426,6 +438,112 @@ class convertWindow(QMainWindow):
             self.fileOutNameLineEdit.setFixedSize(len(imageName) * 8, 25)
             self.fileOutNameLineEdit.setText(imageName)
             self.fileOutLineEdit.setText(path + '/')
+
+    def convertImages(self):
+        __OIIOTOOL__ = 'rez env pyoiio -- oiiotool -v '
+        # find if there is a path in the line edit
+        if self.fileInLineEdit.text() == '':
+            print('no image to convert')
+        else:
+            inSpace = ''
+            outSpace = ''
+            inFrame = str(self.fileInLineEdit.text() + self.fileInFormatLineEdit.text())
+            outFrame = str(
+                self.fileOutLineEdit.text() + self.fileOutNameLineEdit.text() + '.' + self.fileOutComboBox.currentText())
+            # if convert color on
+            if self.colorSpaceCheckBox.isChecked():
+                if self.choiceSpaceComboBox.currentText() != 'custom':
+                    choice = str(self.choiceSpaceComboBox.currentText())
+                    inSpace = choice[:choice.find('-')]
+                    outSpace = choice[choice.rfind('>') + 1:]
+                else:
+                    inSpace = str(self.inColorSpaceComboBox.currentText())
+                    outSpace = str(self.outColorSpaceComboBox.currentText())
+            # if image mode
+            if self.fileTypeCombo.currentText() == __FILE_TYPE__[0]:
+                    if self.useOutSpaceName.isChecked():
+                        outFrame = str(
+                            self.fileOutLineEdit.text() + outSpace + '_' + self.fileOutNameLineEdit.text() + '.' + self.fileOutComboBox.currentText())
+                    else:
+                        outFrame = str(
+                            self.fileOutLineEdit.text() + self.fileOutNameLineEdit.text() + '.' + self.fileOutComboBox.currentText())
+
+                    if self.colorSpaceCheckBox.isChecked():
+                        __OIIOTOOL__ += inFrame + ' --colorconvert ' + inSpace + ' ' + outSpace + ' -o ' + outFrame
+                        print(__OIIOTOOL__)
+                    else:
+                        __OIIOTOOL__+= inFrame + ' -o ' + outFrame
+                        print(__OIIOTOOL__)
+
+            # image mode is seqences
+            elif self.fileTypeCombo.currentText() == __FILE_TYPE__[1]:
+                pad = '%0'+str(self.fileInPadLineEdit.text())+'d'
+                if self.fileInAllCheckbox.isChecked():
+                    inFrameNb = self.startFrame
+                    outFrameNb = self.endFrame
+                    frameRange = '.' + inFrameNb +'-'+ outFrameNb + pad
+                    inFrame = self.fileInLineEdit.text()+ frameRange + self.fileInFormatLineEdit.text()
+
+                    if self.useOutSpaceName.isChecked():
+                        outFrame = str(
+                            self.fileOutLineEdit.text() + outSpace + '_' + self.fileOutNameLineEdit.text() + frameRange + '.' + self.fileOutComboBox.currentText())
+                    else:
+                        outFrame = str(
+                            self.fileOutLineEdit.text() + self.fileOutNameLineEdit.text() + frameRange + '.' + self.fileOutComboBox.currentText())
+
+                    if self.colorSpaceCheckBox.isChecked():
+                        __OIIOTOOL__ += inFrame + ' --colorconvert ' + inSpace + ' ' + outSpace + ' -o ' + outFrame
+                        print(__OIIOTOOL__)
+                    else:
+                        __OIIOTOOL__+= inFrame + ' -o ' + outFrame
+                        print(__OIIOTOOL__)
+                else:
+                    frameRange = ' --frames ' + str(self.fileInInputLineEdit.text())+ ' '
+                    inFrame = frameRange + self.fileInLineEdit.text()+ '.' + pad  + self.fileInFormatLineEdit.text()
+                    if self.useOutSpaceName.isChecked():
+                        outFrame = str(
+                            self.fileOutLineEdit.text() + outSpace + '_' + self.fileOutNameLineEdit.text() + '.' + pad + '.' + self.fileOutComboBox.currentText())
+                    else:
+                        outFrame = str(
+                            self.fileOutLineEdit.text() + self.fileOutNameLineEdit.text() + '.' + pad + '.' + self.fileOutComboBox.currentText())
+
+                    if self.colorSpaceCheckBox.isChecked():
+                        __OIIOTOOL__ += inFrame + ' --colorconvert ' + inSpace + ' ' + outSpace + ' -o ' + outFrame
+                        print(__OIIOTOOL__)
+                    else:
+                        __OIIOTOOL__+= inFrame + ' -o ' + outFrame
+                        print(__OIIOTOOL__)
+
+                print(__OIIOTOOL__)
+
+            elif self.fileTypeCombo.currentText() == __FILE_TYPE__[2]:
+                inFrame = self.fileInLineEdit.text() + self.fileInFormatLineEdit.text()
+                pad = ''
+                if self.fileOutPadCheck.isChecked():
+                    pad = self.fileOutPadLineEdit.text()
+                    if pad == '':
+                        pad = '0'
+                else:
+                    pad = '0'
+                pad = '%0' + pad + 'd'
+
+                if self.useOutSpaceName.isChecked():
+                    outFrame = str(
+                        self.fileOutLineEdit.text() + outSpace + '_' + self.fileOutNameLineEdit.text() + '.' + pad + '.' + self.fileOutComboBox.currentText())
+                else:
+                    outFrame = str(
+                        self.fileOutLineEdit.text() + self.fileOutNameLineEdit.text() + '.' + pad + '.' + self.fileOutComboBox.currentText())
+                if self.fileInAllCheckbox.isChecked():
+                    inFrameNb = self.startFrame
+                    outFrameNb = self.endFrame
+                    for fn in range(int(inFrameNb), int(outFrameNb) + 1):
+                        if self.colorSpaceCheckBox.isChecked():
+                            __OIIOTOOL__ = 'rez env pyoiio -- oiiotool -v ' + inFrame + ' --frames ' + str(fn) + ' --subimage ' + str(fn) + ' --colorconvert ' + inSpace + ' ' + outSpace + ' -o ' + outFrame
+                            print(__OIIOTOOL__)
+                        else:
+                            __OIIOTOOL__= 'rez env pyoiio -- oiiotool -v ' + inFrame + ' --frames ' + str(fn) + ' --subimage ' + str(fn) +' -o ' + outFrame
+                            print(__OIIOTOOL__)
+            #print os.system(__OIIOTOOL__)
 
 
 ex = None
