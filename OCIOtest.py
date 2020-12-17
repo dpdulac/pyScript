@@ -543,6 +543,33 @@ class convertWindow(QMainWindow):
                         else:
                             __OIIOTOOL__= 'rez env pyoiio -- oiiotool -v ' + inFrame + ' --frames ' + str(fn) + ' --subimage ' + str(fn) +' -o ' + outFrame
                             print(__OIIOTOOL__)
+                else:
+                    # split the input in fucntion of ','
+                    listFrame = str(self.fileInInputLineEdit.text()).split(',')
+                    # take care of the item with '-' and add the range to the list
+                    for i in range(0,len(listFrame)+1):
+                        if listFrame[i].find('-') > 0:
+                            group = listFrame[i]
+                            start = group[:group.find('-')]
+                            end = group[group.find('-')+1:]
+                            for j in range(int(start),int(end)+1):
+                                listFrame.append(str(j))
+                    # get rid of elements with '-'
+                    goodListFrame =[]
+                    for i in listFrame:
+                        if i.find('-') < 0:
+                            goodListFrame.append(i)
+                    # get rid of duplicate
+                    goodListFrame = list(dict.fromkeys(goodListFrame))
+                    # sort the list in croissant order
+                    goodListFrame.sort(key=lambda f: int(filter(str.isdigit, f)))
+                    for fn in goodListFrame:
+                        if self.colorSpaceCheckBox.isChecked():
+                            __OIIOTOOL__ = 'rez env pyoiio -- oiiotool -v ' + inFrame + ' --frames ' + str(fn) + ' --subimage ' + str(fn) + ' --colorconvert ' + inSpace + ' ' + outSpace + ' -o ' + outFrame
+                            print(__OIIOTOOL__)
+                        else:
+                            __OIIOTOOL__= 'rez env pyoiio -- oiiotool -v ' + inFrame + ' --frames ' + str(fn) + ' --subimage ' + str(fn) +' -o ' + outFrame
+                            print(__OIIOTOOL__)
             #print os.system(__OIIOTOOL__)
 
 
