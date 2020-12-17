@@ -144,7 +144,7 @@ class convertWindow(QMainWindow):
         self.fileInInputLineEdit.setValidator(self.validator)
         self.fileInInputLineEdit.setToolTip('frame to extract separated with a "," or "-"i.e: 20,30,40-50....')
         self.fileInAllCheckbox = QCheckBox('all')
-        self.fileInAllCheckbox.setToolTip('convert al frames from sequence/movie')
+        self.fileInAllCheckbox.setToolTip('convert all frames from sequence/movie')
         self.fileInLayout.addWidget(self.fileInPushbutton,1,0)
         self.fileInLayout.addWidget(self.fileInLineEdit,1,1)
         self.fileInLayout.addWidget(self.fileInFormatLabel,0,2)
@@ -167,7 +167,7 @@ class convertWindow(QMainWindow):
         self.fileOutPathLabel = QLabel('out directory')
         self.fileOutLineEdit = QLineEdit()
         self.fileOutLineEdit.setMinimumSize(300, 25)
-        self.fileOutLineEdit.setToolTip('image to convert too')
+        self.fileOutLineEdit.setToolTip('image to convert to')
         self.fileOutFormatLabel = QLabel('out format')
         self.fileOutComboBox = QComboBox()
         self.fileOutComboBox.addItems(__FILE_FORMAT__)
@@ -427,7 +427,7 @@ class convertWindow(QMainWindow):
                 imageName = imageName[:imageName.rfind('.')]
             # find the nb of subimages i.e end frame
             buf = oiio.ImageBuf(filename)
-            self.endFrame = str(buf.nsubimages)
+            self.endFrame = str(buf.nsubimages-1)
             self.startFrame = '1'
             self.fileInInputLineEdit.setText(self.startFrame + '-' + self.endFrame)
             self.fileInLineEdit.setText(filename[:filename.rfind('.')])
@@ -440,7 +440,10 @@ class convertWindow(QMainWindow):
             self.fileOutLineEdit.setText(path + '/')
 
     def convertImages(self):
-        __OIIOTOOL__ = 'rez env pyoiio -- oiiotool -v '
+        done = False
+        QApplication.setOverrideCursor(Qt.WaitCursor)
+        #__OIIOTOOL__ = 'rez env pyoiio -- oiiotool -v '
+        __OIIOTOOL__='oiiotool -v '
         # find if there is a path in the line edit
         if self.fileInLineEdit.text() == '':
             print('no image to convert')
@@ -461,27 +464,27 @@ class convertWindow(QMainWindow):
                     outSpace = str(self.outColorSpaceComboBox.currentText())
             # if image mode
             if self.fileTypeCombo.currentText() == __FILE_TYPE__[0]:
-                    if self.useOutSpaceName.isChecked():
-                        outFrame = str(
-                            self.fileOutLineEdit.text() + outSpace + '_' + self.fileOutNameLineEdit.text() + '.' + self.fileOutComboBox.currentText())
-                    else:
-                        outFrame = str(
-                            self.fileOutLineEdit.text() + self.fileOutNameLineEdit.text() + '.' + self.fileOutComboBox.currentText())
+                if self.useOutSpaceName.isChecked():
+                    outFrame = str(
+                        self.fileOutLineEdit.text() + outSpace + '_' + self.fileOutNameLineEdit.text() + '.' + self.fileOutComboBox.currentText())
+                else:
+                    outFrame = str(
+                        self.fileOutLineEdit.text() + self.fileOutNameLineEdit.text() + '.' + self.fileOutComboBox.currentText())
 
-                    if self.colorSpaceCheckBox.isChecked():
-                        __OIIOTOOL__ += inFrame + ' --colorconvert ' + inSpace + ' ' + outSpace + ' -o ' + outFrame
-                        print(__OIIOTOOL__)
-                    else:
-                        __OIIOTOOL__+= inFrame + ' -o ' + outFrame
-                        print(__OIIOTOOL__)
-
+                if self.colorSpaceCheckBox.isChecked():
+                    __OIIOTOOL__ += inFrame + ' --colorconvert ' + inSpace + ' ' + outSpace + ' -o ' + outFrame
+                    os.system(__OIIOTOOL__)
+                else:
+                    __OIIOTOOL__+= inFrame + ' -o ' + outFrame
+                    os.system(__OIIOTOOL__)
+                done = True
             # image mode is seqences
             elif self.fileTypeCombo.currentText() == __FILE_TYPE__[1]:
                 pad = '%0'+str(self.fileInPadLineEdit.text())+'d'
                 if self.fileInAllCheckbox.isChecked():
                     inFrameNb = self.startFrame
                     outFrameNb = self.endFrame
-                    frameRange = '.' + inFrameNb +'-'+ outFrameNb + pad
+                    frameRange = '.' + inFrameNb + '-' + outFrameNb + pad
                     inFrame = self.fileInLineEdit.text()+ frameRange + self.fileInFormatLineEdit.text()
 
                     if self.useOutSpaceName.isChecked():
@@ -493,10 +496,10 @@ class convertWindow(QMainWindow):
 
                     if self.colorSpaceCheckBox.isChecked():
                         __OIIOTOOL__ += inFrame + ' --colorconvert ' + inSpace + ' ' + outSpace + ' -o ' + outFrame
-                        print(__OIIOTOOL__)
+                        os.system(__OIIOTOOL__)
                     else:
                         __OIIOTOOL__+= inFrame + ' -o ' + outFrame
-                        print(__OIIOTOOL__)
+                        os.system(__OIIOTOOL__)
                 else:
                     frameRange = ' --frames ' + str(self.fileInInputLineEdit.text())+ ' '
                     inFrame = frameRange + self.fileInLineEdit.text()+ '.' + pad  + self.fileInFormatLineEdit.text()
@@ -509,16 +512,17 @@ class convertWindow(QMainWindow):
 
                     if self.colorSpaceCheckBox.isChecked():
                         __OIIOTOOL__ += inFrame + ' --colorconvert ' + inSpace + ' ' + outSpace + ' -o ' + outFrame
-                        print(__OIIOTOOL__)
+                        os.system(__OIIOTOOL__)
                     else:
                         __OIIOTOOL__+= inFrame + ' -o ' + outFrame
-                        print(__OIIOTOOL__)
+                        os.system(__OIIOTOOL__)
 
-                print(__OIIOTOOL__)
+                done =True
 
             elif self.fileTypeCombo.currentText() == __FILE_TYPE__[2]:
                 inFrame = self.fileInLineEdit.text() + self.fileInFormatLineEdit.text()
                 pad = ''
+                goodListFrame = []
                 if self.fileOutPadCheck.isChecked():
                     pad = self.fileOutPadLineEdit.text()
                     if pad == '':
@@ -536,13 +540,16 @@ class convertWindow(QMainWindow):
                 if self.fileInAllCheckbox.isChecked():
                     inFrameNb = self.startFrame
                     outFrameNb = self.endFrame
-                    for fn in range(int(inFrameNb), int(outFrameNb) + 1):
-                        if self.colorSpaceCheckBox.isChecked():
-                            __OIIOTOOL__ = 'rez env pyoiio -- oiiotool -v ' + inFrame + ' --frames ' + str(fn) + ' --subimage ' + str(fn) + ' --colorconvert ' + inSpace + ' ' + outSpace + ' -o ' + outFrame
-                            print(__OIIOTOOL__)
-                        else:
-                            __OIIOTOOL__= 'rez env pyoiio -- oiiotool -v ' + inFrame + ' --frames ' + str(fn) + ' --subimage ' + str(fn) +' -o ' + outFrame
-                            print(__OIIOTOOL__)
+                    for i in range(int(inFrameNb), int(outFrameNb) + 1):
+                        goodListFrame.append(str(i))
+                    goodListFrame.sort(key=lambda f: int(filter(str.isdigit, f)))
+                    # for fn in goodListFrame:
+                    #     if self.colorSpaceCheckBox.isChecked():
+                    #         __OIIOTOOL__ = 'rez env pyoiio -- oiiotool -v ' + inFrame + ' --frames ' + str(fn) + ' --subimage ' + str(fn) + ' --colorconvert ' + inSpace + ' ' + outSpace + ' -o ' + outFrame
+                    #         print(__OIIOTOOL__)
+                    #     else:
+                    #         __OIIOTOOL__= 'rez env pyoiio -- oiiotool -v ' + inFrame + ' --frames ' + str(fn) + ' --subimage ' + str(fn) +' -o ' + outFrame
+                    #         print(__OIIOTOOL__)
                 else:
                     # split the input in fucntion of ','
                     listFrame = str(self.fileInInputLineEdit.text()).split(',')
@@ -563,13 +570,18 @@ class convertWindow(QMainWindow):
                     goodListFrame = list(dict.fromkeys(goodListFrame))
                     # sort the list in croissant order
                     goodListFrame.sort(key=lambda f: int(filter(str.isdigit, f)))
-                    for fn in goodListFrame:
-                        if self.colorSpaceCheckBox.isChecked():
-                            __OIIOTOOL__ = 'rez env pyoiio -- oiiotool -v ' + inFrame + ' --frames ' + str(fn) + ' --subimage ' + str(fn) + ' --colorconvert ' + inSpace + ' ' + outSpace + ' -o ' + outFrame
-                            print(__OIIOTOOL__)
-                        else:
-                            __OIIOTOOL__= 'rez env pyoiio -- oiiotool -v ' + inFrame + ' --frames ' + str(fn) + ' --subimage ' + str(fn) +' -o ' + outFrame
-                            print(__OIIOTOOL__)
+                for fn in goodListFrame:
+                    if self.colorSpaceCheckBox.isChecked():
+                        __OIIOTOOL__ = 'oiiotool -v ' + inFrame + ' --frames ' + str(fn) + ' --subimage ' + str(fn) + ' --colorconvert ' + inSpace + ' ' + outSpace + ' -o ' + outFrame
+                        os.system(__OIIOTOOL__)
+                    else:
+                        __OIIOTOOL__= 'oiiotool -v ' + inFrame + ' --frames ' + str(fn) + ' --subimage ' + str(fn) +' -o ' + outFrame
+                        os.system(__OIIOTOOL__)
+                done = True
+
+        if done:
+            QApplication.restoreOverrideCursor()
+        print("you're images are cooked enjoy with no moderation")
             #print os.system(__OIIOTOOL__)
 
 
