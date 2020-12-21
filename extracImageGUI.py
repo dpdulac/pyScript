@@ -16,9 +16,12 @@
 __author__ = "duda"
 __copyright__ = "Copyright 2017, Mikros Image"
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
-from sgtkLib import tkutil, tkm
+# from PyQt4.QtGui import *
+# from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+#from sgtkLib import tkutil, tkm
 import os, errno, sys
 import datetime
 
@@ -26,8 +29,8 @@ _USER_ = os.environ['USER']
 _OUTPATH_ ="/s/prodanim/asterix2/_source_global/ExportImageJPG/" + _USER_
 
 
-tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
-sg = sgw._sg
+# tk, sgw, project = tkutil.getTk(fast=True, scriptName=_USER_)
+# sg = sgw._sg
 
 
 # display widget for shots

@@ -8,7 +8,7 @@
    :synopsis: module idea
    :author: duda
    :date: 2020.12
-   
+   :version: 1.0
 """
 import PyOpenColorIO as ocio
 import OpenImageIO as oiio
@@ -20,10 +20,10 @@ from PyQt5.QtWidgets import QMainWindow, QWidget, QGridLayout, QComboBox, QAppli
 __FILE_FORMAT__ = ['jpg', 'png', 'exr', 'tif']
 __FILE_TYPE__ = ['single frame','from sequences','movie (*.mov, *.qt)']
 __CONVERTION_LIST__={'srgb8--->acescg':'convert from srgb8 images to Acescg \n(i.e:jpg/png/tif/mov/qt to exr/tif)',
-                     'srgb8--->linear_srgb':'convert from srgb8 images to linearSrgb \n(i.e:jpg/png/tif/mov/qt to exr/tif)',
                      'acescg--->linear_srgb':'convert from Acescg images to linearSrgb \n(i.e: exr/tif to exr/tif)',
                      'acescg--->srgb8':'convert from Acescg images to srgb8 \n(i.e:exr/tif to jpg/png/tif/mov/qt )',
                      'linear_srgb--->acescg':'convert from linearSrgb images to Acescg \n(i.e: exr/tif to exr/tif)',
+                     'srgb8--->linear_srgb':'convert from srgb8 images to linearSrgb \n(i.e:jpg/png/tif/mov/qt to exr/tif)',
                      'custom':'choose between format'}
 
 __OIIOTOOL__ = 'rez env pyoiio -- oiiotool -v '
@@ -40,6 +40,7 @@ class convertWindow(QMainWindow):
         self.InitUI()
 
     def InitUI(self):
+        self.setWindowTitle('ImageConvert')
         self.centralWidget = QWidget()
         self.mainLayout = QGridLayout()
         self.centralWidget.setLayout(self.mainLayout)
@@ -52,7 +53,7 @@ class convertWindow(QMainWindow):
         self.shotGroupBox = QGroupBox('convert')
         self.shotGroupBox.setCheckable(True)
         self.shotGroupBox.setAttribute(Qt.WA_StyledBackground, True)
-        self.shotGroupBox.setStyleSheet("QGroupBox{background-color: rgba(180,180,180,255);},QTreeWidget::QToolTip{ background-color: yellow; }")
+        self.shotGroupBox.setStyleSheet("QGroupBox{background-color: rgba(180,180,180,255);},QTGroupBox::QToolTip{ background-color: yellow; }")
         #self.shotGroupBox.setFixedSize(700, 250)
         self.shotLayout = QGridLayout(self.shotGroupBox)
 
@@ -113,14 +114,14 @@ class convertWindow(QMainWindow):
         self.fileTypeCombo = QComboBox()
         self.fileTypeCombo.addItems(__FILE_TYPE__)
         self.fileTypeCombo.setFixedSize(105,25)
-        self.fileTypeCombo.setToolTip('type of file to export (i.e: single frame, sequence of frames, movie)')
+        self.fileTypeCombo.setToolTip('type of image to import (i.e: single frame, sequence of frames, movie)')
         self.fileTypeLabel = QLabel('file type')
         self.fileTypeLayout.addWidget(self.fileTypeLabel)
         self.fileTypeLayout.addWidget(self.fileTypeCombo)
         # in
         self.fileInLayout = QGridLayout()
         self.fileInPushbutton = QPushButton('file in')
-        self.fileInPushbutton.setToolTip('dialog box for in file')
+        self.fileInPushbutton.setToolTip('In file')
         self.fileInLineEdit = QLineEdit()
         self.fileInLineEdit.setMinimumSize(300,25)
         self.fileInFormatLineEdit = QLineEdit()
@@ -163,7 +164,7 @@ class convertWindow(QMainWindow):
         #out
         self.fileOutLayout = QGridLayout()
         self.fileOutPushbutton = QPushButton('file out')
-        self.fileOutPushbutton.setToolTip('dialog box for in file')
+        self.fileOutPushbutton.setToolTip('Out Path')
         self.fileOutPathLabel = QLabel('out directory')
         self.fileOutLineEdit = QLineEdit()
         self.fileOutLineEdit.setMinimumSize(300, 25)
@@ -232,6 +233,7 @@ class convertWindow(QMainWindow):
             self.fileOutPadLineEdit.setVisible(False)
 
     def convertionChoice(self):
+        self.choiceSpaceComboBox.setToolTip(__CONVERTION_LIST__[str(self.choiceSpaceComboBox.currentText())])
         if self.choiceSpaceComboBox.currentText() == 'custom':
             self.inLabel.setVisible(True)
             self.outLabel.setVisible(True)
@@ -554,7 +556,7 @@ class convertWindow(QMainWindow):
                     # split the input in fucntion of ','
                     listFrame = str(self.fileInInputLineEdit.text()).split(',')
                     # take care of the item with '-' and add the range to the list
-                    for i in range(0,len(listFrame)+1):
+                    for i in range(0,len(listFrame)):
                         if listFrame[i].find('-') > 0:
                             group = listFrame[i]
                             start = group[:group.find('-')]
