@@ -15,7 +15,7 @@ import OpenImageIO as oiio
 import os, sys
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
-from PyQt5.QtWidgets import QMainWindow, QWidget, QGridLayout, QComboBox, QApplication, QStyleFactory, QCheckBox, QLabel, QGroupBox,QPushButton, QVBoxLayout, QLineEdit, QSpinBox, QFileDialog, QLayout
+from PyQt5.QtWidgets import QMainWindow, QWidget, QGridLayout, QComboBox, QApplication, QStyleFactory, QCheckBox, QLabel, QGroupBox,QPushButton, QVBoxLayout, QLineEdit, QAction, QFileDialog, qApp, QStatusBar
 
 __FILE_FORMAT__ = ['jpg', 'png', 'exr', 'tif']
 __FILE_TYPE__ = ['single frame','from sequences','movie (*.mov, *.qt)']
@@ -27,14 +27,14 @@ __CONVERTION_LIST__={'srgb8--->acescg':'convert from srgb8 images to Acescg \n(i
                      'custom':'choose between format'}
 
 __OIIOTOOL__ = 'rez env pyoiio -- oiiotool -v '
-
+_USER_ = os.environ['USER']
 
 class convertWindow(QMainWindow):
     def __init__(self,parent=None):
         super(convertWindow,self).__init__(parent)
         self.colorSpaceIcon = QIcon('/s/prodanim/ta/_sandbox/duda/tmp/colormanager.png')
         self.xSize = 1000
-        self.ySize = 320
+        self.ySize = 375
         self.startFrame = '1'
         self.endFrame = '2'
         self.InitUI()
@@ -45,6 +45,19 @@ class convertWindow(QMainWindow):
         self.mainLayout = QGridLayout()
         self.centralWidget.setLayout(self.mainLayout)
         self.colorSpacesNames = self.findColorSpacesNames()
+        self.statusBar = QStatusBar()
+        self.statusBar.showMessage("What can I cook for you today " + _USER_ +" ?")
+        self.statusBar.setStyleSheet("color : green")
+        self.statusBar.setFont(QFont('Pilkius Romeus', 12))
+        self.setStatusBar(self.statusBar)
+        # menubar
+        self.bar = self.menuBar()
+        self.fileBar = self.bar.addMenu("&File")
+        self.quitAction = QAction('&Quit',self)
+        self.quitAction.setShortcut("Ctrl+Q")
+        self.quitAction.setStatusTip('Quit the program with some regrets but no remorse')
+        self.quitAction.triggered.connect(qApp.quit)
+        self.fileBar.addAction(self.quitAction)
         # button to do the convertion
         self.convertButton = QPushButton('convert')
         self.convertButton.setStyleSheet("background-color: rgba(180,180,180,255)")
