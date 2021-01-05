@@ -43,9 +43,18 @@ def convertImages(inputImages='',
                   padNb = '',
                   usePadNb = True,
                   useColorSpaceName = True,
+                  inputIsMovie = False,
                   outFormat = 'exr',
                   bitFormat = oiio.HALF):
     outFile = ''
+
+    if inputImages.endswith('.mov') or inputImages.endswith('.qt'):
+        inputIsMovie = True
+
+    # if the format is other tah .exr or .tif force to be 8bit
+    if outFormat != 'exr' or outFormat != 'tif':
+        bitFormat = oiio.UINT8
+
     # reformat padNb
     if usePadNb:
         if int(padNb) <= 1 or padNb == '': # if no need of pad number
@@ -58,10 +67,19 @@ def convertImages(inputImages='',
         outFile = outputDir + '/' + colorSpaceOutput + '_'+ outPutImage
     else:
         outFile = outputDir + '/'+ outPutImage
+
+    # used for single frame or movie type
     buf = oiio.ImageBuf(inputImages)
+
+    # if there is multiple frame to output
     if useRange:
+        listFrames = splitFrame(listFrames)
         for frameNumber in listFrames:
-            buf.read(frameNumber)
+            if inputIsMovie:
+                buf.read(frameNumber)
+            else:
+                inPath = inputImages[:inputImages.rfind('/')]
+
             if useColorSpace:
                 oiio.ImageBufAlgo.colorconvert(buf, buf, colorSpaceInput, colorSpaceOutput)
             outFile += '.' + str(frameNumber).zfill(padNb) + '.' + outFormat
@@ -69,21 +87,25 @@ def convertImages(inputImages='',
             buf.write(outFile, str(bitFormat))
     else:
         outFile += '.' + outFormat
+        print('converting to : ' + outFile)
         buf.write(outFile, str(bitFormat))
 
 def main():
 
     mov = '/s/prodanim/ta/_sandbox/duda/render/granMaHouseInt/GranMaIntHouse.mov'
     listFrame = '151-160,4,6,10-12'
-
-    buf = oiio.ImageBuf(mov)
-    nbImages = buf.nsubimages
+    listFrame = ''
     mylist = splitFrame(listFrame)
-    for i in mylist:
-        buf.read(i)
-        oiio.ImageBufAlgo.colorconvert(buf,buf,'srgb8','acescg')
-        print('/s/prodanim/ta/_sandbox/duda/acescg_testoiio.'+str(i)+'.exr')
-        buf.write('/s/prodanim/ta/_sandbox/duda/acescg_testoiio.'+str(i)+'.exr',str(oiio.HALF))
+    print(mylist)
+
+    # buf = oiio.ImageBuf(mov)
+    # nbImages = buf.nsubimages
+    # mylist = splitFrame(listFrame)
+    # for i in mylist:
+    #     buf.read(i)
+    #     oiio.ImageBufAlgo.colorconvert(buf,buf,'srgb8','acescg')
+    #     print('/s/prodanim/ta/_sandbox/duda/acescg_testoiio.'+str(i)+'.exr')
+    #     buf.write('/s/prodanim/ta/_sandbox/duda/acescg_testoiio.'+str(i)+'.exr',str(oiio.HALF))
 
 
 if __name__ == '__main__':
