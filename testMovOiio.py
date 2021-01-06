@@ -119,8 +119,10 @@ def main():
     mov = '/s/prodanim/ta/_sandbox/duda/render/granMaHouseInt/GranMaIntHouse.mov'
     listFrame = '151-160,4,6,10-12'
 
+
     mylist = splitFrame(listFrame)
     print(mylist)
+    listFrame = '1'
 
     buf = oiio.ImageBuf(mov)
     nbImages = buf.nsubimages
