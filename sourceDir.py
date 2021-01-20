@@ -11,11 +11,15 @@
    
 """
 from datetime import datetime, timedelta
-import os, sys, fnmatch, argparse
+import os, sys, fnmatch, argparse, logging
+
+logging.basicConfig(level=logging.INFO,
+                    format='\x1b[0;34;10m %(levelname)s :: %(lineno)d :: %(module)s :: \x1b[1;37m%(message)s\x1b[0m')
+logger = logging.getLogger(__name__)
 
 
 class readSourceDir:
-    def __init__(self,date):
+    def __init__(self, date):
         self.today = datetime.now().strftime("%y%m%d")
         self.year = datetime.now().strftime("%y")
         self.day = datetime.now().strftime("%d")
@@ -90,37 +94,45 @@ class readSourceDir:
         stringFile = ''
         for f in self.fileFound:
             stringFile += f + ' '
+        stringFile = stringFile[:stringFile.rfind(' ')]
         if stringFile != '':
             os.system('rv ' + stringFile)
         else:
-            print('No file found try again!!!')
+            logger.error('No file found try again!!!')
 
 
 def argParse():
     # Assign description to the help doc
     parser = argparse.ArgumentParser(description='launch rv with the images from directory which start with a format '
                                                  '%y%m%d (i.e: 201101) the images will be search recursively from the'
-                                                 ' root', add_help=True)
-    parser.add_argument('--inDate', '-inDate', type=str, help='intput date default is yesterday')
-    parser.add_argument('--shift', '-shift', type=int, default=1, help='shift the date from current day backward')
+                                                 ' root. If no argument the image from the day before current'
+                                                 ' day will be processed', add_help=True, epilog=''
+                                                 'Example of use: sourceDir -d 210115 -s 5 for 10 of january 2021')
+    parser.add_argument('--d', '-d', type=str, help='intput date default is yesterday')
+    parser.add_argument('--s', '-s', type=int, default=-1, help='shift the date from current day backward')
     parser.add_argument('--dirPath', '-dirPath', type=str, help='root directory')
     args = parser.parse_args()
 
     # check and set input day
     inputDate = ''
-    if args.inDate != None:
-        if len(args.inDate) != 6 or not args.inDate.isdigit():
-            print('not good')
+    if args.d is not None:
+        if len(args.d) != 6 or not args.d.isdigit():
+            logger.error('wrong format (i.e: sourceDir -d 210115 for 2021 january 15th')
+            sys.exit()
+        elif not str(args.s).isdigit():
+            logger.error('wrong format (i.e: sourceDir -d 210115 -s 2 for 2021 january 13th')
+            sys.exit()
         else:
-            year = args.inDate[:2]
-            month = args.inDate[2:4]
-            day = args.inDate[4:]
-            inputDate = (datetime(int('20' + year), int(month), int(day)) - timedelta(days=int(args.shift))).strftime(
+            year = args.d[:2]
+            month = args.d[2:4]
+            day = args.d[4:]
+            inputDate = (datetime(int('20' + year), int(month), int(day)) - timedelta(days=int(args.s))).strftime(
                 "%y%m%d")
     else:
+        print(args.s)
         # put today date moins shift
-        if args.shift != '1':
-            inputDate = (datetime.today() - timedelta(days=int(args.shift))).strftime("%y%m%d")
+        if args.s != -1:
+            inputDate = (datetime.today() - timedelta(days=int(args.s))).strftime("%y%m%d")
         # put yesterday date
         else:
             inputDate = (datetime.today() - timedelta(days=1)).strftime("%y%m%d")
