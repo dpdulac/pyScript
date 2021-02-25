@@ -16,8 +16,9 @@
 __author__ = "duda"
 __copyright__ = "Copyright 2018, Mikros Animation"
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 from sgApi.sgApi import SgApi
 from sgtkLib import tkutil, tkm
 import os, pprint, errno, argparse, sys, math, operator
@@ -593,7 +594,8 @@ class CamMixUI(QMainWindow):
             if description == None:
                 description = ""
             # seqName = QString(key+" ["+ description +"]")
-            seqName = QString(key)
+            # seqName = QString(key)
+            seqName = str(key)
             self.seqMenuBar.addAction(seqName)
 
         self.seqMenuBar.triggered.connect(self.processtrigger)
