@@ -16,8 +16,9 @@
 __author__ = "duda"
 __copyright__ = "Copyright 2017, Mikros Image"
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 from sgApi.sgApi import SgApi
 from sgtkLib import tkutil, tkm
 import os, pprint, errno, argparse, sys, math
