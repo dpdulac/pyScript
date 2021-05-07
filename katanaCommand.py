@@ -1397,3 +1397,15 @@ def recursiveFindPath(producer,listPath=[],nameInNode = '_hiShape'):
         print('no producer for :' )
     return listPath
 ####################################################################################################################
+# event handler
+def myParamCallback(eventType, eventID, node, param):
+    test = param.getFullName()
+    if (test == 'ArnoldObjectSettings.args.arnoldStatements.invert_normals.value'):
+        if param.getValue(0):
+            print('yes')
+        else:
+            print('No')
+
+Utils.EventModule.RegisterEventHandler(myParamCallback, "parameter_finalizeValue")
+Utils.EventModule.ProcessAllEvents()
+Utils.EventModule.UnregisterEventHandler(myParamCallback, "parameter_finalizeValue")

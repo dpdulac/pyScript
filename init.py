@@ -23,15 +23,15 @@ import os
 _USER_ = os.environ['USER']
 
 #lightshader stuff
-os.environ['LIGHTSHADER'] = "/homes/"+_USER_+"/katanaResources/lightshaderResources"
-_LIGHTSHADER_=os.environ['LIGHTSHADER']
-os.environ['KAT_SHELVES']=_LIGHTSHADER_+"/katana_shelves"
-_KAT_SHELVES_ = os.environ['KAT_SHELVES']
-os.environ['MATLIB']=_LIGHTSHADER_+"/Library"
+# os.environ['LIGHTSHADER'] = "/homes/"+_USER_+"/katanaResources/lightshaderResources"
+# _LIGHTSHADER_=os.environ['LIGHTSHADER']
+# os.environ['KAT_SHELVES']=_LIGHTSHADER_+"/katana_shelves"
+# _KAT_SHELVES_ = os.environ['KAT_SHELVES']
+# os.environ['MATLIB']=_LIGHTSHADER_+"/Library"
 
 
 #add path to KATANA_RESOURCES
-os.environ['KATANA_RESOURCES'] += os.pathsep + "/homes/"+_USER_+"/.katana/UIPlugins"+os.pathsep+_LIGHTSHADER_+"/Resources"+os.pathsep+_KAT_SHELVES_
+# os.environ['KATANA_RESOURCES'] += os.pathsep + "/homes/"+_USER_+"/.katana/UIPlugins"+os.pathsep+_LIGHTSHADER_+"/Resources"+os.pathsep+_KAT_SHELVES_
 #set KATANA_HOME
 try :
     os.environ["PROD_ROOT"]
@@ -41,22 +41,22 @@ else:
     os.environ["KATANA_HOME"] = os.environ["PROD_ROOT"]+"/_sandbox/"+ _USER_
 
 #if in arnold-5 add my shaderpath
-pathArnoldPlugin = os.environ["PROD_ROOT"]+"/_sandbox/"+_USER_+"/oslShader"
-if not os.path.isdir(pathArnoldPlugin):
-    print "Creating: "+pathArnoldPlugin
-    os.makedirs(pathArnoldPlugin)
-try:
-    os.environ['ARNOLD_PLUGIN_PATH']
-except KeyError:
-    os.environ['ARNOLD_PLUGIN_PATH'] = pathArnoldPlugin
-else:
-    if os.environ['ARNOLD_PLUGIN_PATH'].find("arnold-5.") > 0:
-        print "using arnold-5"
-        os.environ['ARNOLD_PLUGIN_PATH']+= os.pathsep + pathArnoldPlugin
-        os.environ[
-            'KATANA_RESOURCES'] += os.pathsep + "/homes/" + _USER_ + "/.katana/UIPlugins" + os.pathsep + _LIGHTSHADER_ + "/Resources" + os.pathsep + _KAT_SHELVES_
-    else:
-        print "using Arnold-4"
+# pathArnoldPlugin = os.environ["PROD_ROOT"]+"/_sandbox/"+_USER_+"/oslShader"
+# if not os.path.isdir(pathArnoldPlugin):
+#     print "Creating: "+pathArnoldPlugin
+#     os.makedirs(pathArnoldPlugin)
+# try:
+#     os.environ['ARNOLD_PLUGIN_PATH']
+# except KeyError:
+#     os.environ['ARNOLD_PLUGIN_PATH'] = pathArnoldPlugin
+# else:
+#     if os.environ['ARNOLD_PLUGIN_PATH'].find("arnold-5.") > 0:
+#         print "using arnold-5"
+#         os.environ['ARNOLD_PLUGIN_PATH']+= os.pathsep + pathArnoldPlugin
+#         os.environ[
+#             'KATANA_RESOURCES'] += os.pathsep + "/homes/" + _USER_ + "/.katana/UIPlugins" + os.pathsep + _LIGHTSHADER_ + "/Resources" + os.pathsep + _KAT_SHELVES_
+#     else:
+#         print "using Arnold-4"
 
 os.environ['PYTHONPATH'] +=  os.pathsep + "/homes/"+_USER_+"/.katana/Script"
 #add the lua path
@@ -75,12 +75,13 @@ else:
 
 #append my script directory
 #sys.path.append("/s/prodanim/asterix2/_sandbox/duda/Katana/Startup")
-sys.path.append("/homes/"+_USER_+"/.katana/UIPlugins")
+# sys.path.append("/homes/"+_USER_+"/.katana/UIPlugins")
 sys.path.append("/homes/"+_USER_+"/.katana/Script")
-sys.path.append(_LIGHTSHADER_)
-sys.path.append(_LIGHTSHADER_+"/Resources")
-sys.path.append(_KAT_SHELVES_)
+# sys.path.append(_LIGHTSHADER_)
+# sys.path.append(_LIGHTSHADER_+"/Resources")
+# sys.path.append(_KAT_SHELVES_)
 sys.path.append("/datas/pyScript")
+
 
 
 

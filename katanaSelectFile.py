@@ -17,8 +17,9 @@ __author__ = "duda"
 __copyright__ = "Copyright 2017, Mikros Animation"
 
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 from UI4.App import MainWindow, MainMenu, Tabs
 from Katana import  Callbacks, KatanaFile, NodegraphAPI
 

@@ -19,10 +19,11 @@ __copyright__ = "Copyright 2018, Mikros Animation"
 from PyQt5.QtGui import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
-from sgApi.sgApi import SgApi
+from sgApi2 import SgApi2 as SgApi
 from sgtkLib import tkutil, tkm
 import os, pprint, errno, argparse, sys, math, operator
 from Katana import  NodegraphAPI,UI4
+
 
 _USER_ = os.environ['USER']
 _STARTTIME_ = 101
@@ -131,6 +132,10 @@ imageFilterEditing = {
         ]
     }
 
+cameraFiltering = {
+    'filter_operator' : 'any',
+    'filters': [['published_file_type', 'name_is', 'CameraAlembic']],
+}
 
 
 def findAllSequence(all = False):
@@ -173,7 +178,16 @@ def findShots( seq='s1300', shotList=[]):
                 res[entityName] ={}
                 frameInterest = v['entity.Shot.sg_frames_of_interest']
                 if frameInterest is not None:
-                    res[entityName]['frameInterest'] = frameInterest.split(',')
+                    frameInterestList = frameInterest.split()
+                    addComma = ''
+                    listFame = []
+                    for i in frameInterestList:
+                        if i != frameInterestList[-1]:
+                            addComma += i + ','
+                        else:
+                            addComma += i
+                    listFame.append(addComma)
+                    res[entityName]['frameInterest'] = listFame
                 else:
                     res[entityName]['frameInterest'] = ['101']
                 res[entityName]['cutIn'] = v['entity.Shot.sg_cut_in']
@@ -226,13 +240,26 @@ def findShotsInSequence(seq='s1300',dict=False):
     else:
         return sorted(seqShots)
 
+# find the camera path
+def findCamera(shot='0600_0010'):
+    filters = [
+        ['project', 'is', {'type': 'Project', 'id': project.id}],
+        ['entity.Shot.code', 'is', shot],
+        cameraFiltering
+    ]
+    res = []
+    for v in sg.find('PublishedFile', filters, ['code', 'entity', 'path'],
+                     order=[{'field_name': 'version_number', 'direction': 'desc'}]):
+        res.append(v['path']['local_path'])
+    return res[-1]
+
 def findCameraPath(seq='s1300',dictShots={},useDict = True):
     if useDict:
         shotInSeq = findShotsInSequence(seq=seq)
         dictShots = findShots(seq,shotInSeq)
     for shot in dictShots.keys():
         try:
-            camPath = sgA.getLastCamera(shot, taskPriority=['dwa_camera']).getPath()
+            camPath = findCamera(shot)
         except AttributeError:
             dictShots.pop(shot,None)
             print "no cam for: " + shot
@@ -546,7 +573,7 @@ class CamMixUI(QMainWindow):
         self.scroll = QScrollArea()
         self.scroll.setWidget(self.groupBoxSeq)
         self.scroll.setWidgetResizable(True)
-        self.scroll.setFixedWidth(550)
+        self.scroll.setFixedWidth(750)
 
         self.controlGroupBox = QGroupBox()
         self.controlLayout = QGridLayout(self.controlGroupBox)
@@ -567,10 +594,15 @@ class CamMixUI(QMainWindow):
         self.controlCheckOut.setObjectName('out')
         self.controlCheckOut.setAutoExclusive(True)
 
+        self.controlCheckInMidOut = QCheckBox("In Mid Out", self.controlGroupBox)
+        self.controlCheckInMidOut.setObjectName('inMidOut')
+        self.controlCheckInMidOut.setAutoExclusive(True)
+        self.controlCheckInMidOut.setChecked(True)
+
         self.controlCheckFrameOfInt = QCheckBox("Frame of interest", self.controlGroupBox)
         self.controlCheckFrameOfInt.setObjectName('fInt')
         self.controlCheckFrameOfInt.setAutoExclusive(True)
-        self.controlCheckFrameOfInt.setChecked(True)
+
 
         self.controlButton = QPushButton('create cam')
         self.controlButton.setObjectName('creaCam')
@@ -579,8 +611,9 @@ class CamMixUI(QMainWindow):
         self.controlLayout.addWidget(self.controlCheckIn,0,1)
         self.controlLayout.addWidget(self.controlCheckMid,0,2)
         self.controlLayout.addWidget(self.controlCheckOut,0,3)
-        self.controlLayout.addWidget(self.controlCheckFrameOfInt,0,4)
-        self.controlLayout.addWidget(self.controlButton,1,4)
+        self.controlLayout.addWidget(self.controlCheckFrameOfInt,0,5)
+        self.controlLayout.addWidget(self.controlCheckInMidOut,0,4)
+        self.controlLayout.addWidget(self.controlButton,1,5)
 
         self.mainLayout.addWidget(self.scroll)
         self.mainLayout.addWidget(self.controlGroupBox)
@@ -604,11 +637,12 @@ class CamMixUI(QMainWindow):
         self.controlCheckOut.stateChanged.connect(self.checkAllShot)
         self.controlCheckMid.stateChanged.connect(self.checkAllShot)
         self.controlCheckFrameOfInt.stateChanged.connect(self.checkAllShot)
+        self.controlCheckInMidOut.stateChanged.connect(self.checkAllShot)
         self.controlButton.clicked.connect(self.createCam)
         # self.controlButton.clicked.connect(self.overlay.show)
 
         self.setGeometry(300, 300, 250, 150)
-        self.setFixedWidth(560)
+        self.setFixedWidth(760)
         self.setWindowTitle('MasterSeqCam')
         self.setWindowIcon(QIcon('web.png'))
 
@@ -621,7 +655,7 @@ class CamMixUI(QMainWindow):
     # empty the layout and populate it with shot from the sequence
     def processtrigger(self,q):
         self.clearLayout(self.gridLayout)  # clear the layout
-        self.controlCheckFrameOfInt.setChecked(True)  # set the check to Frame of interest
+        self.controlCheckInMidOut.setChecked(True)  # set the check to In Mid Out
         self.shotWidgets = []  # empty the list of shot widgets
         inc = 0  # reset the incrementation for positioning the shot layout
         seqString= str(q.text()) # get the name and description of the sequence
@@ -744,6 +778,20 @@ class shotUI(QWidget):
         self.cutOutLayout.addWidget(self.cutOutCheckBox)
         self.shotLayout.addLayout(self.cutOutLayout,0,3)
 
+        self.inMidOutLabel = QLabel('In Mid Out')
+        self.inMidOutLineEdit = QLineEdit()
+        self.inMidOutLineEdit.setText(str(self.dicShot['cutIn']) + ',' + str(
+            int((self.dicShot['cutIn'] + self.dicShot['cutOut']) / 2)) + ',' + str(self.dicShot['cutOut']))
+        self.inMidOutLineEdit.setEnabled(False)
+        self.inMidOutCheckBox = QCheckBox()
+        self.inMidOutCheckBox.setAutoExclusive(True)
+        self.inMidOutCheckBox.setChecked(True)
+        self.inMidOutLayout = QVBoxLayout()
+        self.inMidOutLayout.addWidget(self.inMidOutLabel)
+        self.inMidOutLayout.addWidget(self.inMidOutLineEdit)
+        self.inMidOutLayout.addWidget(self.inMidOutCheckBox)
+        self.shotLayout.addLayout(self.inMidOutLayout, 0, 4)
+
         self.frameOfInterestLabel = QLabel('Frame of Interest')
         self.frameOfInterestLineEdit= QLineEdit()
         finterest =''
@@ -756,13 +804,14 @@ class shotUI(QWidget):
         self.frameOfInterestLineEdit.setValidator(self.validator)
         self.frameOfInterestLineEdit.setText(finterest)
         self.frameOfInterestCheckBox= QCheckBox()
-        self.frameOfInterestCheckBox.setChecked(True)
+        #self.frameOfInterestCheckBox.setChecked(True)
         self.frameOfInterestCheckBox.setAutoExclusive(True)
         self.frameOfInterestLayout = QVBoxLayout()
         self.frameOfInterestLayout.addWidget(self.frameOfInterestLabel)
         self.frameOfInterestLayout.addWidget(self.frameOfInterestLineEdit)
         self.frameOfInterestLayout.addWidget(self.frameOfInterestCheckBox)
-        self.shotLayout.addLayout(self.frameOfInterestLayout,0,4)
+        self.shotLayout.addLayout(self.frameOfInterestLayout,0,5)
+
 
         self.playRvPushButton = QPushButton("RV")
         self.playRvComboBox = QComboBox()
@@ -772,7 +821,7 @@ class shotUI(QWidget):
         self.playRvLayout = QVBoxLayout()
         self.playRvLayout.addWidget(self.playRvPushButton)
         self.playRvLayout.addWidget(self.playRvComboBox)
-        self.shotLayout.addLayout(self.playRvLayout,0,5)
+        self.shotLayout.addLayout(self.playRvLayout,0,6)
         self.playRvPushButton.clicked.connect(self.rvExecute)
 
 
@@ -801,6 +850,8 @@ class shotUI(QWidget):
             self.cutMidCheckBox.setChecked(check)
         elif name == 'fInt':
             self.frameOfInterestCheckBox.setChecked(check)
+        elif name == 'inMidOut':
+            self.inMidOutCheckBox.setChecked(check)
 
     def getShotName(self):
         if self.shotGroupBox.isChecked():
@@ -810,7 +861,7 @@ class shotUI(QWidget):
         return int(self.cutOrderLabel.text())
 
     def getFrame(self):
-        listCheckBox = {self.cutInCheckBox:self.cutInLineEdit,self.cutOutCheckBox:self.cutOutLineEdit,self.cutMidCheckBox:self.cutMidLineEdit,self.frameOfInterestCheckBox:self.frameOfInterestLineEdit}
+        listCheckBox = {self.inMidOutCheckBox: self.inMidOutLineEdit, self.cutInCheckBox: self.cutInLineEdit, self.cutOutCheckBox: self.cutOutLineEdit,self.cutMidCheckBox:self.cutMidLineEdit,self.frameOfInterestCheckBox:self.frameOfInterestLineEdit}
         for box in listCheckBox.keys():
             if box.isChecked():
                 return listCheckBox[box].text()
@@ -870,10 +921,12 @@ def BuildCamMixUI():
 
 def main():
     #print findCameraPath('s0200')
-    app = QApplication(sys.argv)
-    app.setStyle(QStyleFactory.create("plastique"))
-    BuildCamMixUI()
-    app.exec_()
+    # app = QApplication(sys.argv)
+    # app.setStyle(QStyleFactory.create("plastique"))
+    # BuildCamMixUI()
+    # app.exec_()
+    shots = findShotsInSequence(600)
+    print(shots)
 
 if __name__ == '__main__':
     main()
