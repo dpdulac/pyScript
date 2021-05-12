@@ -12,6 +12,7 @@
 """
 from sgtkLib import tkutil, tkm
 import sys, os
+import pprint
 
 _USER_ = os.environ['USER']
 _OUTPATH_ ='/s/prodanim/asterix2/_sandbox/' + _USER_ +"/contactSheet"
@@ -91,12 +92,13 @@ def findAllSequence(all = False):
 def findShots( seq='s1300', shotList=[]):
     filters = [
         ['project', 'is', {'type':'Project', 'id':project.id}],
+        ['entity', 'type_is', 'Shot'],
         ['entity.Shot.code', 'in',shotList],
         #['entity.Shot.tag_list', 'name_contains', 'mattepainting'],
     ]
 
     res = {}
-    for v in sg.find('PublishedFile', filters, ['code', 'entity','entity.Shot.sg_cut_order','entity.Shot.sg_frames_of_interest','entity.Shot.sg_cut_in','entity.Shot.sg_cut_out'], order=[{'field_name':'created_at','direction':'desc'}]):
+    for v in sg.find('PublishedFile', filters, ['code', 'entity','entity.Shot.sg_cut_order','entity.Shot.sg_frames_of_interest', 'entity.Shot.sg_master_lighting', 'entity.Shot.sg_shots_lighting','entity.Shot.sg_master_layout','entity.Shot.sg_cut_in','entity.Shot.sg_cut_out'], order=[{'field_name':'created_at','direction':'desc'}]):
         entityName = v['entity']['name']
         if v['entity.Shot.sg_cut_order'] > 0:
             if not entityName in res:
@@ -118,7 +120,22 @@ def findShots( seq='s1300', shotList=[]):
                 res[entityName]['cutIn'] = v['entity.Shot.sg_cut_in']
                 res[entityName]['cutOut'] = v['entity.Shot.sg_cut_out']
                 res[entityName]['cutOrder']= v['entity.Shot.sg_cut_order']
+                res[entityName]['masterLayout'] = v['entity.Shot.sg_master_layout']['name']
+                res[entityName]['masterLighting'] = v['entity']
     return res
+
+#find the masters shot for a sequence looking in SG
+def findMasters(seq='s0300',shotList=[]):
+    filters = [
+        ['project', 'is', {'type':'Project', 'id':project.id}],
+        ['entity', 'type_is', 'Shot'],
+        ['entity.Shot.code', 'in', shotList],
+    ]
+
+    masters = {}
+    for v in sg.find('CustomEntity02', filters, ['code','Shot.sg_cut_in'], order=[{'field_name':'version_number','direction':'desc'}]):
+        masterName = v['code', 'gg']
+        print(masterName)
 
 def findSingleShot(shot = 's1300_p00300', taskname = 'compo_precomp'):
     filterType = imFilter(taskname)
@@ -194,6 +211,21 @@ def findCameraPath(seq='s1300',dictShots={},useDict = True):
     return dictShots
 
 
-shots = findShotsInSequence('0600')
-dictShot = findShots('0600',shots)
-print(dictShot)
+shots = findShotsInSequence('1300')
+dictShot = findShots('1300',shots)
+masterNb = []
+masterNbDict ={}
+for key in dictShot.keys():
+    master = dictShot[key]['masterLayout']
+    print(key,dictShot[key]['masterLighting'])
+    if master not in masterNb:
+        masterNb.append(master)
+    if master not in masterNbDict.keys():
+        masterNbDict[master]={}
+        masterNbDict[master][key] = dictShot[key]
+    else:
+        masterNbDict[master][key]=dictShot[key]
+
+findMasters('1300',shots)
+#pprint.pprint(masterNbDict)
+#print(dictShot['masterLighting'])
