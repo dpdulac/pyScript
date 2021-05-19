@@ -15,5 +15,4 @@ try:
 except Exception as exception:
     print('not good...: ', str(exception))
 else:
-    print('donuts')
     uberCamKatana.getKatanaUberCam()
