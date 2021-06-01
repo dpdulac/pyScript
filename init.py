@@ -32,6 +32,7 @@ _USER_ = os.environ['USER']
 
 #add path to KATANA_RESOURCES
 # os.environ['KATANA_RESOURCES'] += os.pathsep + "/homes/"+_USER_+"/.katana/UIPlugins"+os.pathsep+_LIGHTSHADER_+"/Resources"+os.pathsep+_KAT_SHELVES_
+os.environ['KATANA_RESOURCES'] += os.pathsep + "/homes/"+_USER_+"/.katana/"
 #set KATANA_HOME
 try :
     os.environ["PROD_ROOT"]
