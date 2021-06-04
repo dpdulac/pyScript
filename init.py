@@ -59,7 +59,7 @@ else:
 #     else:
 #         print "using Arnold-4"
 
-os.environ['PYTHONPATH'] +=  os.pathsep + "/homes/"+_USER_+"/.katana/Script"
+os.environ['PYTHONPATH'] +=  os.pathsep + "/homes/"+_USER_+"/.katana/Script" + os.pathsep + "/s/apps/packages/cgDev/pyalembic/1.7.10/platform-linux/python-2.7/boost_python-1.61/lib/python2.7/site-packages"
 #add the lua path
 luaPath = "/homes/"+_USER_+"/.katana/LuaScript/"
 if not os.path.isdir(luaPath):
