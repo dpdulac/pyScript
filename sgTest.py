@@ -132,7 +132,11 @@ def findShots(seq='s1300', shotList=[], masterListDict={'Master'}):
         if len(master.keys()) > 0:
             for key in master.keys():
                 for shot in master[key]['subShots']:
-                    if res[shot]:
+                    try:
+                        res[shot]
+                    except:
+                        pass
+                    else:
                         res[shot]['masterLighting'] = key
 
     return res
@@ -268,7 +272,7 @@ def findCamera(shot='0600_0010'):
 def findCameraPath(seq='s1300', dictShots={}, useDict=True):
     if useDict:
         shotInSeq = findShotsInSequence(seq=seq)
-        dictShots = findShots(seq, shotInSeq)
+        dictShots = findShots(seq, shotInSeq[0], shotInSeq[1])
     for shot in dictShots.keys():
         try:
             camPath = findCamera(shot)
@@ -280,24 +284,8 @@ def findCameraPath(seq='s1300', dictShots={}, useDict=True):
     # pprint.pprint(dictShots)
     return dictShots
 
-
-shots = findShotsInSequence('1300')
-
-dictShot = findShots('1300', shots[0], shots[1])
-pprint.pprint(dictShot)
-# masterNb = []
-# masterNbDict ={}
-# for key in dictShot.keys():
-#     master = dictShot[key]['masterLayout']
-#     print(key,dictShot[key]['masterLighting'])
-#     if master not in masterNb:
-#         masterNb.append(master)
-#     if master not in masterNbDict.keys():
-#         masterNbDict[master]={}
-#         masterNbDict[master][key] = dictShot[key]
-#     else:
-#         masterNbDict[master][key]=dictShot[key]
-#
-# findMasters('1300',['1300_k0120'])
-# pprint.pprint(masterNbDict)
+seq='1375'
+shotInSeq = findShotsInSequence(seq=seq)
+dictShots = findShots(seq, shotInSeq[0], shotInSeq[1])
+pprint.pprint(findCameraPath(seq))
 # print(dictShot['masterLighting'])
