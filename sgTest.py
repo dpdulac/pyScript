@@ -89,6 +89,59 @@ def findAllSequence(all=False):
                 print 'donuts for: ' + seq
     return res
 
+def findShotsTmp(seq='s1300',shotList=[], masterLightDict={'Master'}):
+    filters = [
+        ['project', 'is', {'type': 'Project', 'id': project.id}],
+        # ['code', 'is', 'Shot'],
+        ['code', 'in', shotList],
+        # ['entity.Shot.tag_list', 'name_contains', 'mattepainting'],
+    ]
+    res = {}
+    for v in sg.find('Shot', filters,
+                     ['code', 'sg_cut_order', 'sg_frames_of_interest', 'sg_master_layout', 'sg_cameras', 'sg_master_lighting', 'sg_shots_lighting', 'sg_cut_in', 'sg_cut_out'],
+                     order=[{'field_name': 'created_at', 'direction': 'desc'}]):
+        entityName = v['code']
+        if v['sg_cut_order'] > 0:
+            if not entityName in res:
+                print(v['sg_cameras'])
+                res[entityName] = {}
+                frameInterest = v['sg_frames_of_interest']
+                if frameInterest is not None:
+                    frameInterestList = frameInterest.split()
+                    addComma = ''
+                    listFame = []
+                    for i in frameInterestList:
+                        if i != frameInterestList[-1]:
+                            addComma += i + ','
+                        else:
+                            addComma += i
+                    listFame.append(addComma)
+                    res[entityName]['frameInterest'] = listFame
+                else:
+                    res[entityName]['frameInterest'] = ['101']
+                res[entityName]['cutIn'] = v['sg_cut_in']
+                res[entityName]['cutOut'] = v['sg_cut_out']
+                res[entityName]['cutOrder'] = v['sg_cut_order']
+                res[entityName]['masterLayout'] = v['sg_master_layout']['name']
+                res[entityName]['masterLighting'] = ''
+                res[entityName]['campath'] = findCameraOne(entityName)
+
+    if masterLightDict['Master']:
+        master = masterLightDict['Master']
+        if len(master.keys()) > 0:
+            for key in master.keys():
+                for shot in master[key]['subShots']:
+                    if shot in res.keys():
+                        try:
+                            res[shot]
+                        except:
+                            res[shot]['masterLighting'] = ''
+                        else:
+                            res[shot]['masterLighting'] = key
+                    else:
+                        print("Ho nooooooooo !!!! you did it again !!!!", shot)
+
+    return res
 
 def findShots(seq='s1300', shotList=[], masterListDict={'Master'}):
     filters = [
@@ -268,6 +321,32 @@ def findCamera(shot='0600_0010'):
         res.append(v['path']['local_path'])
     return res[-1]
 
+def findCameraOne(shot='1375_0010'):
+    filters = [
+        ['project', 'is', {'type': 'Project', 'id': project.id}],
+        ['entity.Shot.code', 'is', shot],
+        cameraFiltering
+    ]
+    a = sg.find_one('PublishedFile', filters, ['path'],order=[{'field_name':'version_number', 'direction':'desc'}])['path']['local_path']
+    return a
+
+quickCameraFiltering = {
+    'filter_operator': 'any',
+    'filters': [['sg_published_files.code.name', 'name_contains', '.abc']],
+}
+def quickCam(shot='0700_0010_default'):
+    filters = [
+        ['project', 'is', {'type': 'Project', 'id': project.id}],
+        # ['code', 'is', 'Shot'],
+        ['code', 'is', shot],
+        # quickCameraFiltering
+        # ['entity.Shot.tag_list', 'name_contains', 'mattepainting'],
+    ]
+    a = sg.find_one('Camera', filters, ['sg_published_files'],order=[{'field_name': 'version_number', 'direction': 'desc'}])['sg_published_files']
+    print(a)
+    for elem in a:
+        if elem['name'].endswith('.abc'):
+            print(elem['id'])
 
 def findCameraPath(seq='s1300', dictShots={}, useDict=True):
     if useDict:
@@ -286,6 +365,8 @@ def findCameraPath(seq='s1300', dictShots={}, useDict=True):
 
 seq='1375'
 shotInSeq = findShotsInSequence(seq=seq)
-dictShots = findShots(seq, shotInSeq[0], shotInSeq[1])
-pprint.pprint(findCameraPath(seq))
+pprint.pprint(findShotsTmp('s1300',shotInSeq[0], shotInSeq[1]))
+# quickCam()
+# findCameraOne()
+# pprint.pprint(dictShots)
 # print(dictShot['masterLighting'])
