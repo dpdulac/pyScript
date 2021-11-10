@@ -1,0 +1,529 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="34c02728-176d-4b32-a29e-dae2294a4237" name="Default" comment="test">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/newtest.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/newtest.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/createMasterCamKatanaTmp.py" beforeDir="false" afterPath="$PROJECT_DIR$/createMasterCamKatanaTmp.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/focusNode.py" beforeDir="false" afterPath="$PROJECT_DIR$/focusNode.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/init.py" beforeDir="false" afterPath="$PROJECT_DIR$/init.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/katanaCommand.py" beforeDir="false" afterPath="$PROJECT_DIR$/katanaCommand.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/katanaSelectFile.py" beforeDir="false" afterPath="$PROJECT_DIR$/katanaSelectFile.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sgTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/sgTest.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectId" id="1mh3DrA7YSQKzN17qoxz6zk8g0l" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+  </component>
+  <component name="RunManager" selected="Python.sgTest">
+    <configuration name="createMasterCamKatanaTmp" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="newtest" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/createMasterCamKatanaTmp.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="oiiomaketxtest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="newtest" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/oiiomaketxtest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="sgTest" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="newtest" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/sgTest.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="sourceDir" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="newtest" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/sourceDir.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="testOCIO" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="newtest" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/testOCIO.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.oiiomaketxtest" />
+      <item itemvalue="Python.sourceDir" />
+      <item itemvalue="Python.testOCIO" />
+      <item itemvalue="Python.sgTest" />
+      <item itemvalue="Python.createMasterCamKatanaTmp" />
+    </list>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.sgTest" />
+        <item itemvalue="Python.createMasterCamKatanaTmp" />
+        <item itemvalue="Python.oiiomaketxtest" />
+        <item itemvalue="Python.testOCIO" />
+        <item itemvalue="Python.sourceDir" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="34c02728-176d-4b32-a29e-dae2294a4237" name="Default" comment="" />
+      <created>1590573603135</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1590573603135</updated>
+    </task>
+    <task id="LOCAL-00001" summary="ddd">
+      <created>1591950432556</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1591950432556</updated>
+    </task>
+    <task id="LOCAL-00002" summary="dddd">
+      <created>1604485267645</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1604485267645</updated>
+    </task>
+    <task id="LOCAL-00003" summary="ddd">
+      <created>1605099894723</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1605099894723</updated>
+    </task>
+    <task id="LOCAL-00004" summary="dddd">
+      <created>1605130883233</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1605130883233</updated>
+    </task>
+    <task id="LOCAL-00005" summary="dddd">
+      <created>1605200666610</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1605200666610</updated>
+    </task>
+    <task id="LOCAL-00006" summary="dddd">
+      <created>1605201922176</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1605201922176</updated>
+    </task>
+    <task id="LOCAL-00007" summary="dddd">
+      <created>1605202877095</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1605202877095</updated>
+    </task>
+    <task id="LOCAL-00008" summary="dddd">
+      <created>1605282583267</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1605282583267</updated>
+    </task>
+    <task id="LOCAL-00009" summary="dddd">
+      <created>1605515728762</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1605515728762</updated>
+    </task>
+    <task id="LOCAL-00010" summary="ddddd">
+      <created>1605543274062</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1605543274062</updated>
+    </task>
+    <task id="LOCAL-00011" summary="dddddd">
+      <created>1605545018754</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1605545018754</updated>
+    </task>
+    <task id="LOCAL-00012" summary="dddddd">
+      <created>1605548473948</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1605548473948</updated>
+    </task>
+    <task id="LOCAL-00013" summary="dddddd">
+      <created>1605555435609</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1605555435609</updated>
+    </task>
+    <task id="LOCAL-00014" summary="dddddd">
+      <created>1605607626937</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1605607626937</updated>
+    </task>
+    <task id="LOCAL-00015" summary="dddddd">
+      <created>1605625752645</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1605625752645</updated>
+    </task>
+    <task id="LOCAL-00016" summary="dddddd">
+      <created>1605707682741</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1605707682741</updated>
+    </task>
+    <task id="LOCAL-00017" summary="dddddd">
+      <created>1605798439137</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1605798439137</updated>
+    </task>
+    <task id="LOCAL-00018" summary="dddddd">
+      <created>1605887628850</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1605887628850</updated>
+    </task>
+    <task id="LOCAL-00019" summary="dddddd">
+      <created>1606224089924</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1606224089924</updated>
+    </task>
+    <task id="LOCAL-00020" summary="dddddd">
+      <created>1606726807836</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1606726807836</updated>
+    </task>
+    <task id="LOCAL-00021" summary="dddddd">
+      <created>1606827308989</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1606827308989</updated>
+    </task>
+    <task id="LOCAL-00022" summary="dddddd">
+      <created>1607340455787</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1607340455787</updated>
+    </task>
+    <task id="LOCAL-00023" summary="dddddd">
+      <created>1607684333032</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1607684333032</updated>
+    </task>
+    <task id="LOCAL-00024" summary="dddddd">
+      <created>1607690569324</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1607690569324</updated>
+    </task>
+    <task id="LOCAL-00025" summary="dddddd">
+      <created>1607697649850</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1607697649850</updated>
+    </task>
+    <task id="LOCAL-00026" summary="dddddd">
+      <created>1607889294144</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1607889294144</updated>
+    </task>
+    <task id="LOCAL-00027" summary="dddddd">
+      <created>1608029031298</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1608029031298</updated>
+    </task>
+    <task id="LOCAL-00028" summary="dddddd">
+      <created>1608153736793</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1608153736793</updated>
+    </task>
+    <task id="LOCAL-00029" summary="dddddd">
+      <created>1608208638594</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1608208638594</updated>
+    </task>
+    <task id="LOCAL-00030" summary="dddddd">
+      <created>1608238785083</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1608238785083</updated>
+    </task>
+    <task id="LOCAL-00031" summary="dddddd">
+      <created>1608565553338</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1608565553338</updated>
+    </task>
+    <task id="LOCAL-00032" summary="test">
+      <created>1608713636299</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1608713636299</updated>
+    </task>
+    <task id="LOCAL-00033" summary="test">
+      <created>1609776475358</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1609776475358</updated>
+    </task>
+    <task id="LOCAL-00034" summary="test">
+      <created>1609835791168</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1609835791168</updated>
+    </task>
+    <task id="LOCAL-00035" summary="test">
+      <created>1609860406071</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1609860406071</updated>
+    </task>
+    <task id="LOCAL-00036" summary="test">
+      <created>1609862248270</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1609862248270</updated>
+    </task>
+    <task id="LOCAL-00037" summary="test">
+      <created>1609922083576</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1609922083576</updated>
+    </task>
+    <task id="LOCAL-00038" summary="test">
+      <created>1609932261196</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1609932261196</updated>
+    </task>
+    <task id="LOCAL-00039" summary="test">
+      <created>1611046293723</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1611046293723</updated>
+    </task>
+    <task id="LOCAL-00040" summary="test">
+      <created>1611064776075</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1611064776075</updated>
+    </task>
+    <task id="LOCAL-00041" summary="test">
+      <created>1611136987244</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1611136987244</updated>
+    </task>
+    <task id="LOCAL-00042" summary="test">
+      <created>1611659451504</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1611659451504</updated>
+    </task>
+    <task id="LOCAL-00043" summary="test">
+      <created>1614259689191</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1614259689191</updated>
+    </task>
+    <task id="LOCAL-00044" summary="test">
+      <created>1614260655237</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1614260655237</updated>
+    </task>
+    <option name="localTasksCounter" value="45" />
+    <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="ddd" />
+    <MESSAGE value="dddd" />
+    <MESSAGE value="ddddd" />
+    <MESSAGE value="dddddd" />
+    <MESSAGE value="test" />
+    <option name="LAST_COMMIT_MESSAGE" value="test" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="430" y="277" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1611064356374">
+      <screen x="0" y="31" width="1920" height="1120" />
+    </state>
+    <state x="430" y="277" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1611064356374" />
+    <state x="515" y="154" width="889" height="878" key="CommitChangelistDialog2" timestamp="1614260655128">
+      <screen x="0" y="31" width="1920" height="1120" />
+    </state>
+    <state x="515" y="154" width="889" height="878" key="CommitChangelistDialog2/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1614260655128" />
+    <state x="742" y="445" width="434" height="483" key="FileChooserDialogImpl" timestamp="1617001442931">
+      <screen x="0" y="31" width="1920" height="1120" />
+    </state>
+    <state x="742" y="445" width="434" height="483" key="FileChooserDialogImpl/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1617001442931" />
+    <state width="1889" height="300" key="GridCell.Tab.0.bottom" timestamp="1619083772367">
+      <screen x="0" y="31" width="1920" height="1120" />
+    </state>
+    <state width="1889" height="300" key="GridCell.Tab.0.bottom/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1619083772367" />
+    <state width="1889" height="300" key="GridCell.Tab.0.center" timestamp="1619083772367">
+      <screen x="0" y="31" width="1920" height="1120" />
+    </state>
+    <state width="1889" height="300" key="GridCell.Tab.0.center/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1619083772367" />
+    <state width="1889" height="300" key="GridCell.Tab.0.left" timestamp="1619083772367">
+      <screen x="0" y="31" width="1920" height="1120" />
+    </state>
+    <state width="1889" height="300" key="GridCell.Tab.0.left/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1619083772367" />
+    <state width="1889" height="300" key="GridCell.Tab.0.right" timestamp="1619083772367">
+      <screen x="0" y="31" width="1920" height="1120" />
+    </state>
+    <state width="1889" height="300" key="GridCell.Tab.0.right/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1619083772367" />
+    <state x="449" y="323" key="SettingsEditor" timestamp="1617002305477">
+      <screen x="0" y="31" width="1920" height="1120" />
+    </state>
+    <state x="449" y="323" key="SettingsEditor/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1617002305477" />
+    <state x="555" y="376" width="810" height="527" key="Vcs.Push.Dialog.v2" timestamp="1614260656613">
+      <screen x="0" y="31" width="1920" height="1120" />
+    </state>
+    <state x="555" y="376" width="810" height="527" key="Vcs.Push.Dialog.v2/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1614260656613" />
+  </component>
+</project>
