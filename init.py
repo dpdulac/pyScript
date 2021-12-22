@@ -32,7 +32,7 @@ _USER_ = os.environ['USER']
 
 #add path to KATANA_RESOURCES
 # os.environ['KATANA_RESOURCES'] += os.pathsep + "/homes/"+_USER_+"/.katana/UIPlugins"+os.pathsep+_LIGHTSHADER_+"/Resources"+os.pathsep+_KAT_SHELVES_
-os.environ['KATANA_RESOURCES'] += os.pathsep + "/homes/"+_USER_+"/.katana/"
+os.environ['KATANA_RESOURCES'] += os.pathsep + "/homes/"+_USER_+"/.katana/" + os.pathsep + "/datas/KTMaterialXTools/katana/"
 #set KATANA_HOME
 try :
     os.environ["PROD_ROOT"]
@@ -59,7 +59,8 @@ else:
 #     else:
 #         print "using Arnold-4"
 
-os.environ['PYTHONPATH'] +=  os.pathsep + "/homes/"+_USER_+"/.katana/Script" + os.pathsep + "/s/apps/packages/cgDev/pyalembic/1.7.10/platform-linux/python-2.7/boost_python-1.61/lib/python2.7/site-packages"
+os.environ['PYTHONPATH'] +=  os.pathsep + "/homes/"+_USER_+"/.katana/Script" + os.pathsep + "/s/apps/packages/cgDev" \
+                                                                                            "/pyalembic/1.7.10/platform-linux/python-2.7/boost_python-1.61/lib/python2.7/site-packages" + os.pathsep + "/datas/KTMaterialXTools/python/ " + os.pathsep + "/s/apps/packages/cgDev/materialx/1.37.4/platform-linux/build-release/python-2.7"
 #add the lua path
 luaPath = "/homes/"+_USER_+"/.katana/LuaScript/"
 if not os.path.isdir(luaPath):
