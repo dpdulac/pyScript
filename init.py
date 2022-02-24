@@ -59,8 +59,14 @@ else:
 #     else:
 #         print "using Arnold-4"
 
+katanaRoot = os.environ["KATANA_ROOT"]
 os.environ['PYTHONPATH'] +=  os.pathsep + "/homes/"+_USER_+"/.katana/Script" + os.pathsep + "/s/apps/packages/cgDev" \
-                                                                                            "/pyalembic/1.7.10/platform-linux/python-2.7/boost_python-1.61/lib/python2.7/site-packages" + os.pathsep + "/datas/KTMaterialXTools/python/ " + os.pathsep + "/s/apps/packages/cgDev/materialx/1.37.4/platform-linux/build-release/python-2.7"
+                                                                                            "/pyalembic/1.7.10" \
+                                                                                            "/platform-linux/python-2" \
+                                                                                            ".7/boost_python-1.61/lib" \
+                                                                                            "/python2.7/site-packages" + os.pathsep + "/datas/KTMaterialXTools/python/ " + os.pathsep + "/s/apps/packages/cgDev/materialx/1.37.4/platform-linux/build-release/python-2.7" + os.pathsep + katanaRoot + "/plugins/Resources/Usd/lib/python "
+os.environ["KATANA_RESOURCES"] += os.pathsep + katanaRoot + "/plugins/Resources/Usd/plugin"
+os.environ["LD_LIBRARY_PATH"] += os.pathsep + katanaRoot + "/plugins/Resources/Usd/lib"
 #add the lua path
 luaPath = "/homes/"+_USER_+"/.katana/LuaScript/"
 if not os.path.isdir(luaPath):
