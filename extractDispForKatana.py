@@ -16,8 +16,8 @@
 __author__ = "duda"
 __copyright__ = "Copyright 2018, Mikros Animation"
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
 from PIL import Image
 import OpenImageIO as oiio
 import os,pprint,psutil,time
