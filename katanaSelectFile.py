@@ -62,24 +62,24 @@ class customMenu(QWidget):
     def displaySaveDialog(self):
         fname = str(QFileDialog.getSaveFileName(self, 'Save file','/s/prodanim/asterix2',"Katana files (*.katana)"))
         if fname == '':
-            print 'No file has been saved'
+            print('No file has been saved')
         else:
             KatanaFile.Save(fname)
-            print 'Saving : '+fname
+            print('Saving : '+fname)
     def displayOpenDialog(self):
         fname = str(QFileDialog.getOpenFileName(self, 'Open file','/s/prodanim/asterix2',"Katana files (*.katana)"))
         if fname == '':
-            print 'No file has been open'
+            print('No file has been open')
         if self.sender().objectName() == 'openAction':
             KatanaFile.Load(fname)
-            print 'Loading : '+fname
+            print('Loading : '+fname)
         else:
             currentSelection = NodegraphAPI.GetAllSelectedNodes()
             #deselect all the node to select only the 2 created nodes and put them floating under the mouse
             for node in currentSelection:
                 NodegraphAPI.SetNodeSelected(node,False)
             KatanaFile.Import(fname, floatNodes=True)
-            print 'importing : '+fname
+            print('importing : '+fname)
             nodeList = NodegraphAPI.GetAllSelectedNodes()
             # Find Nodegraph tab and float nodes
             nodegraphTab = Tabs.FindTopTab('Node Graph')
@@ -90,7 +90,7 @@ def onStartupComplete(**kwargs):
     from Katana import UI4
     katanaWindow = UI4.App.MainWindow.CurrentMainWindow()
     customMenu(parent=katanaWindow)
-    print 'Custom menu loaded'
+    print('Custom menu loaded')
 
 def customMenuCallback():
     Callbacks.addCallback(Callbacks.Type.onStartupComplete, onStartupComplete)

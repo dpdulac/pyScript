@@ -60,26 +60,22 @@ else:
 #         print "using Arnold-4"
 
 katanaRoot = os.environ["KATANA_ROOT"]
-os.environ['PYTHONPATH'] +=  os.pathsep + "/homes/"+_USER_+"/.katana/Script" + os.pathsep + "/s/apps/packages/cgDev" \
-                                                                                            "/pyalembic/1.7.10" \
-                                                                                            "/platform-linux/python-2" \
-                                                                                            ".7/boost_python-1.61/lib" \
-                                                                                            "/python2.7/site-packages" + os.pathsep + "/datas/KTMaterialXTools/python/ " + os.pathsep + "/s/apps/packages/cgDev/materialx/1.37.4/platform-linux/build-release/python-2.7" + os.pathsep + katanaRoot + "/plugins/Resources/Usd/lib/python "
+os.environ['PYTHONPATH'] +=  os.pathsep + "/homes/"+_USER_+"/.katana/Script" + os.pathsep + katanaRoot + "/plugins/Resources/Usd/lib/python "
 os.environ["KATANA_RESOURCES"] += os.pathsep + katanaRoot + "/plugins/Resources/Usd/plugin"
 os.environ["LD_LIBRARY_PATH"] += os.pathsep + katanaRoot + "/plugins/Resources/Usd/lib"
 #add the lua path
 luaPath = "/homes/"+_USER_+"/.katana/LuaScript/"
 if not os.path.isdir(luaPath):
-    print "Creating: " + luaPath
+    print("Creating: " + luaPath)
     os.makedirs(luaPath)
 try:
     os.environ['LUA_PATH']
 except KeyError:
     os.environ['LUA_PATH'] = luaPath+"?.lua"
 else:
-    print 'donuts'
+    print('trying to fix the LUA_PATH')
     #os.environ['LUA_PATH'] = luaPath+"?.lua"+os.environ['LUA_PATH']
-    os.environ['LUA_PATH'] = '/s/apps/packages/mikrosAnim/katanaCore/1.8.0/kCore/lua/?.lua' +';'+luaPath + "?.lua"
+    os.environ['LUA_PATH'] = '/s/apps/packages/mikrosAnim/katanaCore/1.8.0/kCore/lua/?.lua' + os.pathsep +luaPath + "?.lua"
 
 #append my script directory
 #sys.path.append("/s/prodanim/asterix2/_sandbox/duda/Katana/Startup")

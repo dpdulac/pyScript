@@ -2,14 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="34c02728-176d-4b32-a29e-dae2294a4237" name="Default" comment="test">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/newtest.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/newtest.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/createMasterCamKatanaTmp.py" beforeDir="false" afterPath="$PROJECT_DIR$/createMasterCamKatanaTmp.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/focusNode.py" beforeDir="false" afterPath="$PROJECT_DIR$/focusNode.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/init.py" beforeDir="false" afterPath="$PROJECT_DIR$/init.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/katanaCommand.py" beforeDir="false" afterPath="$PROJECT_DIR$/katanaCommand.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/katanaSelectFile.py" beforeDir="false" afterPath="$PROJECT_DIR$/katanaSelectFile.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sgTest.py" beforeDir="false" afterPath="$PROJECT_DIR$/sgTest.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,6 +27,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager" selected="Python.sgTest">
@@ -525,5 +521,16 @@
       <screen x="0" y="31" width="1920" height="1120" />
     </state>
     <state x="555" y="376" width="810" height="527" key="Vcs.Push.Dialog.v2/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1614260656613" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/init.py</url>
+          <line>17</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
