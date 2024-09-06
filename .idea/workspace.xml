@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="34c02728-176d-4b32-a29e-dae2294a4237" name="Default" comment="test">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/init.py" beforeDir="false" afterPath="$PROJECT_DIR$/init.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/katanaSelectFile.py" beforeDir="false" afterPath="$PROJECT_DIR$/katanaSelectFile.py" afterDir="false" />
-    </list>
+    <list default="true" id="34c02728-176d-4b32-a29e-dae2294a4237" name="Default" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -473,7 +469,14 @@
       <option name="project" value="LOCAL" />
       <updated>1614260655237</updated>
     </task>
-    <option name="localTasksCounter" value="45" />
+    <task id="LOCAL-00045" summary="test">
+      <created>1719840154069</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1719840154070</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
@@ -483,44 +486,6 @@
     <MESSAGE value="dddddd" />
     <MESSAGE value="test" />
     <option name="LAST_COMMIT_MESSAGE" value="test" />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="430" y="277" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1611064356374">
-      <screen x="0" y="31" width="1920" height="1120" />
-    </state>
-    <state x="430" y="277" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1611064356374" />
-    <state x="515" y="154" width="889" height="878" key="CommitChangelistDialog2" timestamp="1614260655128">
-      <screen x="0" y="31" width="1920" height="1120" />
-    </state>
-    <state x="515" y="154" width="889" height="878" key="CommitChangelistDialog2/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1614260655128" />
-    <state x="742" y="445" width="434" height="483" key="FileChooserDialogImpl" timestamp="1617001442931">
-      <screen x="0" y="31" width="1920" height="1120" />
-    </state>
-    <state x="742" y="445" width="434" height="483" key="FileChooserDialogImpl/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1617001442931" />
-    <state width="1889" height="300" key="GridCell.Tab.0.bottom" timestamp="1619083772367">
-      <screen x="0" y="31" width="1920" height="1120" />
-    </state>
-    <state width="1889" height="300" key="GridCell.Tab.0.bottom/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1619083772367" />
-    <state width="1889" height="300" key="GridCell.Tab.0.center" timestamp="1619083772367">
-      <screen x="0" y="31" width="1920" height="1120" />
-    </state>
-    <state width="1889" height="300" key="GridCell.Tab.0.center/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1619083772367" />
-    <state width="1889" height="300" key="GridCell.Tab.0.left" timestamp="1619083772367">
-      <screen x="0" y="31" width="1920" height="1120" />
-    </state>
-    <state width="1889" height="300" key="GridCell.Tab.0.left/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1619083772367" />
-    <state width="1889" height="300" key="GridCell.Tab.0.right" timestamp="1619083772367">
-      <screen x="0" y="31" width="1920" height="1120" />
-    </state>
-    <state width="1889" height="300" key="GridCell.Tab.0.right/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1619083772367" />
-    <state x="449" y="323" key="SettingsEditor" timestamp="1617002305477">
-      <screen x="0" y="31" width="1920" height="1120" />
-    </state>
-    <state x="449" y="323" key="SettingsEditor/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1617002305477" />
-    <state x="555" y="376" width="810" height="527" key="Vcs.Push.Dialog.v2" timestamp="1614260656613">
-      <screen x="0" y="31" width="1920" height="1120" />
-    </state>
-    <state x="555" y="376" width="810" height="527" key="Vcs.Push.Dialog.v2/0.31.1920.1120/1920.0.1920.1200@0.31.1920.1120" timestamp="1614260656613" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
