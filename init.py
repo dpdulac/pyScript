@@ -69,9 +69,6 @@ sys.path.append("/homes/" + _USER_ + "/.katana/Script")
 if os.path.isdir("/datas/pyScript"):
     sys.path.append("/datas/pyScript")
 
-envTest = "/homes/" + _USER_ + "/.katana/SuperTools" + os.pathsep + os.environ["KATANA_ROOT"]
-os.environ["KATANA_ROOT"] = envTest
-print(os.environ["KATANA_ROOT"], "\n\Donuts\nDonuts\nDonutsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss")
 # load the custom menu once the startup is complete
 if _USER_ == "dulacd":
     import katanaSelectFile as david
