@@ -6,13 +6,14 @@ from Katana import  NodegraphAPI, ScenegraphManager, Nodes3DAPI, Utils, WorkingS
 import sys, os, yaml
 
 from PyQt5.QtWidgets import QLineEdit, QMainWindow, QAction, QGridLayout, QWidget,QCheckBox,QLabel, QPushButton, QHBoxLayout, QComboBox, QSpacerItem, QSizePolicy, QFileDialog, QApplication, QScrollArea, QVBoxLayout
-from numpy.distutils.misc_util import allpath
 
 ex = None
 
 typeList = ["None", "subdmesh", "polymesh", "pointcloud", "nurbspatch", "curves", "locator", "assembly", "component", "group", "light", "light filter", "light filter reference", "camera",
             "volume", "openvdbasset", "material", "instance", "instance source", "instance array", "level-of-detail group", "level-of-detail",
             "render procedural", "render procedural args"]
+
+
 # @LineEdit class to accept drop of path from katana
 class fileEdit(QLineEdit):
     def __init__(self, parent=None):
@@ -63,7 +64,7 @@ class CELPanel(QScrollArea):
     def getCellWidgetValue(self):
         return self.cellWidget._CelEditorFormWidget__buildValueFromPanels()
 
-class expressionWindowUI(QMainWindow):
+class expressionWindowUI(UI4.Tabs.BaseTab):
     def __init__(self, parent=None, listCombo=[]):
         super(expressionWindowUI, self).__init__(parent)
         self.parent = parent
@@ -701,13 +702,16 @@ class displayGeoUI(QMainWindow):
         # turn on the object display column
         self.sg.setViewerVisibilityFollowingWorkingSet(state)
 
-def BuildisplayGeoUI():
-    global ex
-    if ex is not None:
-        ex.close()
-    ex= displayGeoUI()
-    ex.setWindowFlags(Qt.Tool)
-    ex.move(700, 500)
-    ex.show()
-
+# def BuildisplayGeoUI():
+#     global ex
+#     if ex is not None:
+#         ex.close()
+#     ex= displayGeoUI()
+#     ex.setWindowFlags(Qt.Tool)
+#     ex.move(700, 500)
+#     ex.show()
+PluginRegistry = [
+    ('KatanaPanel', 2.0, 'displayGeo', displayGeoUI),
+    ('KatanaPanel', 2.0, 'Custom/displayGeo', displayGeoUI),
+]
 # BuildisplayGeoUI()
