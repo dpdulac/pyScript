@@ -561,6 +561,8 @@ def setActiveRenderFilterNodes(nodeList):
     expr = ' + " " + '.join('getNode("%s").getNodeName()' % node.getName() for node in nodeList)
     parameter.setExpression(expr)
 
+test = [ x for x in NodegraphAPI.GetAllNodesByType('RenderFilter', False, False) if x.getBaseType() == 'RenderFilter']
+
 #get the activeRenderModes turn on or off
 routNode = NodegraphAPI.GetRootNode().getParameter('activeRenderModes')
 routNode.setExpression("")

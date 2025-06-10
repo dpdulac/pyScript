@@ -600,25 +600,28 @@ class displayGeoUI(QMainWindow):
         """
         Toggles the visibility of standard search fields and the CEL editor based on the CEL checkbox state.
         """
-        self.allPath = []
-        self.expression = ""
-        self.expressionLineEdit.clear()
+        self.allPath = []  # Clears all selected paths.
+        self.expression = ""  # Clears the current expression.
+        self.expressionLineEdit.clear()  # Clear displayed expression
 
+        # Determine visibility state based on checkbox 's' (True/False)
         cel_mode_active = bool(s)
-        standard_mode_active = not cel_mode_active
 
-        # Toggle CEL-specific widget
+        # Hide/show elements based on CEL mode
         self.cellWidget.setVisible(cel_mode_active)
-
-        # Toggle all standard widgets in a loop
-        standard_widgets = [
-            self.childCheckBox, self.nameLabel, self.nameLineEdit, self.resetName,
-            self.typeLabel, self.typeBox, self.typeLineEdit, self.typeReset,
-            self.collectionNameLabel, self.collectionComboBox, self.pathLabel,
-            self.pathLineEdit, self.resetPath
-        ]
-        for widget in standard_widgets:
-            widget.setVisible(standard_mode_active)
+        self.childCheckBox.setVisible(not cel_mode_active)
+        self.nameLabel.setVisible(not cel_mode_active)
+        self.nameLineEdit.setVisible(not cel_mode_active)
+        self.resetName.setVisible(not cel_mode_active)
+        self.typeLabel.setVisible(not cel_mode_active)
+        self.typeBox.setVisible(not cel_mode_active)
+        self.typeLineEdit.setVisible(not cel_mode_active)
+        self.typeReset.setVisible(not cel_mode_active)
+        self.collectionNameLabel.setVisible(not cel_mode_active)
+        self.collectionComboBox.setVisible(not cel_mode_active)
+        self.pathLabel.setVisible(not cel_mode_active)
+        self.pathLineEdit.setVisible(not cel_mode_active)
+        self.resetPath.setVisible(not cel_mode_active)
 
     def setRender(self):
         """
@@ -991,80 +994,111 @@ class displayGeoUI(QMainWindow):
             # print("An unexpected error occurred in yamlReadFile: {}".format(e)) # For debugging
             return [] if not dictMode else {}
 
-    # --- HELPER function to be added to the class ---
-
-    def _buildCelExpression(self):
-        """
-        Builds a CEL expression string based on the standard UI inputs.
-        Returns an empty string if no criteria are provided.
-        """
-        nameInNode = str(self.nameLineEdit.text()).strip()
-        splitText = [p.strip() for p in str(self.pathLineEdit.text()).split(' ') if p.strip()]
-        type_line_edit_text = str(self.typeLineEdit.text()).strip()
-        selected_collection = str(self.collectionComboBox.currentText())
-
-        expression_parts = []
-
-        # Name-based expression
-        if nameInNode:
-            if splitText:
-                expression_parts.extend(["(({}//*{}*))".format(p, nameInNode) for p in splitText])
-            else:
-                expression_parts.append("/root//*{}*".format(nameInNode))
-
-        # Type-based expression
-        if type_line_edit_text:
-            splitTypeText = [t.strip() for t in type_line_edit_text.split(";") if t.strip()]
-            for t in splitTypeText:
-                type_expr = '((/root//*{{attr("type") == "{}"}}))'.format(t)
-                if splitText:
-                    # Intersect type expression with each path
-                    path_exprs = ["({} & ({}//*))".format(type_expr, p) for p in splitText]
-                    expression_parts.extend(path_exprs)
-                else:
-                    expression_parts.append(type_expr)
-
-        # Collection-based expression
-        if selected_collection != "None":
-            expression_parts.append("(/${})".format(selected_collection))
-
-        return " + ".join(expression_parts)
-
-    # --- SIMPLIFIED displayModel function ---
-
     def displayModel(self, node=None, nameInNode='_hiShape'):
         """
-        Orchestrator function that gets a CEL expression, collects paths, and
-        delegates to action-specific handlers.
+        The core function for displaying, hiding, or selecting scene graph locations.
+        It constructs CEL expressions based on user input (name, type, collection, path, or raw CEL),
+        applies them to Katana Working Sets, and provides visual feedback.
         """
+        # Ensure node is properly initialized if not provided (default behavior is rootNode)
         if node is None:
             node = NodegraphAPI.GetRootNode()
 
-        QApplication.setOverrideCursor(Qt.WaitCursor)
-        name_sender = str(self.sender().objectName())
-        self.paths = []
+        QApplication.setOverrideCursor(Qt.WaitCursor)  # Changes cursor to busy indicator.
 
-        if not self.addCheckBox.isChecked() and name_sender != "selectButton":
-            self.workingSet.clear()
-            self.allPath = []
+        # Get the object name of the button that triggered this function.
+        # sender() returns QObject.objectName().
+        name_sender = str(self.sender().objectName())  # Ensure string conversion for Python 2/3 compatibility.
 
-        # 1. Get the expression
-        if self.celCheckBox.isChecked():
-            self.expression = str(self.cellWidget.getCellWidgetValue()).strip()
-        else:
-            self.expression = self._buildCelExpression()
+        self.paths = []  # Initializes paths for the current operation.
 
-        # 2. Collect paths from the expression
-        if self.expression:
-            wid = UI4.Widgets.CollectAndSelectInScenegraph(self.expression, "/root")
-            self.paths = wid.collectAndSelect(select=False, node=NodegraphAPI.GetViewNode())
+        # If not in additive mode, clear current selections before proceeding.
+        if not self.addCheckBox.isChecked():
+            if name_sender != "selectButton":  # If not specifically selecting.
+                self.workingSet.clear()  # Clears the viewer working set.
+            self.allPath = []  # Clears all accumulated paths.
 
-            if self.addCheckBox.isChecked():
-                self.allPath.extend(self.paths)
+        nameInNode = str(self.nameLineEdit.text()).strip()  # Get text from name input, strip whitespace.
+        # Split path input by space and filter out empty strings.
+        splitText = [p.strip() for p in str(self.pathLineEdit.text()).split(' ') if p.strip()]
+
+        # Ensure viewer visibility follows the working set.
+        self.sg.setViewerVisibilityFollowingWorkingSet(True)
+
+        # Check the CEL widget
+        if self.celCheckBox.isChecked():  # If CEL mode is enabled.
+            self.expression = str(self.cellWidget.getCellWidgetValue()).strip()  # Get CEL expression, strip whitespace.
+            # If there is an expression.
+            if self.expression:  # If a CEL expression is provided (not empty).
+                wid = UI4.Widgets.CollectAndSelectInScenegraph(self.expression, "/root")
+                self.paths = wid.collectAndSelect(select=False, node=NodegraphAPI.GetViewNode())
+
+                if self.addCheckBox.isChecked():
+                    self.allPath.extend(self.paths)  # Use extend for efficiency.
+                else:
+                    self.allPath = list(self.paths)  # Ensure it's a list.
             else:
-                self.allPath = list(self.paths)
+                self.expression = ""  # Reset if CEL editor is empty.
 
-            self.allPath = list(set(self.allPath))  # Remove duplicates
+        else:  # If standard search mode (not CEL).
+            current_expression_parts = []
+
+            # Find producers which contain the input name.
+            if nameInNode:  # If a name is provided.
+                if splitText:  # If specific paths are given.
+                    # Build CEL for name match within specified paths.
+                    # Using format strings for readability (compatible with Python 2.7 with .format).
+                    current_expression_parts.extend(
+                        ["(({}//*{}*))".format(prodpath, nameInNode) for prodpath in splitText])
+                else:
+                    # Build CEL for name match globally.
+                    current_expression_parts.append("/root//*{}*".format(nameInNode))
+
+            # Get the path with the help of asset type.
+            type_line_edit_text = str(self.typeLineEdit.text()).strip()
+            if type_line_edit_text:  # If asset types are specified.
+                splitTypeText = [t.strip() for t in type_line_edit_text.split(";") if t.strip()]
+
+                if splitText:  # If specific paths are given.
+                    # Build CEL for type match within specified paths.
+                    current_expression_parts.extend(["(({}//*{{attr(\"type\") == \"{}\"}}))".format(prodpath, splitType)
+                                                     for prodpath in splitText for splitType in splitTypeText])
+                else:
+                    # Build CEL for type match globally.
+                    current_expression_parts.extend(["((/root//*{{attr(\"type\") == \"{}\"}}))".format(splitType)
+                                                     for splitType in splitTypeText])
+
+            # If a collection is selected.
+            selected_collection = str(self.collectionComboBox.currentText())
+            if selected_collection != "None":
+                # Build CEL for the selected collection.
+                current_expression_parts.append("(/${})".format(selected_collection))
+
+            # Combine all parts into a single expression.
+            if current_expression_parts:
+                self.expression = " + ".join(current_expression_parts)
+                # Collect paths based on the constructed expression.
+                wid = UI4.Widgets.CollectAndSelectInScenegraph(self.expression, "/root")
+                self.paths = wid.collectAndSelect(select=False, node=NodegraphAPI.GetViewNode())
+
+                if self.addCheckBox.isChecked():
+                    self.allPath.extend(self.paths)
+                else:
+                    self.allPath = list(self.paths)
+            else:
+                self.expression = ""  # No criteria, so no expression.
+
+            # Handle render check if not in CEL mode directly.
+            # This logic is also in setRender(), but it might be needed here if conditions change.
+            # Keeping it separated as setRender() is more comprehensive for render updates.
+            # if self.renderCheck.isChecked():
+            #    self.setRender()
+
+        # Remove duplicates from `self.allPath` (important if multiple criteria overlapped).
+        self.allPath = list(set(self.allPath))
+
+        # Clear the expression display before updating.
+        self.expressionLineEdit.clear()
 
         # Hide the asset.
         if name_sender == 'Hide':
