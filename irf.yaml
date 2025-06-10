@@ -1,0 +1,43 @@
+showIRF:
+  RENDER > SETTINGS: ["half_res", "quart_res", "AA_O", "AA_1", "AA_2", "max_subdiv_5", "max_subdiv_2", "light_samples_1", "light_samples_2",
+                       "bkt_16", "bkt_32", "bkt_64", "threads_only_3", "threads_only_6"]
+  RENDER > IGNORE: ["no progressiveRender":"no_progressiveRender1", "no hair": "no_hair1", "no GI": "no_GI1", "no lights":"no_lights1",
+                    "no shadow":"no_shadow1", "no smoothing":"no_smoothing1", "no subdivision":"no_subdivision1","no reflection":"no_reflection1",
+                    "no transmission":"no_transmission2", "no sss1":"no_sss1", "no displacement":"no_displacement1", "no bump":"no_bump1",
+                    "no texture":"no_texture1", "no tx":"no_tx1", "no motion blur":"no_motion_blur1"]
+  RENDER > AOV: []
+
+
+
+      adaptatif_sampling_infos1
+      cutout_enable
+      full_log1
+      grey_material1
+      hair_low1
+      hair_mid1
+      hair_veryLow1
+      interractiveLayeringDisplay
+      no_AOVs1
+      no_License_check1
+      no_additional_aov
+      no_verbosity1
+      only_curves_aov
+      only_cutout_aov
+      only_glass_aov1
+      only_glasses_aov
+      only_light_AOV
+      prune___CHARS__1
+      prune___CROWDS__1
+      prune___FX__1
+      prune___PROPS__1
+      prune___SETS__1
+      prune_curves_ALL
+      prune_curves_CHARS__
+      prune_curves_FX__
+      prune_curves_PROPS__
+      prune_curves_SETS__
+      prune_hair1
+      prune_instances1
+      prune_pointClouds1
+      vol_beauty_average1
+      wireframe_material1
