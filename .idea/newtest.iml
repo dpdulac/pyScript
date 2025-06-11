@@ -6,5 +6,11 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="R User Library" level="project" />
     <orderEntry type="library" name="R Skeletons" level="application" />
+    <orderEntry type="module" module-name="uberCamSuperToolBeta" />
+    <orderEntry type="module" module-name="sandBox" />
+    <orderEntry type="module" module-name="ImageConvert" />
+    <orderEntry type="module" module-name="sgFocal" />
+    <orderEntry type="module" module-name="checkImages" />
+    <orderEntry type="module" module-name="contactSheet" />
   </component>
 </module>
